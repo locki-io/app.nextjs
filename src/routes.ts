@@ -5,6 +5,10 @@ export const routeNames = {
   dashboard: "/dashboard",
   statistics: "/statistics",
   unlock: "/unlock",
+  apiDoc: "/api-doc",
+  hello: "/api/hello/route",
+  user: "/api/user",
+  getUsers: "/api/getusers",
 };
 
 interface RouteWithTitleType extends RouteType {
@@ -21,13 +25,33 @@ export const routes: RouteWithTitleType[] = [
     path: routeNames.dashboard,
     title: "Index",
     component: null,
-    authenticatedRoute: true,
+    //authenticatedRoute: true,
   },
   {
     path: routeNames.statistics,
     title: "Statistics",
     component: null,
     authenticatedRoute: true,
+  },
+  {
+    path: routeNames.apiDoc,
+    title: "api-doc",
+    component: null,
+  },
+  {
+    path: routeNames.hello,
+    title: "hello",
+    component: null,
+  },
+  {
+    path: routeNames.user,
+    title: "user",
+    component: null,
+  },
+  {
+    path: routeNames.getUsers,
+    title: "get all users",
+    component: null,
   },
 ];
 
