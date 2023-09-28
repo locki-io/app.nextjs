@@ -1,5 +1,5 @@
 // api/user.js
-import { users } from '../../../../db/data.json';
+import { users } from '../../db/data.json';
 
 // Import the required types from Next.js
 import { NextApiRequest, NextApiResponse } from 'next'

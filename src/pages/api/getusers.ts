@@ -7,7 +7,7 @@
  *       200:
  *         description: users returned!
  */
-import { users } from '../../../db/data.json';
+import { users } from '../../db/data.json';
 
 // Importing necessary types and modules
 import { NextApiRequest, NextApiResponse } from 'next';
