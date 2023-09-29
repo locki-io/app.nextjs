@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getTransactions } from '@multiversx/sdk-dapp/apiCalls';
 import {
   useGetAccount,
   useGetActiveTransactionsStatus,
@@ -11,32 +10,27 @@ import { ServerTransactionType } from '@multiversx/sdk-dapp/types';
 import { faBan, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { AxiosError } from 'axios';
 import { apiTimeout, contractAddress, transactionSize } from '@/config';
-import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
+import { DataNftCardLayout } from '@/components/DataNftCard/DataNftCardLayout';
+import { DataNftBoardLayout } from '@/components/DataNftBoard/DataNftBoardLayout';
 import { Loader, PageState, TransactionsTable } from '@/components';
+import { DataNft, dataNftTokenIdentifier } from '@itheum/sdk-mx-data-nft';
 
-const DashboardPage = () => {
+const DataNftPage = () => {
   const {
     network: { apiAddress }
   } = useGetNetworkConfig();
   const { address } = useGetAccount();
   const { success, fail } = useGetActiveTransactionsStatus();
 
-  const [transactions, setTransactions] = useState<ServerTransactionType[]>([]);
+  const [dataNfts, setDataNfts] = useState<ServerTransactionType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>();
 
-  const fetchTransactions = async () => {
+  const fetchDataNfts = async () => {
+    const dataNfts = [];
     try {
       setIsLoading(true);
-      const { data } = await getTransactions({
-        apiAddress,
-        sender: address,
-        receiver: contractAddress,
-        condition: 'must',
-        transactionSize,
-        apiTimeout
-      });
-      setTransactions(data);
+      const dataNfts = await DataNft.ownedByAddress(address);
     } catch (err) {
       const { message } = err as AxiosError;
       setError(message);
@@ -46,12 +40,12 @@ const DashboardPage = () => {
 
   useEffect(() => {
     if (success || fail) {
-      fetchTransactions();
+      fetchDataNfts();
     }
   }, [success, fail]);
 
   useEffect(() => {
-    fetchTransactions();
+    fetchDataNfts();
   }, []);
 
   if (isLoading) {
@@ -64,31 +58,33 @@ const DashboardPage = () => {
         <PageState
           icon={faBan}
           className='text-muted'
-          title='Error fetching transactions.'
+          title='Error retrieving DATANFTs.'
         />
       </div>
     );
   }
 
-  if (transactions.length === 0) {
+  if (dataNfts.length === 0) {
     return (
       <div className='my-5'>
         <PageState
           icon={faExchangeAlt}
           className='text-muted'
-          title='No Transactions'
+          title='No DataNFT'
         />
       </div>
     );
   }
 
-  return <TransactionsTable transactions={transactions} />;
+  //JNS return <DataNftCardLayout dataNfts={dataNfts} />;
+
 };
 
-export default function Dashboard() {
+
+export default function mydatanft() {
   return (
-    <DashboardLayout>
-      <DashboardPage />
-    </DashboardLayout>
+    <DataNftBoardLayout>
+      <DataNftPage />
+    </DataNftBoardLayout>
   );
 }

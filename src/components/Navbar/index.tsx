@@ -3,7 +3,7 @@
 import React from 'react';
 import { useGetIsLoggedIn } from '@multiversx/sdk-dapp/hooks';
 import { logout } from '@multiversx/sdk-dapp/utils';
-import { faChartSimple } from '@fortawesome/free-solid-svg-icons';
+import { faBookReader, faChartSimple } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Navbar as BsNavbar, NavItem, Nav } from 'react-bootstrap';
 import { dAppName } from '@/config';
@@ -38,6 +38,14 @@ export const Navbar = () => {
         <Nav className='ml-auto'>
           {isLoggedIn && (
             <>
+              <NavItem>
+                <Link href={routeNames.apiDoc} className='nav-link'>
+                  <FontAwesomeIcon
+                    icon={faBookReader}
+                    className='text-muted'
+                  />
+                </Link>
+              </NavItem>
               <NavItem>
                 <Link href={routeNames.statistics} className='nav-link'>
                   <FontAwesomeIcon

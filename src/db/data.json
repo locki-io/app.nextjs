@@ -1,0 +1,15 @@
+{
+    "users": [
+      {
+        "username": "john_doe",
+        "apiKey": "john_api_key",
+        "apiSecret": "john_api_secret"
+      },
+      {
+        "username": "jane_doe",
+        "apiKey": "jane_api_key",
+        "apiSecret": "jane_api_secret"
+      }
+    ]
+  }
+  
