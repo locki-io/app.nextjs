@@ -40,3 +40,5 @@ yalc.lock
 .idea
 .yalc
 
+.yarnrc.yml
+.yarn

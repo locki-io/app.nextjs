@@ -1,3 +1,4 @@
+import '../globals.css';
 import '@/styles/globals.scss';
 import { Layout, LayoutFallback } from '@/components/Layout';
 import Head from 'next/head';

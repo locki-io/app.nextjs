@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.info-container .label {
+  @apply text-lg text-gray-800 font-bold mb-0;
+}
+
+.info-container .info-value {
+  @apply text-xl mt-0;
+}
+
+.info-container {
+  @apply py-5;
+}
