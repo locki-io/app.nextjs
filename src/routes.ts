@@ -5,6 +5,7 @@ export const routeNames = {
   dashboard: "/dashboard",
   statistics: "/statistics",
   unlock: "/unlock",
+  profile: "/profile",
   apiDoc: "/api-doc",
   hello: "/api/hello/route",
   user: "/api/user",
@@ -30,6 +31,12 @@ export const routes: RouteWithTitleType[] = [
   {
     path: routeNames.statistics,
     title: "Statistics",
+    component: null,
+    authenticatedRoute: true,
+  },
+  {
+    path: routeNames.profile,
+    title: 'User Profile',
     component: null,
     authenticatedRoute: true,
   },

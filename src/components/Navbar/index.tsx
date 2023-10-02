@@ -3,7 +3,7 @@
 import React from 'react';
 import { useGetIsLoggedIn } from '@multiversx/sdk-dapp/hooks';
 import { logout } from '@multiversx/sdk-dapp/utils';
-import { faBookReader, faChartSimple } from '@fortawesome/free-solid-svg-icons';
+import { faBookReader, faChartSimple, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Navbar as BsNavbar, NavItem, Nav } from 'react-bootstrap';
 import { dAppName } from '@/config';
@@ -50,6 +50,14 @@ export const Navbar = () => {
                 <Link href={routeNames.statistics} className='nav-link'>
                   <FontAwesomeIcon
                     icon={faChartSimple}
+                    className='text-muted'
+                  />
+                </Link>
+              </NavItem>
+              <NavItem>
+                <Link href={routeNames.profile} className='nav-link'>
+                  <FontAwesomeIcon
+                    icon={faUser}
                     className='text-muted'
                   />
                 </Link>
