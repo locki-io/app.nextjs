@@ -23,18 +23,18 @@ export default function Profile() {
         message: `${address}${init}`
       });
       const signatureJson: any = signableMessage?.toJSON();
-      const accessToken = client.getToken(
+      const nativeAuthToken = client.getToken(
         address,
         init,
         signatureJson?.signature
       );
-      console.log('accessToken', accessToken);
+      console.log('nativeAuthToken', nativeAuthToken);
 
       const apiKeyResponse = await axios.get(
         'https://o9rbpcvsw0.execute-api.eu-central-1.amazonaws.com/Prod/token',
         {
           headers: {
-            Authorization: accessToken
+            Authorization: nativeAuthToken
           }
         }
       );
