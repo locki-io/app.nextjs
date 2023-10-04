@@ -13,7 +13,11 @@ import {
 export const UnlockContent = () => {
   const commonProps = {
     callbackRoute: routeNames.dashboard,
-    nativeAuth: true // optional
+    nativeAuth: {
+      apiUrl: 'https://devnet-api.multiversx.com',
+      expirySeconds: 60 * 60 * 24,
+      blockHashShard: 0
+    }
   };
 
   return (
