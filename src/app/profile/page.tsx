@@ -1,47 +1,35 @@
 'use client';
 
-import { NativeAuthClient } from '@/components/nativeAuthClient';
-import { useGetAccount } from '@multiversx/sdk-dapp/hooks';
+import { useGetAccount, useGetLoginInfo } from '@multiversx/sdk-dapp/hooks';
 import { useState } from 'react';
-import { signMessage } from '@multiversx/sdk-dapp/utils';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default function Profile() {
   const { address } = useGetAccount();
+  const { tokenLogin } = useGetLoginInfo();
   const [apiKey, setApiKey] = useState('');
+  const [loading, setLoding] = useState(false);
 
   const getApiKey = async () => {
     try {
-      const client = new NativeAuthClient({
-        apiUrl: 'https://devnet-api.multiversx.com',
-        expirySeconds: 60 * 60 * 24,
-        blockHashShard: 0
-      });
-      const init = await client.initialize();
-
-      const signableMessage = await signMessage({
-        message: `${address}${init}`
-      });
-      const signatureJson: any = signableMessage?.toJSON();
-      const nativeAuthToken = client.getToken(
-        address,
-        init,
-        signatureJson?.signature
-      );
-      console.log('nativeAuthToken', nativeAuthToken);
-
-      const apiKeyResponse = await axios.get(
-        'https://o9rbpcvsw0.execute-api.eu-central-1.amazonaws.com/Prod/token',
-        {
-          headers: {
-            Authorization: nativeAuthToken
+      setLoding(true);
+      if (tokenLogin?.nativeAuthToken) {
+        const apiKeyResponse = await axios.get(
+          'https://o9rbpcvsw0.execute-api.eu-central-1.amazonaws.com/Prod/token',
+          {
+            headers: {
+              Authorization: tokenLogin.nativeAuthToken
+            }
           }
-        }
-      );
-      console.log('apiKeyResponse', apiKeyResponse);
-      setApiKey(apiKeyResponse?.data?.apiKey);
+        );
+        setApiKey(apiKeyResponse?.data?.apiKey);
+      }
+      setLoding(false);
     } catch (error) {
       console.log('error', error);
+      setLoding(false);
     }
   };
 
@@ -54,8 +42,16 @@ export default function Profile() {
       <div className='info-container'>
         <p className='label'>API Key</p>
         <p className='info-value'>{apiKey}</p>
-        <button className='bg-gray-300 p-2.5 rounded' onClick={getApiKey}>
-          Get Api Key
+        <button
+          disabled={loading}
+          className='bg-gray-300 p-2.5 rounded min-w-[100px]'
+          onClick={getApiKey}
+        >
+          {loading ? (
+            <FontAwesomeIcon icon={faSpinner} className='text-muted fa-spin-pulse' />
+          ) : (
+            'Get Api Key'
+          )}
         </button>
       </div>
     </div>
