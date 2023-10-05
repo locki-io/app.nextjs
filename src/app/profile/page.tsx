@@ -17,7 +17,7 @@ export default function Profile() {
       setLoding(true);
       if (tokenLogin?.nativeAuthToken) {
         const apiKeyResponse = await axios.get(
-          'https://o9rbpcvsw0.execute-api.eu-central-1.amazonaws.com/Prod/token',
+          'https://2rkm8gkhk7.execute-api.eu-central-1.amazonaws.com/Prod/apiKey',
           {
             headers: {
               Authorization: tokenLogin.nativeAuthToken
