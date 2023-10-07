@@ -39,14 +39,6 @@ export const Navbar = () => {
           {isLoggedIn && (
             <>
               <NavItem>
-                <Link href={routeNames.apiDoc} className='nav-link'>
-                  <FontAwesomeIcon
-                    icon={faBookReader}
-                    className='text-muted'
-                  />
-                </Link>
-              </NavItem>
-              <NavItem>
                 <Link href={routeNames.statistics} className='nav-link'>
                   <FontAwesomeIcon
                     icon={faChartSimple}
