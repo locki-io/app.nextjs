@@ -1,13 +1,16 @@
 'use client';
 
 import { useGetAccount, useGetLoginInfo } from '@multiversx/sdk-dapp/hooks';
+import { useState } from 'react';
 
 export default function Profile() {
   const { address } = useGetAccount();
   const { tokenLogin } = useGetLoginInfo();
+  const [copied, setCopied] = useState(false);
 
   const copyToClipBoard = async () => {
     navigator.clipboard.writeText(tokenLogin?.nativeAuthToken || '');
+    setCopied(true);
   };
 
   return (
@@ -18,13 +21,14 @@ export default function Profile() {
       </div>
       <div className='info-container'>
         <p className='label'>Native Auth Token</p>
-        <p className='info-value'>{tokenLogin?.nativeAuthToken || ''}</p>
+        <p className='info-value text-ellipsis overflow-hidden'>{tokenLogin?.nativeAuthToken || ''}</p>
         <button
           className='bg-gray-300 p-2.5 rounded min-w-[100px]'
           onClick={copyToClipBoard}
         >
           Copy to the ClipBoard
         </button>
+        {copied ? <p className='text-sm text-green-600'>Copied to ClipBoard</p> : <></>}
       </div>
     </div>
   );
