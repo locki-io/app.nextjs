@@ -4,10 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { DataNft } from '@itheum/sdk-mx-data-nft';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default function DataNftView() {
   const searchParams = useSearchParams();
   const [dataNftView, setDataNftView] = useState('');
+  const [dataNftLoading, setDataNftLoading] = useState(true);
   const [response, setResponse] = useState('');
   const [generating, setGenerating] = useState(false);
 
@@ -40,6 +43,7 @@ export default function DataNftView() {
         // const blobUrl = URL.createObjectURL(message.data);
         setDataNftView(resDataNft);
       }
+      setDataNftLoading(false);
     }
 
     fetchNftView();
@@ -57,22 +61,48 @@ export default function DataNftView() {
         headers: {
           'Content-type': 'application/json'
         },
-        data: JSON.stringify({dataStream: dataNftView}),
+        data: JSON.stringify({ dataStream: dataNftView }),
         responseType: 'stream'
       });
 
       const responseData = res.data;
       setResponse(responseData);
+      setGenerating(false);
     } catch (error) {
       console.log('error while generating description', error);
+      setGenerating(false);
     }
   };
 
   return (
     <div>
-      <pre className='max-h-[60vh] p-10 border-b border-gray-600'>{dataNftView}</pre>
-      <button className='my-1 mx-5 bg-blue-600 text-white p-2.5 rounded min-w-[150px]' onClick={generateDescription}>
-        Generate AI Description
+      <pre className='max-h-[60vh] p-10 border-b border-gray-600'>
+        {dataNftLoading ? (
+          <div className='text-center w-full'><FontAwesomeIcon
+          icon={faSpinner}
+          className='text-muted fa-spin-pulse text-4xl'
+        /></div>
+        ) : (
+          <div></div>
+        )}
+        {dataNftView}
+      </pre>
+      <button
+        disabled={dataNftLoading && generating}
+        className='my-1 mx-5 bg-blue-600 text-white p-2.5 rounded min-w-[150px]'
+        onClick={generateDescription}
+        style={{
+          opacity: dataNftLoading ? 0.4 : 1
+        }}
+      >
+        {generating ? (
+          <FontAwesomeIcon
+            icon={faSpinner}
+            className='text-muted fa-spin-pulse text-white'
+          />
+        ) : (
+          'Generate AI Description'
+        )}
       </button>
       <p className='p-10'>{response}</p>
     </div>
