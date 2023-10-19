@@ -103,7 +103,7 @@ export default function DataNftView() {
       )}
     </button>
   </div>
-  <div className='flex-1 bg-description bg-cover text-blue-200 p-10'>{response}</div>
+  <div className='flex-1 bg-description bg-cover text-blue-200 p-10' style={{ whiteSpace: 'pre-line' }}>{response}</div>
 </div>
 
   );
