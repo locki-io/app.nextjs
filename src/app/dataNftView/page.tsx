@@ -75,36 +75,35 @@ export default function DataNftView() {
   };
 
   return (
-    <div>
-      <pre className='max-h-[60vh] p-10 border-b border-gray-600'>
-        {dataNftLoading ? (
-          <div className='text-center w-full'><FontAwesomeIcon
-          icon={faSpinner}
-          className='text-muted fa-spin-pulse text-4xl'
-        /></div>
-        ) : (
-          <div></div>
-        )}
-        {dataNftView}
-      </pre>
-      <button
-        disabled={dataNftLoading && generating}
-        className='my-1 mx-5 bg-blue-600 text-white p-2.5 rounded min-w-[150px]'
-        onClick={generateDescription}
-        style={{
-          opacity: dataNftLoading ? 0.4 : 1
-        }}
-      >
-        {generating ? (
-          <FontAwesomeIcon
-            icon={faSpinner}
-            className='text-muted fa-spin-pulse text-white'
-          />
-        ) : (
-          'Generate AI Description'
-        )}
-      </button>
-      <p className='p-10'>{response}</p>
+    <div className='flex h-screen'>
+  <div className='flex-1 flex flex-col'>
+    <div className='flex-1 bg-code bg-cover text-gray-200 max-h-full p-10 border-b border-gray-600 relative overflow-y-auto' style={{ whiteSpace: 'pre-line' }}>
+      {dataNftLoading ? (
+        <div className='text-gray-200 text-center w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+          <FontAwesomeIcon icon={faSpinner} className='text-muted fa-spin-pulse text-4xl' />
+        </div>
+      ) : (
+        <div></div>
+      )}
+      {dataNftView}
     </div>
+    <button
+      disabled={dataNftLoading && generating}
+      className='absolute top-0 left-1/2 transform -translate-x-1/2 bg-blue-200 text-blue-600 p-2.5 rounded min-w-[150px] mt-5 mr-5'
+      onClick={generateDescription}
+      style={{
+        opacity: dataNftLoading ? 0.4 : 1
+      }}
+    >
+      {generating ? (
+        <FontAwesomeIcon icon={faSpinner} className='text-muted  fa-spin-pulse text-white' />
+      ) : (
+        'Generate AI Description'
+      )}
+    </button>
+  </div>
+  <div className='flex-1 bg-description bg-cover text-blue-200 p-10'>{response}</div>
+</div>
+
   );
 }
