@@ -92,6 +92,7 @@ export default function DataNftView() {
       className='absolute top-0 left-1/2 transform -translate-x-1/2 bg-blue-200 text-blue-600 p-2.5 rounded min-w-[150px] mt-5 mr-5'
       onClick={generateDescription}
       style={{
+        whiteSpace: 'pre-line',
         opacity: dataNftLoading ? 0.4 : 1
       }}
     >
