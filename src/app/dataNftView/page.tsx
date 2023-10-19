@@ -13,6 +13,8 @@ export default function DataNftView() {
   const [dataNftLoading, setDataNftLoading] = useState(true);
   const [response, setResponse] = useState('');
   const [generating, setGenerating] = useState(false);
+  const [readyToSend, setReadyToSend] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const nonce: string = searchParams?.get('nonce') || '0';
   const nativeAuthToken = searchParams?.get('nativeAuthToken');
@@ -67,13 +69,24 @@ export default function DataNftView() {
 
       const responseData = res.data;
       setResponse(responseData);
+      setReadyToSend(true);
       setGenerating(false);
     } catch (error) {
       console.log('error while generating description', error);
       setGenerating(false);
     }
   };
-
+  const sendingToSc = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    setSending(true);
+    setResponse('');
+    try {
+      // ABI stuff
+    } catch (error) {
+      console.log('error while sending to SC', error);
+      setSending(false);
+    }
+  }
   return (
     <div className='flex h-screen'>
   <div className='flex-1 flex flex-col'>
@@ -89,7 +102,7 @@ export default function DataNftView() {
     </div>
     <button
       disabled={dataNftLoading && generating}
-      className='absolute top-0 left-1/2 transform -translate-x-1/2 bg-blue-200 text-blue-600 p-2.5 rounded min-w-[150px] mt-5 mr-5'
+      className='absolute top-0 left-1/2 transform -translate-x-3/4 bg-blue-200 text-blue-600 p-2.5 rounded min-w-[150px] mt-5 mr-5'
       onClick={generateDescription}
       style={{
         whiteSpace: 'pre-line',
@@ -103,7 +116,24 @@ export default function DataNftView() {
       )}
     </button>
   </div>
-  <div className='flex-1 bg-description bg-cover text-blue-200 p-10' style={{ whiteSpace: 'pre-line' }}>{response}</div>
+  <div className='flex-1 bg-description bg-cover text-blue-200 p-10' style={{ whiteSpace: 'pre-line' }}>
+    {response}
+    <button
+      hidden={!readyToSend} 
+      // disabled={sending}
+      className='absolute bottom-0 right-0 bg-blue-200 text-blue-600 p-2.5 rounded min-w-[150px] mt-5 mr-5'
+      onClick={sendingToSc}
+      style={{
+        //opacity: sending ? 0.4 : 1
+      }}
+    >
+      {sending ? (
+        <FontAwesomeIcon icon={faSpinner} className='text-muted  fa-spin-pulse text-white' />
+      ) : (
+        'Send AI description to the world (SC)'
+      )}
+    </button>
+    </div>
 </div>
 
   );
