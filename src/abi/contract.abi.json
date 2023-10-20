@@ -1,0 +1,59 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.72.0-nightly",
+            "commitHash": "8c74a5d27c644a0f7a22bb2fa8dd3ff8257bc220",
+            "commitDate": "2023-06-14",
+            "channel": "Nightly",
+            "short": "rustc 1.72.0-nightly (8c74a5d27 2023-06-14)"
+        },
+        "contractCrate": {
+            "name": "contract",
+            "version": "0.0.0"
+        },
+        "framework": {
+            "name": "multiversx-sc",
+            "version": "0.41.3"
+        }
+    },
+    "name": "Contract",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "name": "storeCreatorDescription",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "nft_nonce",
+                    "type": "u8"
+                },
+                {
+                    "name": "description",
+                    "type": "bytes"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "you_mint_lucky_you",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "nft_nonce",
+                    "type": "u8"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "Option<bytes>"
+                }
+            ]
+        }
+    ],
+    "events": [],
+    "hasCallback": false,
+    "types": {}
+}

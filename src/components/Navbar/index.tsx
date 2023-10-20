@@ -3,7 +3,11 @@
 import React from 'react';
 import { useGetIsLoggedIn } from '@multiversx/sdk-dapp/hooks';
 import { logout } from '@multiversx/sdk-dapp/utils';
-import { faBookReader, faChartSimple, faUser } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBookReader,
+  faChartSimple,
+  faUser
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Navbar as BsNavbar, NavItem, Nav } from 'react-bootstrap';
 import { dAppName } from '@/config';
@@ -19,7 +23,7 @@ export const Navbar = () => {
   };
 
   return (
-    <BsNavbar className='bg-white border-bottom px-4 py-3'>
+    <BsNavbar className='bg-[#131314] border-b border-[#14154A] px-4 py-3'>
       <div className='container-fluid'>
         <Link
           className='d-flex align-items-center navbar-brand mr-0'
@@ -48,10 +52,7 @@ export const Navbar = () => {
               </NavItem>
               <NavItem>
                 <Link href={routeNames.profile} className='nav-link'>
-                  <FontAwesomeIcon
-                    icon={faUser}
-                    className='text-muted'
-                  />
+                  <FontAwesomeIcon icon={faUser} className='text-muted' />
                 </Link>
               </NavItem>
               <NavItem>

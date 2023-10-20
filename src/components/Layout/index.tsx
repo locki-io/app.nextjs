@@ -32,7 +32,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
           <>{children}</>
         </AuthenticatedRoutesWrapper>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </main>
   );
 };
