@@ -6,21 +6,23 @@ import { ProxyNetworkProvider } from '@multiversx/sdk-network-providers/out';
 import { WalletProvider, WALLET_PROVIDER_DEVNET } from "@multiversx/sdk-web-wallet-provider";
 
 export const useStoreCreatorsDescription = () => {
-  const [nonce, setNonce] = useState(0);
-  const [description, setDescription] = useState('');
-  const { address } = useGetAccount();
+  const { address, nonce } = useGetAccount();
   const { network } = useGetNetworkConfig();
 
   const callContractToStoreDescription = async (
     _nonce: number,
     _description: string
   ) => {
-    setNonce(_nonce);
-    setDescription(_description);
+
+
+
+    console.log({ 
+      address, _nonce,nonce
+    })
 
     const storageTransaction = smartContract.call({
       func: new ContractFunction('storeCreatorDescription'),
-      args: [new U8Value(nonce), new StringValue(description)],
+      args: [new U8Value(_nonce), new StringValue(_description)],
       caller: new Address(address),
       gasLimit: 5000000,
       chainID: "D",
