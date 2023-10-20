@@ -79,7 +79,6 @@ export default function DataNftView() {
   const sendingToSc = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     setSending(true);
-    setResponse('');
     try {
       // ABI stuff
     } catch (error) {
@@ -119,8 +118,8 @@ export default function DataNftView() {
   <div className='flex-1 bg-description bg-cover text-blue-200 p-10' style={{ whiteSpace: 'pre-line' }}>
     {response}
     <button
-      //hidden={} 
-      disabled={!readyToSend && sending}
+      hidden={!readyToSend} 
+      disabled={sending}
       className='absolute bottom-0 right-0 bg-blue-200 text-blue-600 p-2.5 rounded min-w-[150px] mt-5 mr-5' 
       onClick={sendingToSc}
       style={{
@@ -133,7 +132,7 @@ export default function DataNftView() {
         'Send AI description to the world (SC)'
       )}
     </button>
-    </div>
+  </div>
 </div>
 
   );
