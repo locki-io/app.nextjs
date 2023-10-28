@@ -10,7 +10,7 @@ export const AuthRedirectWrapper = ({ children }: PropsWithChildren) => {
   const router = useRouter();
 
   if (isLoggedIn) {
-    router.push(routeNames.dashboard);
+    router.push(routeNames.profile);
     return null;
   }
 

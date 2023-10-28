@@ -27,7 +27,7 @@ export const Navbar = () => {
       <div className='container-fluid'>
         <Link
           className='d-flex align-items-center navbar-brand mr-0'
-          href={isLoggedIn ? routeNames.dashboard : routeNames.home}
+          href={isLoggedIn ? routeNames.profile : routeNames.home}
         >
           <Image
             src='/assets/img/multiversx.svg'
@@ -42,14 +42,14 @@ export const Navbar = () => {
         <Nav className='ml-auto'>
           {isLoggedIn && (
             <>
-              <NavItem>
+              {/* <NavItem>
                 <Link href={routeNames.statistics} className='nav-link'>
                   <FontAwesomeIcon
                     icon={faChartSimple}
                     className='text-muted'
                   />
                 </Link>
-              </NavItem>
+              </NavItem> */}
               <NavItem>
                 <Link href={routeNames.profile} className='nav-link'>
                   <FontAwesomeIcon icon={faUser} className='text-muted' />

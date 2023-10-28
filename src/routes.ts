@@ -1,7 +1,7 @@
 import { RouteType } from "@multiversx/sdk-dapp/types";
 
 export const routeNames = {
-  home: "/",
+  home: "/profile",
   dashboard: "/dashboard",
   statistics: "/statistics",
   unlock: "/unlock",
@@ -26,7 +26,7 @@ export const routes: RouteWithTitleType[] = [
     path: routeNames.dashboard,
     title: "Index",
     component: null,
-    //authenticatedRoute: true,
+    authenticatedRoute: true,
   },
   {
     path: routeNames.statistics,
@@ -45,21 +45,7 @@ export const routes: RouteWithTitleType[] = [
     title: "api-doc",
     component: null,
   },
-  {
-    path: routeNames.hello,
-    title: "hello",
-    component: null,
-  },
-  {
-    path: routeNames.user,
-    title: "user",
-    component: null,
-  },
-  {
-    path: routeNames.getUsers,
-    title: "get all users",
-    component: null,
-  },
+
 ];
 
 export const mappedRoutes = routes.map((route) => {

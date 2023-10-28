@@ -12,7 +12,7 @@ import {
 
 export const UnlockContent = () => {
   const commonProps = {
-    callbackRoute: routeNames.dashboard,
+    callbackRoute: routeNames.profile,
     nativeAuth: {
       apiUrl: 'https://devnet-api.multiversx.com',
       expirySeconds: 60 * 60 * 24,
