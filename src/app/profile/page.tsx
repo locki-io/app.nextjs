@@ -50,12 +50,13 @@ export default function Profile() {
         
         {/* Embed a YouTube video */}
         <div className='mt-3'>
-          <iframe
-            width='560'
-            height='315'
-            src='https://www.youtube.com/watch?v=wy_onMYQn3Q'
-            title='Demo of our blender addon v0.0.2'
-            allowFullScreen
+          <iframe 
+            width="560" height="315" 
+            src="https://www.youtube.com/embed/wy_onMYQn3Q?si=YrOV5mrSOtPagLoW" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen
           ></iframe>
         </div>
       </div>
