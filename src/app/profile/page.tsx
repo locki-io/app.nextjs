@@ -54,9 +54,9 @@ export default function Profile() {
             width="560" height="315" 
             src="https://www.youtube.com/embed/wy_onMYQn3Q?si=YrOV5mrSOtPagLoW" 
             title="Locki Demo #1" 
-            frameborder="0" 
+            frameBorder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen
+            allowFullScreen
           ></iframe>
         </div>
       </div>
