@@ -200,13 +200,13 @@
   dependencies:
     multiformats "^9.5.4"
 
-"@itheum/sdk-mx-data-nft@^2.0.0-alpha.1":
-  version "2.0.0-alpha.1"
-  resolved "https://registry.npmjs.org/@itheum/sdk-mx-data-nft/-/sdk-mx-data-nft-2.0.0-alpha.1.tgz"
-  integrity sha512-eapJ1xeOFEKb2jZhexZmMKtVq3cunixpFgrzfmwgvAnCGKVrgdNaX8jun+hFSQJU6Kr3wzk0jgTXKPaVHUt9IA==
+"@itheum/sdk-mx-data-nft@^2.6.2":
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/@itheum/sdk-mx-data-nft/-/sdk-mx-data-nft-2.6.2.tgz#fab5c6427fdcdbad9ec7e8047780ba4e084046de"
+  integrity sha512-kgfD6IQZV01PmA5/eBjM1vRPsZHm8jEzQD1JwNy6GNygCxGpmkDsQNYOW7PpeiTdGLE4Bq4bbkUaS6/z1XkTuA==
   dependencies:
-    "@multiversx/sdk-core" "12.8.0"
-    "@multiversx/sdk-network-providers" "2.0.0"
+    "@multiversx/sdk-core" "12.18.0"
+    "@multiversx/sdk-network-providers" "2.2.1"
     bignumber.js "9.1.2"
     nft.storage "7.1.1"
 
@@ -348,6 +348,20 @@
   resolved "https://registry.npmjs.org/@multiversx/sdk-bls-wasm/-/sdk-bls-wasm-0.3.5.tgz"
   integrity sha512-c0tIdQUnbBLSt6NYU+OpeGPYdL0+GV547HeHT8Xc0BKQ7Cj0v82QUoA2QRtWrR1G4MNZmLsIacZSsf6DrIS2Bw==
 
+"@multiversx/sdk-core@12.18.0":
+  version "12.18.0"
+  resolved "https://registry.yarnpkg.com/@multiversx/sdk-core/-/sdk-core-12.18.0.tgz#ae99665f9afb2bd4f1e325cb7daabb1dbcc55ca6"
+  integrity sha512-F+xGslPMkkZ0S/Q8UJZsMYl0mgHIuK/GdVsNFPiMKxQsKkxA2LTjNdPxVxjwgvRmN7WfdsTtQvmlsA5O1NYhBg==
+  dependencies:
+    "@multiversx/sdk-transaction-decoder" "1.0.2"
+    bech32 "1.1.4"
+    bignumber.js "9.0.1"
+    blake2b "2.1.3"
+    buffer "6.0.3"
+    json-duplicate-key-handle "1.0.0"
+    keccak "3.0.2"
+    protobufjs "7.2.4"
+
 "@multiversx/sdk-core@12.4.2":
   version "12.4.2"
   resolved "https://registry.npmjs.org/@multiversx/sdk-core/-/sdk-core-12.4.2.tgz"
@@ -375,20 +389,6 @@
     json-duplicate-key-handle "1.0.0"
     keccak "3.0.2"
     protobufjs "6.11.3"
-
-"@multiversx/sdk-core@12.8.0":
-  version "12.8.0"
-  resolved "https://registry.npmjs.org/@multiversx/sdk-core/-/sdk-core-12.8.0.tgz"
-  integrity sha512-+XtnwQ/dUaXrpu/GCNud7r5AaQtNKRVqeKnjVUoKKHr14ohXbg9FW2Xx7IrJvehEMupjdx+6phR+nAXR60bIbQ==
-  dependencies:
-    "@multiversx/sdk-transaction-decoder" "1.0.2"
-    bech32 "1.1.4"
-    bignumber.js "9.0.1"
-    blake2b "2.1.3"
-    buffer "6.0.3"
-    json-duplicate-key-handle "1.0.0"
-    keccak "3.0.2"
-    protobufjs "7.2.4"
 
 "@multiversx/sdk-dapp@2.18.3":
   version "2.18.3"
@@ -478,12 +478,12 @@
     buffer "6.0.3"
     json-bigint "1.0.0"
 
-"@multiversx/sdk-network-providers@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@multiversx/sdk-network-providers/-/sdk-network-providers-2.0.0.tgz"
-  integrity sha512-87QlwC2kaNtywDv2IVX/cavRfR4D5N7XgqOvsZTyMXRVbfWOUlDocrRr5BdvmC1gDdSOQH++nFEDHiMfnKmRng==
+"@multiversx/sdk-network-providers@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@multiversx/sdk-network-providers/-/sdk-network-providers-2.2.1.tgz#6018c30a039182e221f945ab0492eb596d79064d"
+  integrity sha512-JsGznvyZSIBLpQ9bRjyv0EWfstaqDyFRBzokNZSbwk5z+3LjQFZxPTU3iv95BvW/rPQh8L0zD8Xwjw05pjTLyA==
   dependencies:
-    axios "0.24.0"
+    axios "1.6.5"
     bech32 "1.1.4"
     bignumber.js "9.0.1"
     buffer "6.0.3"
@@ -1952,6 +1952,15 @@ axios@0.24.0:
   dependencies:
     follow-redirects "^1.14.4"
 
+axios@1.6.5:
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.5.tgz#2c090da14aeeab3770ad30c3a1461bc970fb0cd8"
+  integrity sha512-Ii012v05KEVuUoFWmMW/UQv9aRIc3ZwkWDcM+h5Il8izZCtRVpDUfwpoFf7eOtajT3QiGR4yDUx7lPqHJULgbg==
+  dependencies:
+    follow-redirects "^1.15.4"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
 axios@^1.4.0:
   version "1.5.1"
   resolved "https://registry.npmjs.org/axios/-/axios-1.5.1.tgz"
@@ -3224,6 +3233,11 @@ follow-redirects@^1.14.4, follow-redirects@^1.15.0:
   version "1.15.2"
   resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.2.tgz"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
+
+follow-redirects@^1.15.4:
+  version "1.15.5"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.5.tgz#54d4d6d062c0fa7d9d17feb008461550e3ba8020"
+  integrity sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw==
 
 for-each@^0.3.3:
   version "0.3.3"

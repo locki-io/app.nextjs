@@ -12,7 +12,7 @@
     "@fortawesome/fontawesome-svg-core": "6.4.0",
     "@fortawesome/free-solid-svg-icons": "6.4.0",
     "@fortawesome/react-fontawesome": "0.2.0",
-    "@itheum/sdk-mx-data-nft": "^2.0.0-alpha.1",
+    "@itheum/sdk-mx-data-nft": "^2.6.2",
     "@multiversx/sdk-core": "12.4.3",
     "@multiversx/sdk-dapp": "2.18.3",
     "@multiversx/sdk-network-providers": "1.5.0",
