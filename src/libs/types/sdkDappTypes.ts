@@ -1,0 +1,1 @@
+export { EnvironmentsEnum } from '@multiversx/sdk-dapp/types/enums.types';
