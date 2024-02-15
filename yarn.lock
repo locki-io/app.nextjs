@@ -200,21 +200,9 @@
   dependencies:
     multiformats "^9.5.4"
 
-"@isaacs/cliui@^8.0.2":
-  version "8.0.2"
-  resolved "https://registry.npmjs.org/@isaacs/cliui/-/cliui-8.0.2.tgz"
-  integrity sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==
-  dependencies:
-    string-width "^5.1.2"
-    string-width-cjs "npm:string-width@^4.2.0"
-    strip-ansi "^7.0.1"
-    strip-ansi-cjs "npm:strip-ansi@^6.0.1"
-    wrap-ansi "^8.1.0"
-    wrap-ansi-cjs "npm:wrap-ansi@^7.0.0"
-
 "@itheum/sdk-mx-data-nft@^2.6.2":
   version "2.6.2"
-  resolved "https://registry.npmjs.org/@itheum/sdk-mx-data-nft/-/sdk-mx-data-nft-2.6.2.tgz"
+  resolved "https://registry.yarnpkg.com/@itheum/sdk-mx-data-nft/-/sdk-mx-data-nft-2.6.2.tgz#fab5c6427fdcdbad9ec7e8047780ba4e084046de"
   integrity sha512-kgfD6IQZV01PmA5/eBjM1vRPsZHm8jEzQD1JwNy6GNygCxGpmkDsQNYOW7PpeiTdGLE4Bq4bbkUaS6/z1XkTuA==
   dependencies:
     "@multiversx/sdk-core" "12.18.0"
@@ -367,7 +355,7 @@
 
 "@multiversx/sdk-core@12.18.0":
   version "12.18.0"
-  resolved "https://registry.npmjs.org/@multiversx/sdk-core/-/sdk-core-12.18.0.tgz"
+  resolved "https://registry.yarnpkg.com/@multiversx/sdk-core/-/sdk-core-12.18.0.tgz#ae99665f9afb2bd4f1e325cb7daabb1dbcc55ca6"
   integrity sha512-F+xGslPMkkZ0S/Q8UJZsMYl0mgHIuK/GdVsNFPiMKxQsKkxA2LTjNdPxVxjwgvRmN7WfdsTtQvmlsA5O1NYhBg==
   dependencies:
     "@multiversx/sdk-transaction-decoder" "1.0.2"
@@ -497,7 +485,7 @@
 
 "@multiversx/sdk-network-providers@2.2.1":
   version "2.2.1"
-  resolved "https://registry.npmjs.org/@multiversx/sdk-network-providers/-/sdk-network-providers-2.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/@multiversx/sdk-network-providers/-/sdk-network-providers-2.2.1.tgz#6018c30a039182e221f945ab0492eb596d79064d"
   integrity sha512-JsGznvyZSIBLpQ9bRjyv0EWfstaqDyFRBzokNZSbwk5z+3LjQFZxPTU3iv95BvW/rPQh8L0zD8Xwjw05pjTLyA==
   dependencies:
     axios "1.6.5"
@@ -1900,7 +1888,6 @@ ai@^2.2.15:
   version "2.2.34"
   resolved "https://registry.npmjs.org/ai/-/ai-2.2.34.tgz"
   integrity sha512-5U/Q9Kkc24vfgq+NpwgbXnS5wgk++ljx1sAyfOFdG2byOR57gkX8wK1gVwiz0CaoZzVj62IqdmnQBoSCAIsbCA==
-  dependencies:
     eventsource-parser "1.0.0"
     nanoid "3.3.6"
     solid-swr-store "0.10.7"
@@ -2128,7 +2115,7 @@ axios@0.24.0:
 
 axios@1.6.5:
   version "1.6.5"
-  resolved "https://registry.npmjs.org/axios/-/axios-1.6.5.tgz"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.5.tgz#2c090da14aeeab3770ad30c3a1461bc970fb0cd8"
   integrity sha512-Ii012v05KEVuUoFWmMW/UQv9aRIc3ZwkWDcM+h5Il8izZCtRVpDUfwpoFf7eOtajT3QiGR4yDUx7lPqHJULgbg==
   dependencies:
     follow-redirects "^1.15.4"
@@ -3443,9 +3430,14 @@ flatted@^3.1.0:
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.7.tgz"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
-follow-redirects@^1.14.4, follow-redirects@^1.15.0, follow-redirects@^1.15.4:
+follow-redirects@^1.14.4, follow-redirects@^1.15.0:
+  version "1.15.2"
+  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.2.tgz"
+  integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
+
+follow-redirects@^1.15.4:
   version "1.15.5"
-  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.5.tgz"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.5.tgz#54d4d6d062c0fa7d9d17feb008461550e3ba8020"
   integrity sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw==
 
 for-each@^0.3.3:
