@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { DataNft, ViewDataReturnType } from "@itheum/sdk-mx-data-nft";
 
 import { Loader } from "components";
@@ -11,22 +11,23 @@ import { useGetAccount, useGetLoginInfo, useGetPendingTransactions } from "hooks
 import { BlobDataType } from "libs/types";
 import { decodeNativeAuthToken, toastError } from "libs/utils";
 
-
 interface ExtendedViewDataReturnType extends ViewDataReturnType {
   blobDataType: BlobDataType;
 }
+
+export const DataNftsContext = createContext<DataNft[]>([]);
 
 const SUPPORTED_COLLECTIONS = ["DATANFTFT-e0b917", "I3TICKER-03e5c2", "COLNAMA-539838"]
 
 const DataNfts = () => {
   const { address } = useGetAccount();
   const { tokenLogin } = useGetLoginInfo();
-  const [dataNftCount, setDataNftCount] = useState<number>(0);
+  const [ dataNftCount, setDataNftCount ] = useState<number>(0);
   const { hasPendingTransactions } = useGetPendingTransactions();
-  const [isLoading, setIsLoading] = useState(true);
-  const [dataNfts, setDataNfts] = useState<DataNft[]>([]);
-  const [viewDataRes, setViewDataRes] = useState<ExtendedViewDataReturnType>();
-  const [isFetchingDataMarshal, setIsFetchingDataMarshal] = useState<boolean>(true);
+  const [ isLoading, setIsLoading ] = useState(true);
+  const [ dataNfts, setDataNfts ] = useState<DataNft[]>([]);
+  const [ viewDataRes, setViewDataRes ] = useState<ExtendedViewDataReturnType>();
+  const [ isFetchingDataMarshal, setIsFetchingDataMarshal ] = useState<boolean>(true);
   
 
   useEffect(() => {
@@ -41,9 +42,6 @@ const DataNfts = () => {
 
     const _dataNfts = [];
     const nfts = await DataNft.ownedByAddress(address, SUPPORTED_COLLECTIONS);
-    // load only one for test purpose :
-    // const [firstNft] = await DataNft.ownedByAddress(address, SUPPORTED_COLLECTIONS);
-    // const nfts = [firstNft];
 
     _dataNfts.push(...nfts);
     setDataNftCount(_dataNfts.length);
@@ -73,7 +71,6 @@ const DataNfts = () => {
         "authorization": `Bearer ${tokenLogin.nativeAuthToken}`,
       },
     };
-    //alert(`Bearer ${tokenLogin.nativeAuthToken}`);
     res = await dataNft.viewDataViaMVXNativeAuth(arg);
         
     let blobDataType = BlobDataType.TEXT;
@@ -98,14 +95,12 @@ const DataNfts = () => {
     setIsFetchingDataMarshal(false);
   }
   
-
   if (isLoading) {
-    
     return <Loader />;
   }
 
   return (
-    <>
+    <DataNftsContext.Provider value={dataNfts}>
       <HeaderComponent pageTitle={"Display Data NFT's"} hasImage={false} pageSubtitle={"Data NFTs Count:"} dataNftCount={dataNftCount}>
         {dataNfts.length > 0 ? (
           dataNfts.map((dataNft, index) => (
@@ -114,7 +109,6 @@ const DataNfts = () => {
               index={index}
               dataNft={dataNft}
               nonce={dataNft.nonce}
-              viewData={viewNormalData}
               isLoading={isLoading}
               owned={true}
               isWallet={true}
@@ -127,9 +121,12 @@ const DataNfts = () => {
             </div>
           </h4>
         )}
-      </HeaderComponent>
-         
-    </>
+      </HeaderComponent> 
+      
+ 
+    </DataNftsContext.Provider>
   );
 }
 export default DataNfts;
+
+export const useDataNfts = () => useContext(DataNftsContext);

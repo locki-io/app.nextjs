@@ -27,7 +27,7 @@ export const HeaderComponent: React.FC<HeaderProps> = (props: HeaderProps) => {
         <div>
           {pageSubtitle && dataNftCount ? (
             <h4 className="my-4 text-center text-2xl text-white">
-              {pageSubtitle}: {dataNftCount}
+              {pageSubtitle} {dataNftCount}
             </h4>
           ) : (
             <></>
