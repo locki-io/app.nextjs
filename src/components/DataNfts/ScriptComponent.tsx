@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDataNfts } from '@/app/context/store'; // Import the context hook
 import { DataNft, ViewDataReturnType } from "@itheum/sdk-mx-data-nft";
 import { useGetAccount, useGetLoginInfo, useGetPendingTransactions } from "hooks";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faCopy } from '@fortawesome/free-solid-svg-icons';
+import hljs from 'highlight.js/lib/core';
+import python from 'highlight.js/lib/languages/python';
+
+hljs.registerLanguage('python', python);
 
 type Props = {
   selectedNonces: number[];
@@ -15,8 +19,11 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
   const { tokenLogin } = useGetLoginInfo();
   const [dataNftView, setDataNftView] = useState('');
   const [dataNftLoading, setDataNftLoading] = useState(true);
+  const codeRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
+
+
     async function fetchNftView() {
       if (selectedNonces.length > 0)  {
         DataNft.setNetworkConfig('devnet');      
@@ -48,6 +55,17 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
     }
     fetchNftView();
   }, [selectedNonces, tokenLogin?.nativeAuthToken]);
+  
+  useEffect(() => {
+    if (codeRef.current) {
+      hljs.highlightElement(codeRef.current);
+    }
+  });
+
+  const copyCodeToClipboard = () => {
+    navigator.clipboard.writeText(dataNftView);
+  };
+
   // Render the content based on the selectedNonces array
   return (
     <ul>
@@ -67,9 +85,16 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
                   />
                 </div>
               ) : (
-                <div></div>
+                <div className="Code">
+                  <pre ref={codeRef}>
+                    <code className="language-python">{dataNftView}</code>
+                  </pre>
+
+                  <button onClick={copyCodeToClipboard} className="absolute top-0 right-0 m-2 text-gray-500 hover:text-gray-200">
+                    <FontAwesomeIcon icon={faCopy} />
+                  </button>
+                </div>
               )}
-              {dataNftView}
             </div>
           </li>
         )

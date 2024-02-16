@@ -3,7 +3,13 @@ module.exports = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [{
+    pattern: /hljs+/,
+  }],
   theme: {
+    hljs: {
+      theme: 'night-owl',
+    },
     extend: {
       backgroundImage: {
         'code': "url('/assets/img/code.png')",
@@ -12,5 +18,5 @@ module.exports = {
       }, 
     }, 
   }, 
-  plugins: []
+  plugins: [require('tailwind-highlightjs')]
 }
