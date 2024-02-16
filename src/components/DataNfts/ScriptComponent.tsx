@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDataNfts } from '@/app/datanfts/page'; // Import the context hook
+import { useDataNfts } from '@/app/context/store'; // Import the context hook
 import { DataNft, ViewDataReturnType } from "@itheum/sdk-mx-data-nft";
 import { useGetAccount, useGetLoginInfo, useGetPendingTransactions } from "hooks";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

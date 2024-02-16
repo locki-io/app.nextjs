@@ -9,7 +9,6 @@ import ScriptComponent from "@/components/DataNfts/ScriptComponent";
 import LoaderCanvas from "./LoaderCanvas";
 import { Canvas } from '@react-three/fiber';
 
-
 export function DataNftCard({
   index,
   dataNft,
@@ -34,7 +33,15 @@ export function DataNftCard({
   const [dataNfts, setDataNfts] = useState<DataNft[]>([]);
 
   const handleCardClick = () => {
-
+    // Update the selected state in the context
+    //   setDataNfts(prevDataNfts => {
+    //   return prevDataNfts.map((item, i) => {
+    //     if (i === index) {
+    //       return { ...item, selected: !item.selected } as SelectedDataNft;
+    //     }
+    //     return item;
+    //   });
+    // });
     if (selectedNonces.includes(nonce)) {
       setSelectedNonces((prevNonces) => prevNonces.filter((n) => n !== nonce));
     } else {
@@ -62,6 +69,7 @@ export function DataNftCard({
                 <LoaderCanvas glbFileLink={dataNft.dataPreview}/>
               </Canvas>
             </div>
+
             <CardDescription className="grid grid-cols-8 mb-1">
               <span className="col-span-4 opacity-6 base:text-sm md:text-base">Description:</span>
             <span className="col-span-8 text-left base:text-sm md:text-base">{dataNft.description}</span>

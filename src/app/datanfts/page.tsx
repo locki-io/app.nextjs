@@ -11,11 +11,11 @@ import { useGetAccount, useGetLoginInfo, useGetPendingTransactions } from "hooks
 import { BlobDataType } from "libs/types";
 import { decodeNativeAuthToken, toastError } from "libs/utils";
 
+import { DataNftsContext } from "../context/store";
+
 interface ExtendedViewDataReturnType extends ViewDataReturnType {
   blobDataType: BlobDataType;
 }
-
-export const DataNftsContext = createContext<DataNft[]>([]);
 
 const SUPPORTED_COLLECTIONS = ["DATANFTFT-e0b917", "I3TICKER-03e5c2", "COLNAMA-539838"]
 
@@ -29,7 +29,6 @@ const DataNfts = () => {
   const [ viewDataRes, setViewDataRes ] = useState<ExtendedViewDataReturnType>();
   const [ isFetchingDataMarshal, setIsFetchingDataMarshal ] = useState<boolean>(true);
   
-
   useEffect(() => {
     if (!hasPendingTransactions) {
       fetchData();
@@ -129,4 +128,4 @@ const DataNfts = () => {
 }
 export default DataNfts;
 
-export const useDataNfts = () => useContext(DataNftsContext);
+
