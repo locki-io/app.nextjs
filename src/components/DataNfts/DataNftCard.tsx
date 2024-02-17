@@ -89,7 +89,7 @@ export function DataNftCard({
             ) : (
               <div>
                 <h6 className="base:!text-sm md:!text-base" style={{ visibility: owned ? "visible" : "hidden" }}>
-                  You don't have this Data NFT
+                You don&apos;t have this Data NFT
                 </h6>
               </div>
             )}

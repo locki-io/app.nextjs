@@ -48,51 +48,6 @@ const DataNfts = () => {
 
     setIsLoading(false);
   }
-  async function viewNormalData(index: number) {
-    if (!(index >= 0 && index < dataNfts.length)) {
-      toastError("Data is not loaded");
-      return;
-    }
-    // code for retrieving data
-    setIsFetchingDataMarshal(true);
-    setViewDataRes(undefined);
-
-    const dataNft = dataNfts[index];
-    let res: any;
-    if (!(tokenLogin && tokenLogin.nativeAuthToken)) {
-      throw Error("No nativeAuth token");
-    }
-
-    const arg = {
-      mvxNativeAuthOrigins: [decodeNativeAuthToken(tokenLogin.nativeAuthToken).origin],
-      mvxNativeAuthMaxExpirySeconds: 36000,
-      fwdHeaderMapLookup: {
-        "authorization": `Bearer ${tokenLogin.nativeAuthToken}`,
-      },
-    };
-    res = await dataNft.viewDataViaMVXNativeAuth(arg);
-        
-    let blobDataType = BlobDataType.TEXT;
-    
-    // res.data = await (res.data as Blob).text();
-
-    // the res.error in threejs prevents this from loading
-    if (!res.error) {
-      // in our case is is going to be text
-      res.data = await (res.data as Blob).text();
-    } else {
-      //alert(`res.error`);
-      console.error(res.error);
-      toastError(res.error);
-    }
-    const viewDataPayload: ExtendedViewDataReturnType = {
-      ...res,
-      blobDataType,
-    };
-    
-    setViewDataRes(viewDataPayload);
-    setIsFetchingDataMarshal(false);
-  }
   
   if (isLoading) {
     return <Loader />;

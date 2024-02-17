@@ -1,7 +1,7 @@
 import React, { Suspense, useRef, useEffect  } from 'react';
 import { Canvas, useLoader, useFrame } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { AnimationMixer } from 'three';
+import { AnimationMixer, Group } from 'three';
 
 interface GltfCanvasProps {
     glbFileLink: string;
@@ -9,7 +9,7 @@ interface GltfCanvasProps {
   
   const GltfCanvas: React.FC<GltfCanvasProps> = ({ glbFileLink }) => {
     const gltf = useLoader(GLTFLoader, glbFileLink)    
-    const meshRef= useRef(null)
+    const meshRef = useRef<Group | null>(null);
 
     useFrame(() => {
       if (!meshRef.current) {
