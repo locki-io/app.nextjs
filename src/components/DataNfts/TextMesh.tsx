@@ -1,14 +1,10 @@
 'use Client';
-import React, { useRef, useEffect } from 'react';
-import { extend, Object3DNode, MeshProps } from '@react-three/fiber';
-import  Roboto from './Roboto.json';
-import { MeshBasicMaterial, Group } from 'three';
-import { RefObject } from 'react';
+import React, { useRef, useEffect, RefObject } from 'react';
+import { extend, Object3DNode } from '@react-three/fiber';
+import  Roboto from '@/styles/Roboto.json'
+import { Mesh, MeshBasicMaterial, Group } from 'three';
 import { FontLoader, } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three-stdlib';
-
-
-import { Mesh } from 'three';
 
 extend({ TextGeometry });
 
