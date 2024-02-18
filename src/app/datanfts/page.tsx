@@ -2,16 +2,19 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { DataNft, ViewDataReturnType } from "@itheum/sdk-mx-data-nft";
+import { ExtendedDataNft } from "../context/store";
 
 import { Loader } from "components";
 import { HeaderComponent} from "../../components/Layout/HeaderComponent";
 import { DataNftCard } from "@/components/DataNfts";
+import SelectedDataPreview from "@/components/DataNfts/SelectedDataPreview";
 
 import { useGetAccount, useGetLoginInfo, useGetPendingTransactions } from "hooks";
 import { BlobDataType } from "libs/types";
 import { decodeNativeAuthToken, toastError } from "libs/utils";
 
 import { DataNftsContext } from "../context/store";
+
 
 interface ExtendedViewDataReturnType extends ViewDataReturnType {
   blobDataType: BlobDataType;
@@ -25,7 +28,7 @@ const DataNfts = () => {
   const [ dataNftCount, setDataNftCount ] = useState<number>(0);
   const { hasPendingTransactions } = useGetPendingTransactions();
   const [ isLoading, setIsLoading ] = useState(true);
-  const [ dataNfts, setDataNfts ] = useState<DataNft[]>([]);
+  const [ dataNfts, setDataNfts ] = useState<ExtendedDataNft[]>([]);
   const [ viewDataRes, setViewDataRes ] = useState<ExtendedViewDataReturnType>();
   const [ isFetchingDataMarshal, setIsFetchingDataMarshal ] = useState<boolean>(true);
   
@@ -42,7 +45,12 @@ const DataNfts = () => {
     const _dataNfts = [];
     const nfts = await DataNft.ownedByAddress(address, SUPPORTED_COLLECTIONS);
 
-    _dataNfts.push(...nfts);
+    _dataNfts.push(
+      ...nfts.map((nft: any) => ({
+          ...nft,
+          dataNftSelected: false, // Set dataNftSelected to false initially
+      }))
+  );
     setDataNftCount(_dataNfts.length);
     setDataNfts(_dataNfts);
 
@@ -52,9 +60,19 @@ const DataNfts = () => {
   if (isLoading) {
     return <Loader />;
   }
-
+  const updateDataNftSelected = (nonce: number, selected: boolean) => {
+    setDataNfts((prevDataNfts: ExtendedDataNft[]) => {
+      return prevDataNfts.map(item => {
+        if (item.nonce === nonce) {
+          return { ...item, dataNftSelected: selected };
+        }
+        return item;
+      }) as ExtendedDataNft[];
+    });
+  };
   return (
     <DataNftsContext.Provider value={dataNfts}>
+      <SelectedDataPreview />
       <HeaderComponent pageTitle={"Display Data NFT's"} hasImage={false} pageSubtitle={"Data NFTs Count:"} dataNftCount={dataNftCount}>
         {dataNfts.length > 0 ? (
           dataNfts.map((dataNft, index) => (
@@ -66,6 +84,7 @@ const DataNfts = () => {
               isLoading={isLoading}
               owned={true}
               isWallet={true}
+              updateDataNftSelected={updateDataNftSelected}
               /> /*end of datanft card*/
           ))
         ) : (
