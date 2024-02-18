@@ -2,7 +2,6 @@ import { RouteType } from "@multiversx/sdk-dapp/types";
 
 export const routeNames = {
   home: "/profile",
-  dashboard: "/dashboard",
   statistics: "/statistics",
   unlock: "/unlock",
   profile: "/profile",
@@ -11,6 +10,7 @@ export const routeNames = {
   hello: "/api/hello/route",
   user: "/api/user",
   getUsers: "/api/getusers",
+  tradedata: "/tradedata",
 };
 
 interface RouteWithTitleType extends RouteType {
@@ -22,12 +22,6 @@ export const routes: RouteWithTitleType[] = [
     path: routeNames.home,
     title: "Home",
     component: null,
-  },
-  {
-    path: routeNames.dashboard,
-    title: "Index",
-    component: null,
-    authenticatedRoute: true,
   },
   {
     path: routeNames.statistics,
@@ -50,6 +44,11 @@ export const routes: RouteWithTitleType[] = [
   {
     path: routeNames.apiDoc,
     title: "api-doc",
+    component: null,
+  },
+  {
+    path: routeNames.tradedata,
+    title: "Locki Data Dex",
     component: null,
   },
 
