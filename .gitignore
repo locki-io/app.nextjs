@@ -42,3 +42,4 @@ yalc.lock
 
 .yarnrc.yml
 .yarn
+src/app/datanfts/mywallet.tsx 

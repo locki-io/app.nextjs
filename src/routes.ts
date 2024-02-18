@@ -6,6 +6,7 @@ export const routeNames = {
   statistics: "/statistics",
   unlock: "/unlock",
   profile: "/profile",
+  datanfts: "/datanfts",
   apiDoc: "/api-doc",
   hello: "/api/hello/route",
   user: "/api/user",
@@ -37,6 +38,12 @@ export const routes: RouteWithTitleType[] = [
   {
     path: routeNames.profile,
     title: 'User Profile',
+    component: null,
+    authenticatedRoute: true,
+  },
+  {
+    path: routeNames.datanfts,
+    title: 'My Data Nfts',
     component: null,
     authenticatedRoute: true,
   },
