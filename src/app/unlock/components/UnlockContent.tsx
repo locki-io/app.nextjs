@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { walletConnectV2ProjectId } from '@/config';
 import { routeNames } from '@/routes';
 import {
   ExtensionLoginButton,

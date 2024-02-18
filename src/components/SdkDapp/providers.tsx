@@ -13,12 +13,13 @@ import {
   SignTransactionsModals,
   TransactionsToastList
 } from '@/components';
+import { routeNames } from '@/routes';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AxiosInterceptorContext.Provider>
       <AxiosInterceptorContext.Interceptor
-        authenticatedDomanis={sampleAuthenticatedDomains}
+        authenticatedDomains={sampleAuthenticatedDomains}
       >
         <DappProvider
           environment={EnvironmentsEnum.devnet}
@@ -27,11 +28,28 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             apiTimeout,
             walletConnectV2ProjectId
           }}
+          dappConfig={{
+            isSSR: true,
+            shouldUseWebViewProvider: true,
+            logoutRoute: routeNames.unlock
+          }}
+          customComponents={{
+            transactionTracker: {
+              props: {
+                onSuccess: (sessionId: string) => {
+                  console.log(`Session ${sessionId} successfully completed`);
+                },
+                onFail: (sessionId: string, errorMessage: string) => {
+                  console.log(`Session ${sessionId} failed. ${errorMessage ?? ''}`);
+                }
+              }
+            }
+          }}
         >
           <AxiosInterceptorContext.Listener />
           <TransactionsToastList />
           <NotificationModal />
-          <SignTransactionsModals className='custom-class-for-modals' />
+          <SignTransactionsModals />
           <>{children}</>
         </DappProvider>
       </AxiosInterceptorContext.Interceptor>
