@@ -17,13 +17,12 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
   // Access the dataNfts array from the context
   const dataNfts = useDataNfts();
   const { tokenLogin } = useGetLoginInfo();
-  const [dataNftView, setDataNftView] = useState('');
+  const [dataNftScript, setDataNftScript] = useState('');
   const [dataNftLoading, setDataNftLoading] = useState(true);
   const codeRef = useRef<HTMLPreElement>(null);
+  const [highlighted, setHighlighted] = useState(false);
 
   useEffect(() => {
-
-
     async function fetchNftView() {
       if (selectedNonces.length > 0)  {
         DataNft.setNetworkConfig('devnet');      
@@ -48,7 +47,7 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
           const resDataNft = await (res.data as Blob).text();
 
           // const blobUrl = URL.createObjectURL(message.data);
-          setDataNftView(resDataNft);
+          setDataNftScript(resDataNft);
         }
         setDataNftLoading(false);
       }
@@ -57,13 +56,14 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
   }, [selectedNonces, tokenLogin?.nativeAuthToken]);
   
   useEffect(() => {
-    if (codeRef.current) {
+    if (codeRef.current && !highlighted) {
       hljs.highlightElement(codeRef.current);
-    }
-  });
+      setHighlighted(true);
+    } 
+  }, [dataNftScript, highlighted]);
 
   const copyCodeToClipboard = () => {
-    navigator.clipboard.writeText(dataNftView);
+    navigator.clipboard.writeText(dataNftScript);
   };
 
   // Render the content based on the selectedNonces array
@@ -87,7 +87,7 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
               ) : (
                 <div className="Code">
                   <pre ref={codeRef}>
-                    <code className="language-python">{dataNftView}</code>
+                    <code className="language-python">{dataNftScript}</code>
                   </pre>
 
                   <button onClick={copyCodeToClipboard} className="absolute top-0 right-0 m-2 text-gray-500 hover:text-gray-200">

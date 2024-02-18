@@ -1,32 +1,52 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
-import { Canvas, useLoader, useFrame } from '@react-three/fiber';
-import { GroupProps, MeshProps } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import { GroupProps } from '@react-three/fiber';
+import { Group, Box3 } from 'three';
+import { RefObject } from 'react';
+import TextMesh from './TextMesh';
 
 interface ModelProps extends GroupProps {
+  index: number;
+  dataNftRef: string;
   glbFileLink: string;
-  onClick?: () => void;
+  handleSelectionChange: () => void;   
 }
 
-export default function Model({ glbFileLink, ...props }: ModelProps) {
+export default function Model({ index, dataNftRef, glbFileLink, handleSelectionChange, ...props }: ModelProps) {
   const meshRef = useRef<THREE.Group>();
   const { scene , animations } = useGLTF(glbFileLink);
   const { actions, mixer } = useAnimations(animations, meshRef);
+  const [objectHeight, setObjectHeight] = useState<number | null>(null);
+
+  const handleClick = () => {
+    // Call the handleSelectionChange function when the model is clicked
+    handleSelectionChange();
+  };
+
   useFrame(() => {
     if (!meshRef.current) {
       return;
     }
-    meshRef.current.rotation.z += 0.01
+    meshRef.current.rotation.y += 0.01
   })
-  // useEffect(() => {
-  //   actions.actionName.play()
-  // }, [])
+
+
+  useEffect(() => {
+    if (meshRef.current) {
+      const box = new Box3().setFromObject(meshRef.current);
+      const height = box.max.y - box.min.y ;
+      setObjectHeight(height);
+    }
+  }, [scene]);
+
   return (
-    <>
-      <primitive object={scene} ref={meshRef}/>
-    </>
+    <group {...props} onClick={handleClick}>
+      <primitive ref={meshRef as RefObject<Group>} object={scene} />
+      {objectHeight !== null && <TextMesh index={index} text={dataNftRef} objectHeight={objectHeight}/>}
+    </group>
   );
 }
 

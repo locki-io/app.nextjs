@@ -1,14 +1,10 @@
 import React, { createContext, useContext } from "react";
 import { DataNft } from "@itheum/sdk-mx-data-nft";
 
-export const DataNftsContext = createContext<DataNft[]>([]);
-
-export const useDataNfts = () => useContext(DataNftsContext);
-
-interface SelectedDataNft extends DataNft {
-  selected: boolean;
+export interface ExtendedDataNft extends DataNft {
+  dataNftSelected: boolean;
 }
 
-export const SelectedDataNftsContext = createContext<SelectedDataNft[]>([]);
+export const DataNftsContext = createContext<ExtendedDataNft[]>([]);
 
-export const useSelectedDataNfts = () => useContext(SelectedDataNftsContext);
+export const useDataNfts = () => useContext(DataNftsContext);

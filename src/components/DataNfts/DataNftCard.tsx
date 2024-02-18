@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState } from "react";
 import { DataNft } from "@itheum/sdk-mx-data-nft/out";
+import { ExtendedDataNft } from "@/app/context/store";
 import { useGetNetworkConfig } from "@multiversx/sdk-dapp/hooks/useGetNetworkConfig";
 import { Card, CardTitle, CardContent, CardDescription, CardFooter } from "./Card";
 import ScriptComponent from "@/components/DataNfts/ScriptComponent";
@@ -16,13 +17,15 @@ export function DataNftCard({
   nonce,
   owned,
   isWallet,
+  updateDataNftSelected,
 }: {
   index: number;
-  dataNft: DataNft;
+  dataNft: ExtendedDataNft;
   isLoading: boolean;
   nonce: number;  
   owned: boolean;
   isWallet: boolean;
+  updateDataNftSelected: (nonce: number, selected: boolean) => void;
 }) {
   
   const {
@@ -30,22 +33,15 @@ export function DataNftCard({
   } = useGetNetworkConfig();
 
   const [selectedNonces, setSelectedNonces] = useState<number[]>([]);
-  const [dataNfts, setDataNfts] = useState<DataNft[]>([]);
+  const [dataNfts, setDataNfts] = useState<ExtendedDataNft[]>([]);
 
   const handleCardClick = () => {
-    // Update the selected state in the context
-    //   setDataNfts(prevDataNfts => {
-    //   return prevDataNfts.map((item, i) => {
-    //     if (i === index) {
-    //       return { ...item, selected: !item.selected } as SelectedDataNft;
-    //     }
-    //     return item;
-    //   });
-    // });
     if (selectedNonces.includes(nonce)) {
       setSelectedNonces((prevNonces) => prevNonces.filter((n) => n !== nonce));
+      updateDataNftSelected(nonce, false);
     } else {
       setSelectedNonces((prevNonces) => [...prevNonces, nonce]);
+      updateDataNftSelected(nonce, true);
     }
   };
 
@@ -60,15 +56,15 @@ export function DataNftCard({
       <Card className="flex-1 p-1 border-[0.5px] dark:border-slate-100/30 border-slate-300 bg-black rounded-[2.37rem] base:w-[18.5rem] md:w-[23.6rem]">
         <CardContent className="flex flex-col p-3">
           <CardTitle className="grid grid-cols-8 mb-1">
-            <span className="col-span-8 text-center base:text-sm md:text-base">Title : {dataNft.title}</span>
+            <span className="col-span-8 text-center base:text-sm md:text-base">Title : {dataNft.title} {dataNft.dataNftSelected ? "selected" : "unselected"}</span>
           </CardTitle>
-            <div >
+            {/* <div >
               <Canvas camera={{ position: [1, 1, 10] }}>
                 <ambientLight intensity={0.3} />
                 <directionalLight color="white" position={[0, 0, 5]} />
                 <LoaderCanvas glbFileLink={dataNft.dataPreview}/>
               </Canvas>
-            </div>
+            </div> */}
 
             <CardDescription className="grid grid-cols-8 mb-1">
               <span className="col-span-4 opacity-6 base:text-sm md:text-base">Description:</span>
