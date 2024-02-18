@@ -1,5 +1,5 @@
 'use client';
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { DataNftsContext } from "@/app/context/store";
 import {  Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei'
@@ -35,7 +35,7 @@ const SelectedDataPreview = () => {
           <pointLight position={[10, 10, 10]} />
           {
           selectedDataNfts.map((dataNft, index) => (
-            <>              
+            <Fragment key={index}>              
               <Model
                 index={index}  
                 key={`${selectionKey}-${index}`}
@@ -44,7 +44,7 @@ const SelectedDataPreview = () => {
                 position={positions[index]}
                 handleSelectionChange={handleSelectionChange} 
                 />
-            </>
+            </Fragment>
           ))
           }
           <OrbitControls />
