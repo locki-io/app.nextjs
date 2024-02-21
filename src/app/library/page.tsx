@@ -91,7 +91,6 @@ const DataNfts = () => {
           )}
         </HeaderComponent> 
       )}    
- 
     </DataNftsContext.Provider>
   );
 }

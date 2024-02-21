@@ -18,5 +18,5 @@ module.exports = {
       }, 
     }, 
   }, 
-  plugins: [require('tailwind-highlightjs')]
+  plugins: []
 }
