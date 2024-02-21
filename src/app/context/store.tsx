@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from "react";
-import { DataNft } from "@itheum/sdk-mx-data-nft";
+import { createContext, useContext } from "react";
+import { DataNft } from "@itheum/sdk-mx-data-nft/out";
 
 export interface ExtendedDataNft extends DataNft {
   dataNftSelected: boolean;

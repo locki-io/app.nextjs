@@ -1,19 +1,15 @@
 'use client';
 
-import React, { createContext, useContext, useState } from "react";
-import { DataNft } from "@itheum/sdk-mx-data-nft/out";
+import React, { useState } from "react";
+
 import { ExtendedDataNft } from "@/app/context/store";
-import { useGetNetworkConfig } from "@multiversx/sdk-dapp/hooks/useGetNetworkConfig";
 import { Card, CardTitle, CardContent, CardDescription, CardFooter } from "./Card";
 import ScriptComponent from "@/components/DataNfts/ScriptComponent";
 
-import LoaderCanvas from "./LoaderCanvas";
-import { Canvas } from '@react-three/fiber';
 
 export function DataNftCard({
   index,
   dataNft,
-  isLoading,
   nonce,
   owned,
   isWallet,
@@ -21,19 +17,13 @@ export function DataNftCard({
 }: {
   index: number;
   dataNft: ExtendedDataNft;
-  isLoading: boolean;
   nonce: number;  
   owned: boolean;
   isWallet: boolean;
   updateDataNftSelected: (nonce: number, selected: boolean) => void;
 }) {
-  
-  const {
-    network: { explorerAddress },
-  } = useGetNetworkConfig();
 
   const [selectedNonces, setSelectedNonces] = useState<number[]>([]);
-  const [dataNfts, setDataNfts] = useState<ExtendedDataNft[]>([]);
 
   const handleCardClick = () => {
     if (selectedNonces.includes(nonce)) {
@@ -47,7 +37,7 @@ export function DataNftCard({
 
   return (
   <>
-    <div
+    <div id={index.toString()}
       className={`mb-3 flex text-white ${
         selectedNonces.includes(nonce) ? "border-4 border-green-500" : ""
       }`}

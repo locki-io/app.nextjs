@@ -1,7 +1,7 @@
-import React, { Suspense, useRef, useEffect  } from 'react';
+import React, { useRef } from 'react';
 import { Canvas, useLoader, useFrame } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { AnimationMixer, Group } from 'three';
+import {  Group } from 'three';
 
 interface GltfCanvasProps {
     glbFileLink: string;

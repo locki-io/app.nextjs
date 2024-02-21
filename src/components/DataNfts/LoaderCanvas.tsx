@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { useGLTF, useAnimations } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { GroupProps } from '@react-three/fiber';
 import { Group, Box3 } from 'three';
@@ -15,10 +15,10 @@ interface ModelProps extends GroupProps {
   handleSelectionChange: () => void;   
 }
 
-export default function Model({ index, dataNftRef, glbFileLink, handleSelectionChange, ...props }: ModelProps) {
+export default function Model({ dataNftRef, glbFileLink, handleSelectionChange, ...props }: ModelProps) {
   const meshRef = useRef<THREE.Group>();
-  const { scene , animations } = useGLTF(glbFileLink);
-  const { actions, mixer } = useAnimations(animations, meshRef);
+  const { scene } = useGLTF(glbFileLink);
+  // const { actions, mixer } = useAnimations(animations, meshRef);
   const [objectHeight, setObjectHeight] = useState<number | null>(null);
 
   const handleClick = () => {
@@ -45,7 +45,7 @@ export default function Model({ index, dataNftRef, glbFileLink, handleSelectionC
   return (
     <group {...props} onClick={handleClick}>
       <primitive ref={meshRef as RefObject<Group>} object={scene} />
-      {objectHeight !== null && <TextMesh index={index} text={dataNftRef} objectHeight={objectHeight}/>}
+      {objectHeight !== null && <TextMesh text={dataNftRef} objectHeight={objectHeight}/>}
     </group>
   );
 }

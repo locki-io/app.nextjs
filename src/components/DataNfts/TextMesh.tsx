@@ -14,7 +14,7 @@ declare module "@react-three/fiber" {
   }
 }
 
-const TextMesh: React.FC<{ text: string; index: number; objectHeight: number }> = ({ text, index, objectHeight }) => {
+const TextMesh: React.FC<{ text: string; objectHeight: number }> = ({ text,  objectHeight }) => {
   const textRef = useRef<Mesh | Group>(); 
   const textGeometryRef = useRef<TextGeometry>(null);
 
