@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDataNfts } from '@/app/context/store'; // Import the context hook
-import { DataNft, ViewDataReturnType } from "@itheum/sdk-mx-data-nft";
-import { useGetAccount, useGetLoginInfo, useGetPendingTransactions } from "hooks";
+import { DataNft } from "@itheum/sdk-mx-data-nft";
+import { useGetLoginInfo } from "hooks";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCopy } from '@fortawesome/free-solid-svg-icons';
 import hljs from 'highlight.js/lib/core';

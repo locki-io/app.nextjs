@@ -6,8 +6,6 @@ import { OrbitControls } from '@react-three/drei'
 import Model from "./LoaderCanvas";
 import { Vector3 } from "three";
 
-import tunnel from 'tunnel-rat';
-
 const SelectedDataPreview = () => {
   const [selectionKey, setSelectionKey] = useState(0); 
   const dataNfts = useContext(DataNftsContext);
@@ -17,8 +15,6 @@ const SelectedDataPreview = () => {
     dataNft => dataNft.dataNftSelected
     );
   
-  const ui = tunnel();
-
   const handleSelectionChange = () => {
     // Update the selection key to trigger remount
     setSelectionKey(prevKey => prevKey + 1);

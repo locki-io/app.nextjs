@@ -58,8 +58,6 @@ export default function DataNftView() {
     setGenerating(true);
     setResponse('');
     try {
-      const hello = await axios('/api/hello');
-      console.log('hello', hello);
       const res = await axios('/api/generate', {
         method: 'POST',
         headers: {

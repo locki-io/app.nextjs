@@ -4,7 +4,6 @@ import React from 'react';
 import { useGetIsLoggedIn } from '@multiversx/sdk-dapp/hooks';
 import { logout } from '@multiversx/sdk-dapp/utils';
 import {
-  faBookReader,
   faNewspaper,
   faUser
 } from '@fortawesome/free-solid-svg-icons';
@@ -51,7 +50,7 @@ export const Navbar = () => {
                 </Link>
               </NavItem> */}
               <NavItem>
-                <Link href={routeNames.datanfts} className='nav-link'>
+                <Link href={routeNames.library} className='nav-link'>
                   <FontAwesomeIcon icon={faNewspaper} className='text-muted' />
                 </Link>
               </NavItem>
