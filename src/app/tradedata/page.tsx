@@ -51,6 +51,22 @@ export default function Tradedata() {
                 className='text-muted  fa-spin-pulse text-white'
               />
             ) : (
+              'Generate 3D Preview'
+            )}
+          </button>
+          <button
+            className='bg-blue-200 text-blue-600 p-2.5 rounded min-w-[150px] mt-5 mr-5'
+            onClick={handleMintBtnClick}
+            style={{
+              whiteSpace: 'pre-line'
+            }}
+          >
+            {isMinting ? (
+              <FontAwesomeIcon
+                icon={faSpinner}
+                className='text-muted  fa-spin-pulse text-white'
+              />
+            ) : (
               'Mint the code as Data Nft'
             )}
           </button>

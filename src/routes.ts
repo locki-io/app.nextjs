@@ -51,7 +51,6 @@ export const routes: RouteWithTitleType[] = [
     title: "Locki Data Dex",
     component: null,
   },
-
 ];
 
 export const mappedRoutes = routes.map((route) => {
