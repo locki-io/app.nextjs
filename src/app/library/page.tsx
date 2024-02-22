@@ -75,6 +75,7 @@ const DataNfts = () => {
               <DataNftCard
                 key={index}
                 index={index}
+                isLoading={isLoading}
                 dataNft={dataNft}
                 nonce={dataNft.nonce}
                 owned={true}
