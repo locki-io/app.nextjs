@@ -6,7 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import { Navbar } from '../Navbar';
 import Footer from '../Footer';
 import { Sidebar } from 'flowbite-react';
-import { HiShoppingBag, HiLockClosed, HiUser } from 'react-icons/hi';
 import type { CustomFlowbiteTheme } from 'flowbite-react';
 import { Flowbite } from 'flowbite-react';
 import { useGetLoginInfo } from '@multiversx/sdk-dapp/hooks/account';
@@ -28,27 +27,6 @@ const customTheme: CustomFlowbiteTheme = {
     }
   }
 };
-
-const sidebarRoutes = [
-  {
-    title: 'Products',
-    icon: HiShoppingBag,
-    path: '/products',
-    isLoggedIn: true
-  },
-  {
-    title: 'Unlock',
-    icon: HiLockClosed,
-    path: '/unlock',
-    isLoggedIn: false
-  },
-  {
-    title: 'Profile',
-    icon: HiUser,
-    path: '/profile',
-    isLoggedIn: true
-  }
-];
 
 export const LayoutFallback = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -81,8 +59,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             <Sidebar aria-label='Default sidebar example' className='w-40'>
               <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                  {sidebarRoutes
-                    .filter((route) => route.isLoggedIn === isLoggedIn)
+                  {routes
+                    .filter((route) => route.showInSidebar && !!route.authenticatedRoute === isLoggedIn)
+                    .sort((a, b) => (b.order || 0) - (a.order || 0))
                     .map((route) => (
                       <Sidebar.Item
                         key={route.title}

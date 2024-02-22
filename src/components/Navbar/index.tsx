@@ -41,24 +41,6 @@ export const Navbar = () => {
         <Nav className='ml-auto'>
           {isLoggedIn && (
             <>
-              {/* <NavItem>
-                <Link href={routeNames.statistics} className='nav-link'>
-                  <FontAwesomeIcon
-                    icon={faChartSimple}
-                    className='text-muted'
-                  />
-                </Link>
-              </NavItem> */}
-              <NavItem>
-                <Link href={routeNames.library} className='nav-link'>
-                  <FontAwesomeIcon icon={faNewspaper} className='text-muted' />
-                </Link>
-              </NavItem>
-              <NavItem>
-                <Link href={routeNames.profile} className='nav-link'>
-                  <FontAwesomeIcon icon={faUser} className='text-muted' />
-                </Link>
-              </NavItem>
               <NavItem>
                 <button className='btn btn-link' onClick={handleLogout}>
                   Close
