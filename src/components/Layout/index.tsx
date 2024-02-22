@@ -61,7 +61,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 <Sidebar.ItemGroup>
                   {routes
                     .filter((route) => route.showInSidebar && !!route.authenticatedRoute === isLoggedIn)
-                    .sort((a, b) => (b.order || 0) - (a.order || 0))
+                    .sort((a, b) => (a.order || 0) - (b.order || 0))
                     .map((route) => (
                       <Sidebar.Item
                         key={route.title}
