@@ -1,6 +1,8 @@
 // 
 import { Inter } from 'next/font/google';
 import Chat from "@/components/Chat/Chat";
+import Providers from '@/components/Chat/Provider';
+
 const inter = Inter({subsets: ['latin']});
 
 export const metadata = {
@@ -14,9 +16,11 @@ export default function Layout({
   children: React.ReactNode
 }) {
   return (
-    <div className={inter.className}>
-      <Chat />
-      {children}
-    </div>
+    <Providers>
+      <div className={inter.className}>
+        <Chat />
+        {children}
+      </div>
+    </Providers>
   )
 }
