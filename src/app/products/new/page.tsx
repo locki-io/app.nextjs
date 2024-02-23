@@ -28,7 +28,7 @@ export default function NewProduct() {
         placeholder='Enter the name of the NFT'
         className='mb-5'
         value={name}
-        onClick={(e: any) => setName(e.target.value)}
+        onChange={(e: any) => setName(e.target.value)}
       />
       <div className='mb-2 block'>
         <Label htmlFor='script' value='Script' className='text-white' />
@@ -39,7 +39,7 @@ export default function NewProduct() {
         required
         rows={20}
         value={script}
-        onClick={(e: any) => setScript(e.target.value)}
+        onChange={(e: any) => setScript(e.target.value)}
       />
       <div className='flex justify-end mt-5'>
         <Button gradientDuoTone='purpleToBlue' onClick={handleGeneratePreview}>Generate Preview</Button>
