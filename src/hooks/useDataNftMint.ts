@@ -6,7 +6,6 @@ import { sendTransactions } from '@multiversx/sdk-dapp/services';
 import { refreshAccount } from '@multiversx/sdk-dapp/utils/account';
 
 export const useDataNftMint = (address: string) => {
-  console.log('process.evn.NEXT_PUBLIC_CHAIN', process.env.NEXT_PUBLIC_CHAIN);
   const dataNftMinter = new SftMinter(
     process.env.NEXT_PUBLIC_CHAIN || 'devnet'
   );
@@ -42,7 +41,6 @@ export const useDataNftMint = (address: string) => {
       );
 
       await refreshAccount();
-      console.log('mintTransaction', JSON.stringify(mintTransaction));
 
       const { sessionId, error } = await sendTransactions({
         transactions: mintTransaction,
