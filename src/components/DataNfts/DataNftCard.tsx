@@ -43,24 +43,20 @@ export function DataNftCard({
   <>
     <div id={index.toString()}
       className={`mb-3 flex text-white ${
-        selectedNonces.includes(nonce) ? "border-4 border-green-500" : ""
+        selectedNonces.includes(nonce) ? "border-4 border-white-100 rounded-[2.37rem]" : ""
       }`}
       onClick={handleCardClick}
     >
       <Card className="flex-1 p-1 border-[0.5px] dark:border-slate-100/30 border-slate-300 bg-black rounded-[2.37rem] base:w-[18.5rem] md:w-[23.6rem]">
         <CardContent className="flex flex-col p-3">
-          <div className="mb-4 flex justify-center">
-            <img className="md:w-auto base:w-[15rem]" src={!isLoading ? dataNft.nftImgUrl : "https://media.elrond.com/nfts/thumbnail/default.png"} />
+          <div className="mb-4 flex w-full">
+            <div className="flex w-1/4">
+              <img className="md:w-auto base:w-[15rem]" src={!isLoading ? dataNft.nftImgUrl : "https://media.elrond.com/nfts/thumbnail/default.png"} alt=""/>
+            </div>
+            <CardTitle className="flex mb-1 w-3/4">
+              <h2 className="col-span-8 text-center base:text-sm md:text-base">{dataNft.title} {dataNft.dataNftSelected ? "selected" : "unselected"}</h2>
+            </CardTitle>
           </div>
-          <CardTitle className="grid grid-cols-8 mb-1">
-            <span className="col-span-8 text-center base:text-sm md:text-base">Title : {dataNft.title} {dataNft.dataNftSelected ? "selected" : "unselected"}</span>
-          </CardTitle>
-           
-
-          <CardDescription className="grid grid-cols-8 mb-1">
-            <span className="col-span-4 opacity-6 base:text-sm md:text-base">Description:</span>
-            <span className="col-span-8 text-left base:text-sm md:text-base">{dataNft.description}</span>
-          </CardDescription>
           { !selectedNonces.includes(nonce) && ( 
            <div>
               <Canvas camera={{ position: [2, 3, 10] }}>
@@ -70,6 +66,10 @@ export function DataNftCard({
               </Canvas>
             </div>
            )}
+                    <CardDescription className="grid grid-cols-8 mb-1">
+            <span className="col-span-4 opacity-6 base:text-sm md:text-base">Description:</span>
+            <span className="col-span-8 text-left base:text-sm md:text-base">{dataNft.description}</span>
+          </CardDescription>
             
           <div className="grid grid-cols-12 mb-1">
             <span className="col-span-4 opacity-6 base:text-sm md:text-base">Balance:</span>

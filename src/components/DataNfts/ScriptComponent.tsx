@@ -4,10 +4,9 @@ import { DataNft } from "@itheum/sdk-mx-data-nft";
 import { useGetLoginInfo } from "hooks";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCopy } from '@fortawesome/free-solid-svg-icons';
-import hljs from 'highlight.js/lib/core';
-import python from 'highlight.js/lib/languages/python';
 
-hljs.registerLanguage('python', python);
+import "prismjs/themes/prism-okaidia.css";
+
 
 type Props = {
   selectedNonces: number[];
@@ -20,8 +19,7 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
   const [dataNftScript, setDataNftScript] = useState('');
   const [dataNftLoading, setDataNftLoading] = useState(true);
   const codeRef = useRef<HTMLPreElement>(null);
-  const [highlighted, setHighlighted] = useState(false);
-
+ 
   useEffect(() => {
     async function fetchNftView() {
       if (selectedNonces.length > 0)  {
@@ -52,16 +50,10 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
         setDataNftLoading(false);
       }
     }
+
     fetchNftView();
   }, [selectedNonces, tokenLogin?.nativeAuthToken]);
   
-  useEffect(() => {
-    if (codeRef.current && !highlighted) {
-      hljs.highlightElement(codeRef.current);
-      setHighlighted(true);
-    } 
-  }, [dataNftScript, highlighted]);
-
   const copyCodeToClipboard = () => {
     navigator.clipboard.writeText(dataNftScript);
   };
@@ -85,9 +77,9 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
                   />
                 </div>
               ) : (
-                <div className="Code">
-                  <pre ref={codeRef}>
-                    <code className="language-python">{dataNftScript}</code>
+                <div className="Code" >
+                  <pre >
+                    <code className="language-python" ref={codeRef}>{dataNftScript}</code>
                   </pre>
 
                   <button onClick={copyCodeToClipboard} className="absolute top-0 right-0 m-2 text-gray-500 hover:text-gray-200">
