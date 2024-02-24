@@ -1,12 +1,13 @@
 'use client'
 
+import { MessagesContext } from '@/app/context/store'
 import { cn } from '@/lib/utils'
 import { FC, HTMLAttributes, useContext, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import TextAreaAutosize from 'react-textarea-autosize'
 import { nanoid } from 'nanoid'
 import { Message } from 'lib/validators/message'
-import { MessagesContext } from '@/app/context/store'
+import { toast } from 'react-hot-toast'
 
 type ChatInputProps = HTMLAttributes<HTMLDivElement>
 
@@ -22,13 +23,14 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
 } = useContext(MessagesContext) 
 
   const { mutate: sendMessage, isLoading } = useMutation({
-    mutationFn: async (message: Message) => {
+    mutationKey: ['sendMessage'],
+    mutationFn: async (_message: Message) => {
       const response = await fetch('/api/message', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
         },
-        body: JSON.stringify({ messages: [message] }),
+        body: JSON.stringify({ messages }),
       })
       return response.body
     },
@@ -68,11 +70,16 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         textareaRef.current?.focus()
       }, 10)
 
-    }
+    },
+    onError: (_, message) => {
+      toast.error('Something went wrong. Please try again.')
+      removeMessage(message.id)
+      textareaRef.current?.focus()
+    },
   })
 
   return <div {...props} className={cn('border-t border-zinc-300', className)}>
-    <div className='relative mt-4 flex-1 overfow-hidden rounded-lg border-none outline-none'>
+    <div className='relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none'>
       <TextAreaAutosize 
         ref={textareaRef}
         rows={2}
@@ -91,6 +98,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         }}
         maxRows={4}
         autoFocus
+        disabled={isLoading}
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder='Write a message...'

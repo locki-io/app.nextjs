@@ -17,7 +17,7 @@ export default function Layout({
 }) {
   return (
     <Providers>
-      <div className={inter.className}>
+      <div className={inter.className} id='Library'>
         <Chat />
         {children}
       </div>

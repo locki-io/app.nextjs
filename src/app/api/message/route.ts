@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const payload: OpenAIStreamPayload = {
     model: 'gpt-3.5-turbo',
     messages: outboundMessages,
-    max_tokens: 500,
+    max_tokens: 150,
     temperature: 0.7,
     top_p: 1,
     frequency_penalty: 0,
