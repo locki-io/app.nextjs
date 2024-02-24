@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss"
 
 import formsPlugin from '@tailwindcss/forms';
 import animatePlugin from 'tailwindcss-animate';
+import flowbitePlugin from 'flowbite/plugin';
 
 const config = {
   darkMode: ["class"],
@@ -10,6 +11,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    'node_modules/flowbite-react/lib/esm/**/*.js',
 	],
   prefix: "",
   theme: {
@@ -85,6 +87,7 @@ const config = {
   plugins: [
     formsPlugin,
     animatePlugin,
+    flowbitePlugin,
   ],
 } satisfies Config
 

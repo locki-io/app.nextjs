@@ -14,8 +14,8 @@ export default function Profile() {
   };
 
   return (
-    <div className='w-4/5 mx-auto mt-5 p-5 rounded'>
-       <div className=' mx-auto text-center'> 
+    <div className='w-full mt-5 p-5 rounded'>
+       <div className='mx-auto text-center'> 
         <a 
           href='https://github.com/locki-io/locki_id_addon'
           target='_blank'

@@ -1,4 +1,5 @@
 import { RouteType } from "@multiversx/sdk-dapp/types";
+import { HiShoppingBag, HiLockClosed, HiUser, HiLibrary } from 'react-icons/hi';
 
 export const routeNames = {
   home: "/profile",
@@ -12,10 +13,14 @@ export const routeNames = {
   message: "/api/message",
   getUsers: "/api/getusers",
   tradedata: "/tradedata",
+  products: "/products",
 };
 
 interface RouteWithTitleType extends RouteType {
   title: string;
+  icon?: any;
+  showInSidebar?: boolean;
+  order?: number;
 }
 
 export const routes: RouteWithTitleType[] = [
@@ -35,12 +40,18 @@ export const routes: RouteWithTitleType[] = [
     title: 'User Profile',
     component: null,
     authenticatedRoute: true,
+    showInSidebar: true,
+    icon: HiUser,
+    order: 10,
   },
   {
     path: routeNames.library,
-    title: 'Library of DataNfts',
+    title: 'Library',
     component: null,
     authenticatedRoute: true,
+    showInSidebar: true,
+    icon: HiLibrary,
+    order: 9,
   },
   {
     path: routeNames.apiDoc,
@@ -52,7 +63,22 @@ export const routes: RouteWithTitleType[] = [
     title: "Locki Data Dex",
     component: null,
   },
-
+  {
+    path: routeNames.unlock,
+    title: "Unlock",
+    component: null,
+    showInSidebar: true,
+    icon: HiLockClosed,
+  },
+  {
+    path: routeNames.products,
+    title: "Products",
+    showInSidebar: true,
+    icon: HiShoppingBag,
+    component: null,
+    authenticatedRoute: true,
+    order: 1,
+  },
 ];
 
 export const mappedRoutes = routes.map((route) => {
