@@ -8,6 +8,7 @@ import { Group, Box3 } from 'three';
 import { RefObject } from 'react';
 import TextMesh from './TextMesh';
 
+
 interface ModelProps extends GroupProps {
   index: number;
   dataNftRef: string;
@@ -18,6 +19,7 @@ interface ModelProps extends GroupProps {
 export default function Model({ dataNftRef, glbFileLink, handleSelectionChange, ...props }: ModelProps) {
   const meshRef = useRef<THREE.Group>();
   const { scene } = useGLTF(glbFileLink);
+  // const { bg_scene } = useLoader(GLTFLoader, '/assets/itheum_scene.glb')
   // const { actions, mixer } = useAnimations(animations, meshRef);
   const [objectHeight, setObjectHeight] = useState<number | null>(null);
 
