@@ -7,6 +7,7 @@ import { Card, CardTitle, CardContent, CardDescription, CardFooter } from "./Car
 import ScriptComponent from "@/components/DataNfts/ScriptComponent";
 import { Canvas } from "@react-three/fiber";
 import LoaderCanvas from "./LoaderCanvas";
+import { Button } from "flowbite-react";
 
 
 export function DataNftCard({
@@ -45,15 +46,15 @@ export function DataNftCard({
       className={`mb-3 flex text-white ${
         selectedNonces.includes(nonce) ? "border-4 border-white-100 rounded-[2.37rem]" : ""
       }`}
-      onClick={handleCardClick}
+      
     >
-      <Card className="flex-1 p-1 border-[0.5px] dark:border-slate-100/30 border-slate-300 bg-black rounded-[2.37rem] base:w-[18.5rem] md:w-[23.6rem]">
+      <Card className="flex-1  p-1 border-[0.5px] dark:border-slate-100/30 border-slate-300 bg-black rounded-[2.37rem] base:w-[18.5rem] md:w-[23.6rem]">
         <CardContent className="flex flex-col p-3">
           <div className="mb-4 flex w-full">
             <div className="flex w-1/4">
               <img className="md:w-auto base:w-[15rem]" src={!isLoading ? dataNft.nftImgUrl : "https://media.elrond.com/nfts/thumbnail/default.png"} alt=""/>
             </div>
-            <CardTitle className="flex mb-1 w-3/4">
+            <CardTitle className="flex w-3/4 p-2">
               <h2 className="col-span-8 text-center base:text-sm md:text-base">{dataNft.title} {dataNft.dataNftSelected ? "selected" : "unselected"}</h2>
             </CardTitle>
           </div>
@@ -92,7 +93,8 @@ export function DataNftCard({
             )}
 
             <CardFooter className="flex w-full justify-center py-2 text-center">
-              {/* <h6>Footer</h6> */}
+              <Button 
+                onClick={handleCardClick}>{selectedNonces.includes(nonce) ? 'Hide' : 'Show'}</Button>
             </CardFooter>
           </div>
           <ScriptComponent selectedNonces={selectedNonces} />

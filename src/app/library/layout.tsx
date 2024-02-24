@@ -6,7 +6,7 @@ import Providers from '@/components/Chat/Provider';
 const inter = Inter({subsets: ['latin']});
 
 export const metadata = {
-  title: 'DATANFT Library',
+  title: 'DATANFTs Library',
   description: 'My Nft Library',
 }
 
