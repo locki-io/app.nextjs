@@ -38,7 +38,6 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
       addMessage(message)
     },
     onSuccess: async (stream)=> {
-      // console.log("success")
       if(!stream) throw new Error('No stream found')
 
       const id = nanoid()
@@ -59,7 +58,6 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         const {value, done: doneReading} = await reader.read()
         done = doneReading
         const chunkValue = decoder.decode(value)
-        console.log(chunkValue)
         updateMessage(id, (prev) => prev + chunkValue)
       }
       //clean up

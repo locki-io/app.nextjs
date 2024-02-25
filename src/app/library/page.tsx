@@ -68,9 +68,9 @@ const DataNfts = () => {
   };
   return (
     <Providers>
-      <div className={inter.className} id='Library'>
-        <Chat />
-        <DataNftsContext.Provider value={dataNfts}>
+      <DataNftsContext.Provider value={dataNfts}>
+        <div className={inter.className} id='Library'>
+          <Chat />
           <div className='p-5'>
             <SelectedDataPreview />
             {isLoading ? (
@@ -111,8 +111,8 @@ const DataNfts = () => {
               </HeaderComponent>
             )}{' '}
           </div>
-        </DataNftsContext.Provider>
-      </div>
+        </div>
+      </DataNftsContext.Provider>
     </Providers>
   );
 };

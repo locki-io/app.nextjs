@@ -25,9 +25,17 @@ const customTheme: CustomFlowbiteTheme = {
         active: 'text-white'
       }
     },
-    "itemGroup": {
-      "base": "mt-4 space-y-2 border-t border-gray-200 pt-4 first:mt-0 first:border-t-0 first:pt-0 dark:border-gray-700"
+    itemGroup: {
+      base: 'mt-4 space-y-2 border-t border-gray-200 pt-4 first:mt-0 first:border-t-0 first:pt-0 dark:border-gray-700'
+    }
+  },
+  accordion: {
+    content: {
+      base: 'py-2 px-2 last:rounded-b-lg dark:bg-gray-900 first:rounded-t-lg'
     },
+    title: {
+      base: 'flex w-full items-center justify-between first:rounded-t-lg last:rounded-b-lg py-2.5 px-2.5 text-left font-medium text-gray-500'
+    }
   }
 };
 
@@ -59,11 +67,15 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             className='d-flex flex-row'
             style={{ height: 'calc(100vh - 60px)' }}
           >
-            <Sidebar aria-label='Default sidebar example' className='w-40'>
+            <Sidebar aria-label='Default sidebar example' className='w-42'>
               <Sidebar.Items>
                 <Sidebar.ItemGroup>
                   {routes
-                    .filter((route) => route.showInSidebar && !!route.authenticatedRoute === isLoggedIn)
+                    .filter(
+                      (route) =>
+                        route.showInSidebar &&
+                        !!route.authenticatedRoute === isLoggedIn
+                    )
                     .sort((a, b) => (a.order || 0) - (b.order || 0))
                     .map((route) => (
                       <Sidebar.Item

@@ -5,9 +5,9 @@ export const useGeneratePreview = () => {
     try {
       const generatePreviewResponse = await axios({
         method: 'POST',
-        url: `${process.env.NEXT_PUBLIC_BASE_API_URL || ''}/mintBlenderScripts`,
+        url: `${process.env.NEXT_PUBLIC_BASE_API_URL || ''}/generatePreview`,
         params: {
-          filename: `${filename}.py`
+          filename: filename
         },
         data: script
       });

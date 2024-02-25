@@ -55,7 +55,7 @@ export function DataNftCard({
               <img className="md:w-auto base:w-[15rem]" src={!isLoading ? dataNft.nftImgUrl : "https://media.elrond.com/nfts/thumbnail/default.png"} alt=""/>
             </div>
             <CardTitle className="flex w-3/4 p-2">
-              <h2 className="col-span-8 text-center base:text-sm md:text-base">{dataNft.title} {dataNft.dataNftSelected ? "selected" : "unselected"}</h2>
+              <p className="col-span-8 text-center base:text-sm md:text-base">{dataNft.title} {dataNft.dataNftSelected ? "selected" : "unselected"}</p>
             </CardTitle>
           </div>
           { !selectedNonces.includes(nonce) && ( 
