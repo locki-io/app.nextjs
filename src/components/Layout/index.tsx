@@ -24,7 +24,10 @@ const customTheme: CustomFlowbiteTheme = {
         base: 'h-6 w-6 flex-shrink-0 text-white transition duration-75 group-hover:text-white',
         active: 'text-white'
       }
-    }
+    },
+    "itemGroup": {
+      "base": "mt-4 space-y-2 border-t border-gray-200 pt-4 first:mt-0 first:border-t-0 first:pt-0 dark:border-gray-700"
+    },
   }
 };
 
