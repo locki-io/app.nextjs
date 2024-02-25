@@ -1,6 +1,4 @@
-import { clsx, ClassValue } from "clsx";
 import toast from "react-hot-toast";
-import { twMerge } from "tailwind-merge";
 
 /*
     UI should import Toaster
@@ -21,7 +19,3 @@ export const toastSuccess = (message: string) => {
     position: "top-right",
   });
 };
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}

@@ -18,7 +18,7 @@ export const HeaderComponent: React.FC<HeaderProps> = (props: HeaderProps) => {
   return (
     <div className="flex justify-center py-4">
       <div className="flex flex-col w-full">
-        <h1 className="py-4 mb-0 text-white">{pageTitle}</h1>
+        <h1 className="py-4 mb-0 text-white hidden">{pageTitle}</h1>
         {subTitle && <p className="mb-3">{subTitle}</p>}
         <div className={hasImage ? "-z-10 border-[0.5px] dark:border-slate-100/30 border-slate-300 rounded-[3rem]" : "hidden"}>
           {isAnimated && <>{animation}</>}
@@ -26,7 +26,7 @@ export const HeaderComponent: React.FC<HeaderProps> = (props: HeaderProps) => {
         </div>
         <div>
           {pageSubtitle && dataNftCount ? (
-            <h4 className="my-4 text-center text-2xl text-white">
+            <h4 className="my-4 text-center text-2xl text-white hidden">
               {pageSubtitle} {dataNftCount}
             </h4>
           ) : (

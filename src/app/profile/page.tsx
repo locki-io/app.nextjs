@@ -31,7 +31,7 @@ export default function Profile() {
       </div>
       <div className='info-container'>
         <p className='label'>Native Auth Token</p>
-        <p className='info-value text-blue-200 text-ellipsis overflow-hidden'>{tokenLogin?.nativeAuthToken || ''}</p>
+        <p className='info-value text-blue-200' style={{ overflowWrap: 'break-word' }}>{tokenLogin?.nativeAuthToken || ''}</p>
         <button
           className='bg-gray-300 p-2.5 rounded min-w-[100px]'
           onClick={copyToClipBoard}

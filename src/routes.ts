@@ -10,6 +10,7 @@ export const routeNames = {
   apiDoc: "/api-doc",
   hello: "/api/hello/route",
   user: "/api/user",
+  message: "/api/message",
   getUsers: "/api/getusers",
   tradedata: "/tradedata",
   products: "/products",
