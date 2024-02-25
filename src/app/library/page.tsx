@@ -13,6 +13,7 @@ import Chat from '@/components/Chat/Chat';
 import { HeaderComponent } from '../../components/Layout/HeaderComponent';
 import { DataNftCard } from '@/components/DataNfts';
 import SelectedDataPreview from '@/components/DataNfts/SelectedDataPreview';
+import Providers from '@/components/Chat/Provider';
 
 const SUPPORTED_COLLECTIONS = [
   'DATANFTFT-e0b917',
@@ -66,51 +67,53 @@ const DataNfts = () => {
     });
   };
   return (
-    <div className={inter.className} id='Library'>
-      <Chat />
-      <DataNftsContext.Provider value={dataNfts}>
-        <div className='p-5'>
-          <SelectedDataPreview />
-          {isLoading ? (
-            <div className='text-gray-200 text-center w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-              <FontAwesomeIcon
-                icon={faSpinner}
-                className='text-muted fa-spin-pulse text-4xl'
-              />
-            </div>
-          ) : (
-            <HeaderComponent
-              pageTitle={'Your DataNFT Library'}
-              hasImage={false}
-              pageSubtitle={'Data NFTs Count:'}
-              dataNftCount={dataNftCount}
-            >
-              {dataNfts.length > 0 ? (
-                dataNfts.map((dataNft, index) => (
-                  <DataNftCard
-                    key={index}
-                    index={index}
-                    isLoading={isLoading}
-                    dataNft={dataNft}
-                    nonce={dataNft.nonce}
-                    owned={true}
-                    isWallet={true}
-                    updateDataNftSelected={updateDataNftSelected}
-                  /> /*end of datanft card*/
-                ))
-              ) : (
-                <h4 className='no-items'>
-                  <div>
-                    You do not own any Data NFTs yet. Browse and you can mint
-                    NFT on the page...
-                  </div>
-                </h4>
-              )}
-            </HeaderComponent>
-          )}{' '}
-        </div>
-      </DataNftsContext.Provider>
-    </div>
+    <Providers>
+      <div className={inter.className} id='Library'>
+        <Chat />
+        <DataNftsContext.Provider value={dataNfts}>
+          <div className='p-5'>
+            <SelectedDataPreview />
+            {isLoading ? (
+              <div className='text-gray-200 text-center w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  className='text-muted fa-spin-pulse text-4xl'
+                />
+              </div>
+            ) : (
+              <HeaderComponent
+                pageTitle={'Your DataNFT Library'}
+                hasImage={false}
+                pageSubtitle={'Data NFTs Count:'}
+                dataNftCount={dataNftCount}
+              >
+                {dataNfts.length > 0 ? (
+                  dataNfts.map((dataNft, index) => (
+                    <DataNftCard
+                      key={index}
+                      index={index}
+                      isLoading={isLoading}
+                      dataNft={dataNft}
+                      nonce={dataNft.nonce}
+                      owned={true}
+                      isWallet={true}
+                      updateDataNftSelected={updateDataNftSelected}
+                    /> /*end of datanft card*/
+                  ))
+                ) : (
+                  <h4 className='no-items'>
+                    <div>
+                      You do not own any Data NFTs yet. Browse and you can mint
+                      NFT on the page...
+                    </div>
+                  </h4>
+                )}
+              </HeaderComponent>
+            )}{' '}
+          </div>
+        </DataNftsContext.Provider>
+      </div>
+    </Providers>
   );
 };
 export default DataNfts;
