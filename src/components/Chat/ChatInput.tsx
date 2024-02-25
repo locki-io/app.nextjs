@@ -22,9 +22,9 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
     setIsMessageUpdating,
 } = useContext(MessagesContext) 
 
-  const { mutate: sendMessage, isLoading } = useMutation({
+  const { mutate: sendMessage, isPending } = useMutation({
     mutationKey: ['sendMessage'],
-    mutationFn: async (_message: Message) => {
+    mutationFn: async (_message: Message ) => {
       const response = await fetch('/api/message', {
         method: 'POST',
         headers: {
@@ -98,7 +98,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         }}
         maxRows={4}
         autoFocus
-        disabled={isLoading}
+        disabled={isPending}
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder='Write a message...'
