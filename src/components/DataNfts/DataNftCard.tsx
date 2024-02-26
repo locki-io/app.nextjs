@@ -8,7 +8,7 @@ import ScriptComponent from "@/components/DataNfts/ScriptComponent";
 import { Canvas } from "@react-three/fiber";
 import LoaderCanvas from "./LoaderCanvas";
 import { Button } from "flowbite-react";
-
+import { Bounds, PerspectiveCamera } from "@react-three/drei";
 
 export function DataNftCard({
   index,
@@ -60,10 +60,17 @@ export function DataNftCard({
           </div>
           { !selectedNonces.includes(nonce) && ( 
            <div>
-              <Canvas camera={{ position: [2, 3, 10] }}>
+              <Canvas>
+                <PerspectiveCamera
+                  makeDefault
+                  fov={50}
+                  position={[5, 5, 8]}
+                />
                 <ambientLight intensity={2} />
                 <directionalLight color="white" position={[0, 0, 5]} />
-                <LoaderCanvas index={index} dataNftRef={nonce.toString()} glbFileLink={dataNft.dataPreview} handleSelectionChange={handleCardClick}/>
+                <Bounds clip fit observe margin={0.8}>
+                  <LoaderCanvas index={index} dataNftRef={nonce.toString()} glbFileLink={dataNft.dataPreview} maxBoundSize={10} handleSelectionChange={handleCardClick}/>
+                </Bounds>
               </Canvas>
             </div>
            )}
