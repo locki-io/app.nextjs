@@ -44,7 +44,7 @@ const DataNfts = () => {
     setIsLoading(true);
     const _dataNfts: ExtendedDataNft[] = [];
     const nfts = await DataNft.ownedByAddress(address, SUPPORTED_COLLECTIONS);
-    
+    let currentIndex = 0;
     _dataNfts.push(
       ...nfts
         .filter((nft: any) => {
@@ -55,8 +55,10 @@ const DataNfts = () => {
         })
         .map((nft: any) => ({
           ...nft,
+          index: currentIndex++, // Increment and assign the index
           dataNftSelected: false // Set dataNftSelected to false initially
         }))
+    
     );
 
     setDataNftCount(_dataNfts.length);
@@ -65,10 +67,10 @@ const DataNfts = () => {
     setIsLoading(false);
   }
 
-  const updateDataNftSelected = (nonce: number, selected: boolean) => {
+  const updateDataNftSelected = (index: number, selected: boolean) => {
     setDataNfts((prevDataNfts: ExtendedDataNft[]) => {
       return prevDataNfts.map((item) => {
-        if (item.nonce === nonce) {
+        if (item.index === index) {
           return { ...item, dataNftSelected: selected };
         }
         return item;
