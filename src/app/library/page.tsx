@@ -21,6 +21,8 @@ const SUPPORTED_COLLECTIONS = [
   'COLNAMA-539838'
 ];
 
+const SUPPORTED_FORMATS = ['gltf', 'glb'];
+
 const inter = Inter({ subsets: ['latin'] });
 
 const DataNfts = () => {
@@ -42,12 +44,19 @@ const DataNfts = () => {
     setIsLoading(true);
     const _dataNfts: ExtendedDataNft[] = [];
     const nfts = await DataNft.ownedByAddress(address, SUPPORTED_COLLECTIONS);
-
+    
     _dataNfts.push(
-      ...nfts.map((nft: any) => ({
-        ...nft,
-        dataNftSelected: false // Set dataNftSelected to false initially
-      }))
+      ...nfts
+        .filter((nft: any) => {
+          // Get the file extension from the dataPreview URL
+          const extension = nft.dataPreview.split('.').pop()?.toLowerCase();
+          // Check if the extension is included in the supported formats array
+          return SUPPORTED_FORMATS.includes(extension);
+        })
+        .map((nft: any) => ({
+          ...nft,
+          dataNftSelected: false // Set dataNftSelected to false initially
+        }))
     );
 
     setDataNftCount(_dataNfts.length);

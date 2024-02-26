@@ -106,9 +106,7 @@ export function DataNftCard({
           </div>
           <ScriptComponent selectedNonces={selectedNonces} />
         </CardContent>
-        
       </Card>
-      
     </div>    
   </>
   
