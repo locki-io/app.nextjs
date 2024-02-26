@@ -11,8 +11,7 @@ export const useGeneratePreview = () => {
         },
         data: script
       });
-      console.log('generatePreviewResponse', generatePreviewResponse);
-      return { status: 'success', msg: 'Preview Generator Queued' };
+      return generatePreviewResponse.data;
     } catch (error: any) {
       console.error('error', error);
       return { status: 'error', msg: error.message };

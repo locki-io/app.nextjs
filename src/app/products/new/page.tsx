@@ -2,20 +2,54 @@
 
 import { Label, Textarea, TextInput, Button } from 'flowbite-react';
 import { useGeneratePreview } from '@/hooks/useGeneratePreview';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useWebsocketConnection } from '@/hooks/useWebsocketConnection';
 
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
   const [name, setName] = useState('');
   const [script, setScript] = useState('');
+  const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
+  const [processedId, setProcessedId] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const { connect, disconnect } = useWebsocketConnection(process.env.NEXT_PUBLIC_WEBSOCKET_URL || '', (ev) => {
+    console.log('ev', ev, typeof ev);
+    if (ev.data) {
+      const processMsg = JSON.parse(ev.data);
+      if (processMsg.status === 'Success' && processMsg.processedId === processedId) {
+        // get the preview url and display in threejs.
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (!isConnected) {
+      setIsConnected(true);
+      connect();
+    }
+
+    return () => {
+      disconnect();
+    }
+  }, []);
 
   const handleGeneratePreview = async () => {
     try {
+      setIsGeneratingPreview(true);
       const generatePreviewResponse = await generatePreview(name, script);
+      if (
+        generatePreviewResponse.status === 'Queued' &&
+        generatePreviewResponse.processedId
+      ) {
+        setProcessedId(generatePreviewResponse.processedId);
+      } else {
+        setIsGeneratingPreview(false);
+      }
     } catch (error) {
       console.error('error', error);
+      setIsGeneratingPreview(false);
     }
-  }
+  };
   return (
     <div className='w-full p-5 text-white'>
       <h1 className='mb-5'>Create New Product</h1>
@@ -42,7 +76,14 @@ export default function NewProduct() {
         onChange={(e: any) => setScript(e.target.value)}
       />
       <div className='flex justify-end mt-5'>
-        <Button gradientDuoTone='purpleToBlue' onClick={handleGeneratePreview}>Generate Preview</Button>
+        <Button
+          gradientDuoTone='purpleToBlue'
+          onClick={handleGeneratePreview}
+          isProcessing={isGeneratingPreview}
+          disabled={isGeneratingPreview}
+        >
+          Generate Preview
+        </Button>
       </div>
     </div>
   );
