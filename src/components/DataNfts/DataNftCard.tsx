@@ -31,7 +31,7 @@ export function DataNftCard({
   const [selectedNonces, setSelectedNonces] = useState<number[]>([]);
 
   const handleCardClick = () => {
-    if (selectedNonces.includes(nonce)) {
+    if (dataNft.dataNftSelected) {
       setSelectedNonces((prevNonces) => prevNonces.filter((n) => n !== nonce));
       updateDataNftSelected(nonce, false);
     } else {
@@ -101,7 +101,7 @@ export function DataNftCard({
 
             <CardFooter className="flex w-full justify-center py-2 text-center">
               <Button 
-                onClick={handleCardClick}>{selectedNonces.includes(nonce) ? 'Hide' : 'Show'}</Button>
+                onClick={handleCardClick}>{dataNft.dataNftSelected ? 'Hide' : 'Show'}</Button>
             </CardFooter>
           </div>
           <ScriptComponent selectedNonces={selectedNonces} />

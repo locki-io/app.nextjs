@@ -1,5 +1,5 @@
 'use client';
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext } from "react";
 import { DataNftsContext } from "@/app/context/store";
 import {  Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, Bounds, OrbitControls } from '@react-three/drei'
@@ -7,19 +7,16 @@ import Model from "./LoaderCanvas";
 import {  Vector3 } from "three";
 
 const SelectedDataPreview = () => {
-  const [selectionKey, setSelectionKey] = useState(0); 
   const dataNfts = useContext(DataNftsContext);
 
-  // Filter the dataNfts array to include only selected dataNfts
-  const selectedDataNfts = dataNfts.filter(
-    dataNft => dataNft.dataNftSelected
-    );
-  
-  const handleSelectionChange = () => {
-    // Update the selection key to trigger remount
-    setSelectionKey(prevKey => prevKey + 1);
-    console.log(selectionKey);
+  const handleSelectionChange = (index: number, selected: boolean) => {
+    const newDataNfts = [...dataNfts];
+    newDataNfts[index].dataNftSelected = selected;
+    // Update the context or any other state management approach here
   };
+
+  // Filter the dataNfts array to include only selected dataNfts
+  const selectedDataNfts = dataNfts.filter(dataNft => dataNft.dataNftSelected);
 
   // Calculate the positions of the models based on the number of selected models
   const positions = calculateModelPositions(selectedDataNfts.length, 8);
@@ -40,7 +37,6 @@ const SelectedDataPreview = () => {
             <Fragment key={index}>                          
               <Model
                 index={index}  
-                key={`${selectionKey}-${index}`}
                 dataNftRef={dataNft.tokenIdentifier}
                 glbFileLink={dataNft.dataPreview}
                 position={positions[index]}

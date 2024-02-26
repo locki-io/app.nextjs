@@ -12,10 +12,10 @@ interface ModelProps extends GroupProps {
   dataNftRef: string;
   glbFileLink: string;
   maxBoundSize: number;
-  handleSelectionChange: () => void;   
+  handleSelectionChange: (index: number, selected: boolean) => void;   
 }
 
-export default function Model({ dataNftRef, glbFileLink, maxBoundSize, handleSelectionChange, ...props }: ModelProps) {
+export default function Model({index, dataNftRef, glbFileLink, maxBoundSize, handleSelectionChange, ...props }: ModelProps) {
   const meshRef = useRef<THREE.Group>();
   const { scene, animations } = useGLTF(glbFileLink);
   const mixer = useRef<AnimationMixer>();
@@ -23,7 +23,7 @@ export default function Model({ dataNftRef, glbFileLink, maxBoundSize, handleSel
 
   const handleClick = () => {
     // Call the handleSelectionChange function when the model is clicked
-    handleSelectionChange();
+    handleSelectionChange(index, true);
   };
 
   useFrame((_, delta) => {
