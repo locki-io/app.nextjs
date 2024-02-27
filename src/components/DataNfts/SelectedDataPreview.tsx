@@ -4,7 +4,7 @@ import { DataNftsContext } from "@/app/context/store";
 import {  Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, Bounds, OrbitControls } from '@react-three/drei'
 import Model from "./LoaderCanvas";
-import {  Box3, Vector3 } from "three";
+import {  Vector3 } from "three";
 
 const SelectedDataPreview = () => { 
   const dataNfts = useContext(DataNftsContext);
@@ -33,7 +33,7 @@ const SelectedDataPreview = () => {
           <PerspectiveCamera
                   makeDefault
                   fov={50}
-                  position={[5, 5, 8]}
+                  position={[10, 10, 16]}
                 />
           <ambientLight intensity={2} />
           <pointLight position={[10, 10, 10]} />

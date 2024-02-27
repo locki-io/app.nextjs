@@ -22,7 +22,7 @@ export default function Model({index, dataNftRef, glbFileLink, maxBoundSize, upd
   const [objectHeight, setObjectHeight] = useState<number | null>(null);
 
   // State to store size for each DataNft object
-  const [objectSizes, setObjectSizes] = useState<Vector3[]>([]);
+  //const [objectSizes, setObjectSizes] = useState<Vector3[]>([]);
 
   const handleClick = () => {
     // Call the handleSelectionChange function when the model is clicked
@@ -35,23 +35,21 @@ export default function Model({index, dataNftRef, glbFileLink, maxBoundSize, upd
     }
   });
 
-
-
   useEffect(() => {
     if (!scene || !meshRef.current) return;
 
-        // Store the size for all DataNft object
-    setObjectSizes(prevSizes => {
-      const defaultsize = new Vector3(1, 1, 1);
-      if (!meshRef.current) return [defaultsize];
-      const box = new Box3().setFromObject(meshRef.current);
-      const size = box.getSize(new Vector3())
-      const newSizes = [...prevSizes];
-      const index = meshRef.current.userData.dataNftIndex;
-      newSizes[index] = size;
-      console.log(newSizes);
-      return newSizes;
-    });
+    // Store the size for all DataNft object
+    // setObjectSizes(prevSizes => {
+    //   const defaultsize = new Vector3(1, 1, 1);
+    //   if (!meshRef.current) return [defaultsize];
+    //   const box = new Box3().setFromObject(meshRef.current);
+    //   const size = box.getSize(new Vector3())
+    //   const newSizes = [...prevSizes];
+    //   const index = meshRef.current.userData.dataNftIndex;
+    //   newSizes[index] = size;
+    //   // console.log(newSizes);
+    //   return newSizes;
+    // });
 
     if (maxBoundSize !== 0) { // in the preview we don't rescale
       const box = new Box3().setFromObject(meshRef.current);
@@ -63,7 +61,7 @@ export default function Model({index, dataNftRef, glbFileLink, maxBoundSize, upd
 
       const height = size.y * scaleFactor;
       setObjectHeight(height);
-    } else {
+    } else { // in the preview the maxBound is 0
       const box = new Box3().setFromObject(meshRef.current);
       const size = box.getSize(new Vector3())
       const height = size.y;
@@ -96,22 +94,4 @@ export default function Model({index, dataNftRef, glbFileLink, maxBoundSize, upd
 
 Model.preload = (glbFileLink: string) => {
   return useGLTF.preload(glbFileLink);
-};
-
-const getMinValues = (vectors: Vector3[]): number => {
-  // Initialize min values with positive infinity
-  let minX = Infinity;
-  let minY = Infinity;
-  let minZ = Infinity;
-
-  // Iterate over each vector
-  vectors.forEach(vector => {
-    // Update min values if current vector's components are smaller
-    minX = Math.min(minX, vector.x);
-    minY = Math.min(minY, vector.y);
-    minZ = Math.min(minZ, vector.z);
-  });
-
-  // Return a new Vector3 instance with the min values
-  return Math.max(minX, minY);
 };
