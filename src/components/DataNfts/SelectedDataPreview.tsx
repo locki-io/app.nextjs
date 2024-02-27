@@ -1,13 +1,19 @@
 'use client';
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { DataNftsContext } from "@/app/context/store";
 import {  Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, Bounds, OrbitControls } from '@react-three/drei'
 import Model from "./LoaderCanvas";
-import {  Vector3 } from "three";
+import {  Box3, Vector3 } from "three";
 
-const SelectedDataPreview = () => {
+const SelectedDataPreview = () => { 
   const dataNfts = useContext(DataNftsContext);
+  const [rerenderKey, setRerenderKey] = useState(0);
+
+  // useEffect to trigger rerender whenever DataNftsContext changes
+  useEffect(() => {
+    setRerenderKey(prevKey => prevKey + 1);
+  }, [dataNfts]);
 
   const handleSelectionChange = (index: number, selected: boolean) => {
     const newDataNfts = [...dataNfts];
@@ -19,7 +25,7 @@ const SelectedDataPreview = () => {
   const selectedDataNfts = dataNfts.filter(dataNft => dataNft.dataNftSelected);
 
   // Calculate the positions of the models based on the number of selected models
-  const positions = calculateModelPositions(selectedDataNfts.length, 8);
+  const positions = calculateModelPositions(selectedDataNfts.length, 12);
 
   return selectedDataNfts.length > 0 ? (    
     <div style={{ width: "100vw", height: "40vh" }}>
@@ -32,21 +38,22 @@ const SelectedDataPreview = () => {
           <ambientLight intensity={2} />
           <pointLight position={[10, 10, 10]} />
           <Bounds clip fit observe margin={1.2}> 
-          {
-          selectedDataNfts.map((dataNft, index) => (
-            <Fragment key={index}>                          
-              <Model
-                index={index}  
-                dataNftRef={dataNft.tokenIdentifier}
-                glbFileLink={dataNft.dataPreview}
-                position={positions[index]}
-                maxBoundSize={4}
-                handleSelectionChange={handleSelectionChange} 
-                  />
+            {
+            selectedDataNfts.map((dataNft, index) => (
+              <Fragment key={index}>                          
+                <Model
+                  key={`${rerenderKey}-${index}`}
+                  index={index}  
+                  dataNftRef={dataNft.tokenIdentifier}
+                  glbFileLink={dataNft.dataPreview}
+                  position={positions[index]}
+                  maxBoundSize={0}
+                  updateDataNftSelected={handleSelectionChange} 
+                    />
 
-            </Fragment>
-          ))
-          }
+              </Fragment>
+            ))
+            }
           </Bounds>
           <OrbitControls />
         </Canvas>
@@ -76,5 +83,6 @@ const calculateModelPositions = (numSelectedModels: number, radius: number): Vec
 
   return positions;
 };
+
 
 export default SelectedDataPreview;

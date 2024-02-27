@@ -102,7 +102,7 @@ const DataNfts = () => {
                   dataNfts.map((dataNft, index) => (
                     <DataNftCard
                       key={index}
-                      index={index}
+                      index={dataNft.index}
                       isLoading={isLoading}
                       dataNft={dataNft}
                       nonce={dataNft.nonce}
