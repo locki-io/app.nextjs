@@ -1,95 +1,35 @@
-# **MultiversX dApp based on Next.js and @multiversx/sdk-dapp**
-## The project is work in progress, but it can be used as reference
+# **Locki dApp based on Next.js and @multiversx/sdk-dapp**
 
-### Important steps in order to make it working:
-1. Use ``next-transpile-modules`` in ``next.config.js`` file. Thanks, [Mihai Daniel Eremia](https://github.com/mihaieremia), for your insights!
-   - this will resolve the issue related to `"Cannot use import statement outside a module"`
-   ```
-   const withTM = require("next-transpile-modules")(["@multiversx/sdk-dapp"]);
-   
-   module.exports = (phase, defaultConfig) => {
-    const plugins = [
-        withTM,
-        (config) => config,
-    ];
+## The project is work in progress (on the MvX devnet), contributions are welcome
+the dApp is opensource and you can install it for yourselfes, app.locki.io provides the AI and storage capabilities for you.
 
-    const config = plugins.reduce(
-        (acc, plugin) => {
-            const update = plugin(acc);
-            return typeof update === "function"
-                ? update(phase, defaultConfig)
-                : update;
-        },
-        { ...nextConfig },
-    );
+# Introduction
+  Brief overview of the Locki dApp. Locki Project is born during the Encode MvX hackathon in October 2023 and scored #4 place on the Ai bounty track. Now with the support of the xPand Itheum program, we are pursuing the quest to bring 3D modelling into DataNft together with an optimised AI companion.
+# Features
+  Locki dApp allows you to mint, view and interact with 3D dataNfts.
+# Installation
+  You don't need to, but you can. `yarn dev` or `npm run dev` and setting up environment variables should be enough. If you want to run the dApp follow [app.locki.io](the link) 
+# Usage
+  Instructions on how to use the dApp, including any configuration required.
+# Technologies
+  Locki dApp is a Nextjs application linked to a AWS lambda backend.
+# Contributing
+  We welcome contributions from developers, artists, and users alike! Whether you're interested in enhancing the codebase, designing new features, or providing feedback from a user's perspective, your contributions are valuable to us.
 
-    return config;
-   };   
-   ```
+  ## Developers
+  If you're a developer, you can contribute by:
+  - Submitting bug reports or feature requests via GitHub Issues.
+  - Implementing new features or fixing bugs by opening pull requests.
+  - Reviewing pull requests from other contributors and providing feedback.
+  ## Artists
+  As an artist, you can contribute by:
+  Creating visual assets using blender an mint them using the dapp. There are 2 DataNfts assets that are usefull now : `.blend` file that can be viewed and exchanged, and **blender python script** that are parametric or procedural construction of 3D assets (using geometry nodes).
+  Providing feedback on the locki user interface and user experience to improve the overall design.
+  ## Users
+  Even if you're not a developer or an artist, you can still contribute by:
+  Testing the [app.locki.io](devnet dApp) and reporting any usability issues or bugs you encounter.
+  Suggesting new features or improvements based on your experience as a user.
+  No contribution is too small, and we appreciate the support of everyone who helps make the Locki dApp better for our community.
+# License
+  GNU General Public License (GPL): GPL-3.0, or the GNU General Public License version 3.0, is a widely used open-source software license created by the Free Software Foundation (FSF).  <!--See the [LICENSE](LICENSE) file for details. -->
 
-
-   **Important UPDATE**: according to nextjs [documentation](https://nextjs.org/docs/pages/api-reference/next-config-js/transpilePackages), the above code can be simplified to:
-   ```
-      /** @type {import('next').NextConfig} */
-      const nextConfig = {
-      transpilePackages: ['@multiversx/sdk-dapp']
-      };
-   
-      module.exports = nextConfig;
-   ```
-
-2. In order to use the UI components you should use dynamic imports with `ssr: false`.
-   - This will bypass the issue related to `'document is not defined'`.
-   ```
-   import dynamic from "next/dynamic";
-      
-   const ExtensionLoginButton = dynamic(
-       async () => {
-        return (await import("@multiversx/sdk-dapp/UI/extension/ExtensionLoginButton")).ExtensionLoginButton;
-       },
-       { ssr: false }
-   );
-   
-    <ExtensionLoginButton
-     loginButtonText='Extension'
-     {...commonProps}
-    />
-
--------------------------------------------------------------------------------
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/Index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

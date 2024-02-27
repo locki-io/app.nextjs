@@ -250,5 +250,4 @@ export const youTubeVideo =
   </file>
 </content>
 </url>
-
 `

@@ -5,10 +5,14 @@ import { Message } from "@/lib/validators/message";
 import { nanoid } from "nanoid";
 
 export interface ExtendedDataNft extends DataNft {
+  index: number;
   dataNftSelected: boolean;
 }
 
-export const DataNftsContext = createContext<ExtendedDataNft[]>([]);
+// Define the initial value for dataNfts
+export const DataNfts: ExtendedDataNft[] = [];
+
+export const DataNftsContext = createContext<ExtendedDataNft[]>(DataNfts);
 
 export const useDataNfts = () => useContext(DataNftsContext);
 
