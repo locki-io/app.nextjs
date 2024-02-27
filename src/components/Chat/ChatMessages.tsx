@@ -35,7 +35,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({ className, ...props}) => {
     // Add more combine options if needed
   ];
 
-  let chatText: string = '';
+  let chatText = '';
   let options: ChatOption[] = [];
 
   if (selectedNFTs && selectedNFTs.length === 0) {
