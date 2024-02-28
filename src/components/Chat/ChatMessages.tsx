@@ -48,15 +48,15 @@ const ChatMessages: FC<ChatMessagesProps> = ({ className, ...props}) => {
     options = combineOptions;
   }
   
-  // useEffect(() => {
-  //   // Update the first message with the introText
-  //   if (messages.length === 1 && introText !== 'Default input') {
-  //     updateMessage(messages[0].id, () => introText);
-  //   } else if (introText !== 'Default input'){
-  //     const default_text = 'I am a 3D asset assistant, I use the default knowledge of locki to help me start with making 3D dataNFTs';
-  //     updateMessage(messages[0].id, () => default_text);
-  //   } 
-  // }, [introText, messages, updateMessage]);
+  useEffect(() => {
+    // Update the first message with the introText
+    if (messages.length === 1 && introText !== 'Default input') {
+      updateMessage(messages[0].id, () => introText);
+    } else if (introText !== 'Default input'){
+      const default_text = 'I am a 3D asset assistant, I use the default knowledge of locki to help me start with making 3D dataNFTs';
+      updateMessage(messages[0].id, () => default_text);
+    } 
+  }, [introText, messages, updateMessage]);
 
   return (
     <div>
