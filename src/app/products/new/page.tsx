@@ -4,6 +4,7 @@ import { Label, Textarea, TextInput, Button } from 'flowbite-react';
 import { useGeneratePreview } from '@/hooks/useGeneratePreview';
 import { useEffect, useState } from 'react';
 import { useWebsocketConnection } from '@/hooks/useWebsocketConnection';
+import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
 
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
@@ -12,15 +13,29 @@ export default function NewProduct() {
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
   const [processedId, setProcessedId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const { connect, disconnect } = useWebsocketConnection(process.env.NEXT_PUBLIC_WEBSOCKET_URL || '', (ev) => {
-    console.log('ev', ev, typeof ev);
-    if (ev.data) {
-      const processMsg = JSON.parse(ev.data);
-      if (processMsg.status === 'Success' && processMsg.processedId === processedId) {
-        // get the preview url and display in threejs.
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  const handleWebsocketMessage = (message: any) => {
+    if (message.data) {
+      const processMsg = JSON.parse(message.data);
+      console.log('processMsg', processMsg, 'processedId', processedId, typeof processedId);
+      if (
+        processMsg.status === 'Success' &&
+        processMsg.processedId === processedId
+      ) {
+        setIsGeneratingPreview(false);
+        setPreviewUrl(processMsg?.previewUrl || '');
       }
     }
-  });
+  };
+
+  const { connect, disconnect } = useWebsocketConnection(
+    process.env.NEXT_PUBLIC_WEBSOCKET_URL || '',
+    handleWebsocketMessage,
+    (error) => {
+      console.log('error', error);
+    }
+  );
 
   useEffect(() => {
     if (!isConnected) {
@@ -30,17 +45,19 @@ export default function NewProduct() {
 
     return () => {
       disconnect();
-    }
+    };
   }, []);
 
   const handleGeneratePreview = async () => {
     try {
       setIsGeneratingPreview(true);
       const generatePreviewResponse = await generatePreview(name, script);
+      console.log('generatePreviewResponse', generatePreviewResponse);
       if (
         generatePreviewResponse.status === 'Queued' &&
         generatePreviewResponse.processedId
       ) {
+        console.log('settign processId', generatePreviewResponse.processedId);
         setProcessedId(generatePreviewResponse.processedId);
       } else {
         setIsGeneratingPreview(false);
@@ -84,6 +101,18 @@ export default function NewProduct() {
         >
           Generate Preview
         </Button>
+      </div>
+      <div>
+        {previewUrl !== null && (
+          <LoaderCanvas
+            index={1}
+            dataNftRef={previewUrl}
+            glbFileLink={previewUrl}
+            handleSelectionChange={() => {
+              console.log('Preview Selected.');
+            }}
+          />
+        )}
       </div>
     </div>
   );
