@@ -21,10 +21,10 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
     updateMessage,
     setIsMessageUpdating,
 } = useContext(MessagesContext) 
-
+  
   const { mutate: sendMessage, isPending } = useMutation({
     mutationKey: ['sendMessage'],
-    mutationFn: async (_message: Message ) => {
+    mutationFn: async (_messages: Message ) => {      
       const response = await fetch('/api/message', {
         method: 'POST',
         headers: {
@@ -32,6 +32,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         },
         body: JSON.stringify({ messages }),
       })
+      console.log(response.body)
       return response.body
     },
     onMutate(message) {
@@ -48,6 +49,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
       }
 
       addMessage(responseMessage)
+      
       setIsMessageUpdating(true)
 
       const reader = stream.getReader()
@@ -90,13 +92,14 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
               isUserMessage: true,
               text: input,
             }
-
+            console.log('message being sent:')
+            console.log(message)
             sendMessage(message)
           }
         }}
         maxRows={4}
         autoFocus
-        disabled={isPending}
+        //disabled={isPending}
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder='Write a message...'

@@ -69,7 +69,7 @@ export function DataNftCard({
           </div>
           { !dataNft.dataNftSelected && ( 
            <div>
-              <Canvas>
+              {/* <Canvas>
                 <PerspectiveCamera
                   makeDefault
                   fov={50}
@@ -80,7 +80,7 @@ export function DataNftCard({
                 <Bounds clip fit observe margin={0.8}>
                   <LoaderCanvas index={index} dataNftRef={nonce.toString()} glbFileLink={dataNft.dataPreview} maxBoundSize={10} updateDataNftSelected={handleCardClick}/>
                 </Bounds>
-              </Canvas>
+              </Canvas> */}
             </div>
            )}
                     <CardDescription className="grid grid-cols-8 mb-1">
