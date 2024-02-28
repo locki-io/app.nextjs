@@ -8,7 +8,7 @@ import ScriptComponent from "@/components/DataNfts/ScriptComponent";
 import { Canvas } from "@react-three/fiber";
 import LoaderCanvas from "./LoaderCanvas";
 import { Button } from "flowbite-react";
-
+import { Bounds, PerspectiveCamera } from "@react-three/drei";
 
 export function DataNftCard({
   index,
@@ -25,18 +25,24 @@ export function DataNftCard({
   nonce: number;  
   owned: boolean;
   isWallet: boolean;
-  updateDataNftSelected: (nonce: number, selected: boolean) => void;
+  updateDataNftSelected: (index: number, selected: boolean) => void;
 }) {
 
   const [selectedNonces, setSelectedNonces] = useState<number[]>([]);
 
   const handleCardClick = () => {
+    if (dataNft.dataNftSelected) {
+      updateDataNftSelected(index, false);
+    } else {
+      updateDataNftSelected(index, true);
+    }
+  };
+
+  const handleButtonClick = () => {
     if (selectedNonces.includes(nonce)) {
       setSelectedNonces((prevNonces) => prevNonces.filter((n) => n !== nonce));
-      updateDataNftSelected(nonce, false);
     } else {
       setSelectedNonces((prevNonces) => [...prevNonces, nonce]);
-      updateDataNftSelected(nonce, true);
     }
   };
 
@@ -44,7 +50,7 @@ export function DataNftCard({
   <>
     <div id={index.toString()}
       className={`mb-3 flex text-white ${
-        selectedNonces.includes(nonce) ? "border-4 border-white-100 rounded-[2.37rem]" : ""
+        dataNft.dataNftSelected  ? "border-4 border-white-100 rounded-[2.37rem]" : ""
       }`}
       
     >
@@ -52,18 +58,28 @@ export function DataNftCard({
         <CardContent className="flex flex-col p-3">
           <div className="mb-4 flex w-full">
             <div className="flex w-1/4">
-              <img className="md:w-auto base:w-[15rem]" src={!isLoading ? dataNft.nftImgUrl : "https://media.elrond.com/nfts/thumbnail/default.png"} alt=""/>
+              <img 
+                onClick={handleCardClick}
+                className="md:w-auto base:w-[15rem]" 
+                src={!isLoading ? dataNft.nftImgUrl : "https://media.elrond.com/nfts/thumbnail/default.png"} alt=""/>
             </div>
             <CardTitle className="flex w-3/4 p-2">
               <p className="col-span-8 text-center base:text-sm md:text-base">{dataNft.title} {dataNft.dataNftSelected ? "selected" : "unselected"}</p>
             </CardTitle>
           </div>
-          { !selectedNonces.includes(nonce) && ( 
+          { !dataNft.dataNftSelected && ( 
            <div>
-              <Canvas camera={{ position: [2, 3, 10] }}>
+              <Canvas>
+                <PerspectiveCamera
+                  makeDefault
+                  fov={50}
+                  position={[5, 5, 8]}
+                />
                 <ambientLight intensity={2} />
                 <directionalLight color="white" position={[0, 0, 5]} />
-                <LoaderCanvas index={index} dataNftRef={nonce.toString()} glbFileLink={dataNft.dataPreview} handleSelectionChange={handleCardClick}/>
+                <Bounds clip fit observe margin={0.8}>
+                  <LoaderCanvas index={index} dataNftRef={nonce.toString()} glbFileLink={dataNft.dataPreview} maxBoundSize={10} updateDataNftSelected={handleCardClick}/>
+                </Bounds>
               </Canvas>
             </div>
            )}
@@ -94,14 +110,12 @@ export function DataNftCard({
 
             <CardFooter className="flex w-full justify-center py-2 text-center">
               <Button 
-                onClick={handleCardClick}>{selectedNonces.includes(nonce) ? 'Hide' : 'Show'}</Button>
+                onClick={handleButtonClick}>{selectedNonces.includes(nonce) ? 'Hide script' : 'Show script'}</Button>
             </CardFooter>
           </div>
           <ScriptComponent selectedNonces={selectedNonces} />
         </CardContent>
-        
       </Card>
-      
     </div>    
   </>
   

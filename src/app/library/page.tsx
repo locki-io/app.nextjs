@@ -21,6 +21,8 @@ const SUPPORTED_COLLECTIONS = [
   'COLNAMA-539838'
 ];
 
+const SUPPORTED_FORMATS = ['gltf', 'glb'];
+
 const inter = Inter({ subsets: ['latin'] });
 
 const DataNfts = () => {
@@ -42,12 +44,21 @@ const DataNfts = () => {
     setIsLoading(true);
     const _dataNfts: ExtendedDataNft[] = [];
     const nfts = await DataNft.ownedByAddress(address, SUPPORTED_COLLECTIONS);
-
+    let currentIndex = 0;
     _dataNfts.push(
-      ...nfts.map((nft: any) => ({
-        ...nft,
-        dataNftSelected: false // Set dataNftSelected to false initially
-      }))
+      ...nfts
+        .filter((nft: any) => {
+          // Get the file extension from the dataPreview URL
+          const extension = nft.dataPreview.split('.').pop()?.toLowerCase();
+          // Check if the extension is included in the supported formats array
+          return SUPPORTED_FORMATS.includes(extension);
+        })
+        .map((nft: any) => ({
+          ...nft,
+          index: currentIndex++, // Increment and assign the index
+          dataNftSelected: false // Set dataNftSelected to false initially
+        }))
+    
     );
 
     setDataNftCount(_dataNfts.length);
@@ -56,10 +67,10 @@ const DataNfts = () => {
     setIsLoading(false);
   }
 
-  const updateDataNftSelected = (nonce: number, selected: boolean) => {
+  const updateDataNftSelected = (index: number, selected: boolean) => {
     setDataNfts((prevDataNfts: ExtendedDataNft[]) => {
       return prevDataNfts.map((item) => {
-        if (item.nonce === nonce) {
+        if (item.index === index) {
           return { ...item, dataNftSelected: selected };
         }
         return item;
@@ -91,7 +102,7 @@ const DataNfts = () => {
                   dataNfts.map((dataNft, index) => (
                     <DataNftCard
                       key={index}
-                      index={index}
+                      index={dataNft.index}
                       isLoading={isLoading}
                       dataNft={dataNft}
                       nonce={dataNft.nonce}
