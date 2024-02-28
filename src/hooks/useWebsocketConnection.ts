@@ -1,11 +1,15 @@
-export const useWebsocketConnection = (wsUrl: string, messageHandler: (this: WebSocket, ev: MessageEvent<any>) => any, errorHandler: (this: WebSocket, ev: Event) => any) => {
+export const useWebsocketConnection = (wsUrl: string, messageHandler: (ev: MessageEvent<any>) => any, errorHandler: (ev: Event) => any) => {
   let ws: WebSocket;
   function connect() {
     ws = new WebSocket(wsUrl);
 
-    ws.onmessage = messageHandler;
+    ws.onmessage = (ev: MessageEvent) => {
+      messageHandler(ev);
+    };
 
-    ws.onerror = errorHandler;
+    ws.onerror = (ev: Event) => {
+      errorHandler(ev);
+    };
   }
 
   function disconnect() {

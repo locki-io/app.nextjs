@@ -2,9 +2,10 @@
 
 import { Label, Textarea, TextInput, Button } from 'flowbite-react';
 import { useGeneratePreview } from '@/hooks/useGeneratePreview';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useWebsocketConnection } from '@/hooks/useWebsocketConnection';
 import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
+import { Canvas } from '@react-three/fiber';
 
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
@@ -12,16 +13,20 @@ export default function NewProduct() {
   const [script, setScript] = useState('');
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
   const [processedId, setProcessedId] = useState(null);
+  const currentProcessId = useRef(processedId);
   const [isConnected, setIsConnected] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    currentProcessId.current = processedId;
+  }, [processedId]);
 
   const handleWebsocketMessage = (message: any) => {
     if (message.data) {
       const processMsg = JSON.parse(message.data);
-      console.log('processMsg', processMsg, 'processedId', processedId, typeof processedId);
       if (
-        processMsg.status === 'Success' &&
-        processMsg.processedId === processedId
+        processMsg.processingStatus === 'Success' &&
+        processMsg.processedId === currentProcessId.current
       ) {
         setIsGeneratingPreview(false);
         setPreviewUrl(processMsg?.previewUrl || '');
@@ -52,12 +57,10 @@ export default function NewProduct() {
     try {
       setIsGeneratingPreview(true);
       const generatePreviewResponse = await generatePreview(name, script);
-      console.log('generatePreviewResponse', generatePreviewResponse);
       if (
         generatePreviewResponse.status === 'Queued' &&
         generatePreviewResponse.processedId
       ) {
-        console.log('settign processId', generatePreviewResponse.processedId);
         setProcessedId(generatePreviewResponse.processedId);
       } else {
         setIsGeneratingPreview(false);
@@ -67,6 +70,10 @@ export default function NewProduct() {
       setIsGeneratingPreview(false);
     }
   };
+
+  const handleMintProduct = async () => {
+    console.log('Mint the product');
+  }
   return (
     <div className='w-full p-5 text-white'>
       <h1 className='mb-5'>Create New Product</h1>
@@ -102,18 +109,43 @@ export default function NewProduct() {
           Generate Preview
         </Button>
       </div>
-      <div>
-        {previewUrl !== null && (
-          <LoaderCanvas
-            index={1}
-            dataNftRef={previewUrl}
-            glbFileLink={previewUrl}
-            handleSelectionChange={() => {
-              console.log('Preview Selected.');
-            }}
-          />
-        )}
-      </div>
+      {previewUrl !== null && (
+        <>
+          <div className='w-full mt-10'>
+            <Canvas camera={{ position: [2, 3, 10] }}>
+              <ambientLight intensity={2} />
+              <directionalLight color='white' position={[0, 0, 5]} />
+              <LoaderCanvas
+                index={1}
+                dataNftRef={'1'}
+                glbFileLink={previewUrl}
+                handleSelectionChange={() => {
+                  console.log('Preview Selected.');
+                }}
+              />
+            </Canvas>
+          </div>
+          <div className='flex justify-end mt-5'>
+          <Button
+              gradientDuoTone='pinkToOrange'
+              onClick={handleMintProduct}
+              isProcessing={false}
+              disabled={false}
+              className='mr-4'
+            >
+              Review your script and Regenerate
+            </Button>
+            <Button
+              gradientDuoTone='greenToBlue'
+              onClick={handleMintProduct}
+              isProcessing={false}
+              disabled={false}
+            >
+              Mint to Locki Cloud
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
