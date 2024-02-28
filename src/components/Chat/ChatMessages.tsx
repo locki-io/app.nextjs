@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useContext, useState } from 'react';
+import { FC, HTMLAttributes, useContext, useEffect, useState } from 'react';
 import MarkdownLite from '../MarkdownLite';
 import { Button } from 'flowbite-react';
 import { DataNftsContext, ExtendedDataNft, MessagesContext } from '@/app/context/store';
@@ -12,7 +12,7 @@ interface ChatOption {
 }
 
 const ChatMessages: FC<ChatMessagesProps> = ({ className, ...props}) => {
-  const { messages } = useContext(MessagesContext);
+  const { messages, updateMessage } = useContext(MessagesContext);
   const inverseMessages = [...messages].reverse();
 
   const selectedNFTs: ExtendedDataNft[] | undefined = useContext(DataNftsContext)?.filter(nft => nft.dataNftSelected);
@@ -35,19 +35,29 @@ const ChatMessages: FC<ChatMessagesProps> = ({ className, ...props}) => {
     // Add more combine options if needed
   ];
 
-  let chatText = '';
+  let introText = '';
   let options: ChatOption[] = [];
 
   if (selectedNFTs && selectedNFTs.length === 0) {
-    chatText = 'Chat with';
+    introText = 'Default input';
   } else if (selectedNFTs && selectedNFTs.length === 1) {
-    chatText = `Describe ${selectedNFTs[0].tokenIdentifier} using`;
+    introText = `Describe ${selectedNFTs[0].tokenIdentifier} using`;
     options = chatOptions;
   } else if (selectedNFTs && selectedNFTs.length >= 2) {
-    chatText = `Combine ${selectedNFTs.map(nft => nft.tokenIdentifier).join(' and ')} using`;
+    introText = `Combine ${selectedNFTs.map(nft => nft.tokenIdentifier).join(' and ')} using`;
     options = combineOptions;
   }
   
+  useEffect(() => {
+    // Update the first message with the introText
+    if (messages.length === 1 && introText !== 'Default input') {
+      updateMessage(messages[0].id, () => introText);
+    } else if (introText !== 'Default input'){
+      const default_text = 'I am a 3D asset assistant, I use the default knowledge of locki to help me start with making 3D dataNFTs';
+      updateMessage(messages[0].id, () => default_text);
+    } 
+  }, [introText, messages, updateMessage]);
+
   return (
     <div>
       
@@ -65,7 +75,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({ className, ...props}) => {
           ))}
         </div>
       )}
-      <span className='text-ms bold'>{chatText}</span>
+      {/* <span className='text-ms bold'>{introText}</span> */}
       <div 
         {...props}
         className={cn(
