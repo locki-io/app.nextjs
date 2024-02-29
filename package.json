@@ -38,7 +38,7 @@
     "isarray": "^2.0.5",
     "lucide-react": "^0.335.0",
     "moment": "2.29.4",
-    "next": "^13.4.4",
+    "next": "^14.1.0",
     "next-transpile-modules": "^10.0.0",
     "openai": "^4.12.1",
     "postcss": "^8.4.35",
