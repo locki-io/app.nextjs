@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useWebsocketConnection } from '@/hooks/useWebsocketConnection';
 import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
 import { Canvas } from '@react-three/fiber';
+import { useDataNftMint } from '@/hooks';
+import { useGetAccountInfo } from '@multiversx/sdk-dapp/hooks';
 
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
@@ -16,6 +18,13 @@ export default function NewProduct() {
   const currentProcessId = useRef(processedId);
   const [isConnected, setIsConnected] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const currentPreviewUrl = useRef(null);
+  const scriptUrl = useRef(null);
+  const mintActionSection = useRef(null);
+
+  const accountInfo = useGetAccountInfo();
+  const { mint } = useDataNftMint(accountInfo?.address);
+  const [isMinting, setIsMinting] = useState(false);
 
   useEffect(() => {
     currentProcessId.current = processedId;
@@ -23,6 +32,7 @@ export default function NewProduct() {
 
   const handleWebsocketMessage = (message: any) => {
     if (message.data) {
+      console.log('received socket message', message.data);
       const processMsg = JSON.parse(message.data);
       if (
         processMsg.processingStatus === 'Success' &&
@@ -30,6 +40,12 @@ export default function NewProduct() {
       ) {
         setIsGeneratingPreview(false);
         setPreviewUrl(processMsg?.previewUrl || '');
+        currentPreviewUrl.current = processMsg?.previewUrl;
+        // setTimeout(() => {
+        //   if (mintActionSection.current) {
+        //     mintActionSection.current?.scrollIntoView({ behavior: 'smooth' });
+        //   }
+        // }, 1000);
       }
     }
   };
@@ -62,6 +78,7 @@ export default function NewProduct() {
         generatePreviewResponse.processedId
       ) {
         setProcessedId(generatePreviewResponse.processedId);
+        scriptUrl.current = generatePreviewResponse?.scriptUrl;
       } else {
         setIsGeneratingPreview(false);
       }
@@ -72,8 +89,16 @@ export default function NewProduct() {
   };
 
   const handleMintProduct = async () => {
-    console.log('Mint the product');
-  }
+    setIsMinting(true);
+    await mint(
+      `Locki${currentProcessId.current}`,
+      scriptUrl.current || '',
+      currentPreviewUrl.current || '',
+      10,
+      name,
+      name
+    );
+  };
   return (
     <div className='w-full p-5 text-white'>
       <h1 className='mb-5'>Create New Product</h1>
@@ -109,43 +134,50 @@ export default function NewProduct() {
           Generate Preview
         </Button>
       </div>
-      {previewUrl !== null && (
+      <div ref={mintActionSection}>
         <>
           <div className='w-full mt-10'>
             <Canvas camera={{ position: [2, 3, 10] }}>
               <ambientLight intensity={2} />
               <directionalLight color='white' position={[0, 0, 5]} />
-              <LoaderCanvas
-                index={1}
-                dataNftRef={'1'}
-                glbFileLink={previewUrl}
-                handleSelectionChange={() => {
-                  console.log('Preview Selected.');
-                }}
-              />
+              {previewUrl !== null && (
+                <LoaderCanvas
+                  index={1}
+                  dataNftRef={'1'}
+                  glbFileLink={previewUrl}
+                  maxBoundSize={0}
+                  updateDataNftSelected={() => {
+                    console.log('updated preview');
+                  }}
+                />
+              )}
             </Canvas>
           </div>
-          <div className='flex justify-end mt-5'>
-          <Button
-              gradientDuoTone='pinkToOrange'
-              onClick={handleMintProduct}
-              isProcessing={false}
-              disabled={false}
-              className='mr-4'
-            >
-              Review your script and Regenerate
-            </Button>
-            <Button
-              gradientDuoTone='greenToBlue'
-              onClick={handleMintProduct}
-              isProcessing={false}
-              disabled={false}
-            >
-              Mint to Locki Cloud
-            </Button>
-          </div>
+          {previewUrl !== null && (
+            <div className='flex justify-end mt-5' ref={mintActionSection}>
+              <Button
+                gradientDuoTone='pinkToOrange'
+                onClick={() => {
+                  window.scrollTo(0, 0);
+                }}
+                isProcessing={false}
+                disabled={false}
+                className='mr-4'
+              >
+                Review your script and Regenerate
+              </Button>
+              <Button
+                gradientDuoTone='greenToBlue'
+                onClick={handleMintProduct}
+                isProcessing={false}
+                disabled={isMinting}
+              >
+                Mint to Locki Cloud
+              </Button>
+            </div>
+          )}
         </>
-      )}
+      </div>
     </div>
   );
 }

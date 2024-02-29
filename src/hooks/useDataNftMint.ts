@@ -23,6 +23,15 @@ export const useDataNftMint = (address: string) => {
         new Address(address)
       );
       const antiSpamTax = requirements?.antiSpamTaxValue;
+      console.log(
+        `dataNftMinter.mint(${new Address(address)}, ${tokenName}, ${
+          DATA_MARSHALL_URL[process.env.NEXT_PUBLIC_CHAIN || 'devnet']
+        }, ${dataStreamUrl}, ${dataPreviewUrl}, ${
+          royalityPercentage * 100
+        }, 1, ${title}, ${description}, ${antiSpamTax}, {nftStorageToken: ${
+          process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
+        }})`
+      );
 
       const mintTransaction: Transaction = await dataNftMinter.mint(
         new Address(address),
