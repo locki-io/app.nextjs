@@ -89,16 +89,14 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   
   const selectedNFTs: ExtendedDataNft[] | undefined = useContext(DataNftsContext)?.filter(nft => nft.dataNftSelected);
   const [clicked, setClicked] = useState(false);
+  const [scriptLoading, setScriptLoading] = useState(true); 
 
-  const toProcess = async () => {
-    //console.log('process');
-    setClicked(true);
+  const handleScriptLoadingChange = (loading: boolean) => {
+    setScriptLoading(loading); 
   };
 
   const chatOptions: ChatOption[] = [
     { label: 'Describe', value: 'describe' },
-    { label: 'Transform', value: 'transform' },
-    { label: 'Edit', value: 'edit' }
   ];
 
   const combineOptions: ChatOption[] = [
@@ -111,7 +109,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   let options: ChatOption[] = [];
 
   if (selectedNFTs && selectedNFTs.length === 0) {
-    introText = 'Default input';
+    introText = 'I am a 3D asset assistant, I use the default knowledge of locki to help me start with making 3D dataNFTs';
   } else if (selectedNFTs && selectedNFTs.length === 1) {
     introText = `Describe ${selectedNFTs[0].tokenIdentifier} using`; 
     options = chatOptions;
@@ -119,12 +117,38 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
     introText = `Combine ${selectedNFTs.map(nft => nft.tokenIdentifier).join(' and ')} using`;
     options = combineOptions;
   }
+
+  const presetMessage = (optionValue: string): Message => {
+    // Define the logic to generate the preset message based on the option value
+    switch (optionValue) {
+      case 'describe':
+        return { 
+          id: nanoid(), 
+          isUserMessage: true,
+          text: scriptRef.current?.innerText || '',
+          };
+      case 'Combine12':
+        return { 
+          id: nanoid(), 
+          isUserMessage: true, 
+          text: 'Preset message for Combine12 option' 
+        };
+      case 'Combine21':
+        return { 
+          id: nanoid(), 
+          isUserMessage: true, 
+          text: 'Preset message for Combine21 option' 
+        };
+      default:
+        return { id: nanoid(), isUserMessage: true, text: '' };
+    }
+  };
+
   useEffect(() => {
     const updateFirstMessage = () => {
-        // console.log(messages[1].text)
-        updateMessage(messages[0].id, (prev) => prev + introText);
+        // updating the system message -> JNTODO issue is not revealing on display
+        updateMessage(messages[0].id, () => introText);
     };
-  
     updateFirstMessage();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array to execute once on mount
@@ -139,25 +163,28 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
             key={index}
             gradientDuoTone={clicked ? 'limeToTeal' : 'BlueToLime'}
             onClick={() => {
-              const message: Message = {
-                id: nanoid(),
-                isUserMessage: true,
-                text: scriptRef.current.innerText,
-              }
+              const message = presetMessage(option.value); 
+              setClicked(true)
               sendMessage(message)
+              setScriptLoading(true)
             }}
             className='mb-4'
+            disabled={scriptLoading}
           >
             {option.label}
           </Button>
 
         ))}
         {selectedNFTs[0]?.nonce && (
-          <ScriptTextComponent selectedNonce={selectedNFTs[0].nonce} scriptRef={scriptRef}/>
+          <ScriptTextComponent 
+            scriptRef={scriptRef} 
+            selectedNonce={selectedNFTs[0].nonce} 
+            onScriptLoadingChange={handleScriptLoadingChange}
+            />
         )}
       </div>
     )}
-    <span className='text-ms bold'>{introText}</span>
+    {/* <span className='text-ms bold'>{introText}</span> */}
     <div className='relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none'>
       <TextAreaAutosize 
         ref={textareaRef}

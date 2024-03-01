@@ -11,15 +11,16 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 type Props = {
   selectedNonce: number;
   scriptRef: React.RefObject<HTMLPreElement>;
+  onScriptLoadingChange: (loading: boolean) => void
 };
 
-const ScriptTextComponent: React.FC<Props> = ({ selectedNonce, scriptRef }) => {
+const ScriptTextComponent: React.FC<Props> = ({ selectedNonce, scriptRef, onScriptLoadingChange}) => {
   // Access the dataNfts array from the context
   const { tokenLogin } = useGetLoginInfo();
   const [dataNftScript, setDataNftScript] = useState('');
   const [dataNftRef, setDataNftRef] = useState('');
-  const [dataNftLoading, setDataNftLoading] = useState(true);
- 
+  const [scriptLoading, setScriptLoading] = useState(true);
+
   useEffect(() => {
     async function fetchNftView() {
       DataNft.setNetworkConfig('devnet');      
@@ -45,15 +46,16 @@ const ScriptTextComponent: React.FC<Props> = ({ selectedNonce, scriptRef }) => {
         setDataNftRef(decodedNft.tokenIdentifier)
         setDataNftScript(resDataNft);
       }
-      setDataNftLoading(false);
+      onScriptLoadingChange(false);
+      setScriptLoading(false);
     }
 
     fetchNftView();
-  }, [selectedNonce, tokenLogin?.nativeAuthToken]);
+  }, [selectedNonce, tokenLogin?.nativeAuthToken, onScriptLoadingChange]);
   
   // Render the content based on the isLoading flag
   return (
-    dataNftLoading ? (
+    scriptLoading ? (
       <span className=''>
         <FontAwesomeIcon
           icon={faSpinner}
@@ -61,7 +63,7 @@ const ScriptTextComponent: React.FC<Props> = ({ selectedNonce, scriptRef }) => {
         />
       </span>
     ) : (
-      <span> {dataNftRef} Script loaded
+      <span> the loaded script of {dataNftRef} 
         <code hidden className="language-python" ref={scriptRef}>```python {dataNftScript}```</code>
       </span>
     )
