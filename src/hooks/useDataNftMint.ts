@@ -16,22 +16,16 @@ export const useDataNftMint = (address: string) => {
     dataPreviewUrl: string,
     royalityPercentage: number,
     title: string,
-    description: string
+    description: string,
+    processingMessage = 'Minting Standard Data NFT',
+    errorMessage = 'Data NFT minting error',
+    successMessage = 'Data NFT minted successfully'
   ) {
     try {
       const requirements = await dataNftMinter.viewMinterRequirements(
         new Address(address)
       );
       const antiSpamTax = requirements?.antiSpamTaxValue;
-      console.log(
-        `dataNftMinter.mint('${new Address(address)}', '${tokenName}', '${
-          DATA_MARSHALL_URL[process.env.NEXT_PUBLIC_CHAIN || 'devnet']
-        }', '${dataStreamUrl}', '${dataPreviewUrl}', ${
-          royalityPercentage * 100
-        }, 1, '${title}', '${description}', 1, ${antiSpamTax}, {nftStorageToken: '${
-          process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
-        }'})`
-      );
 
       const mintTransaction: Transaction = await dataNftMinter.mint(
         new Address(address),
@@ -43,27 +37,24 @@ export const useDataNftMint = (address: string) => {
         1,
         title,
         description,
-        1,
-        antiSpamTax,
+        900,
+        antiSpamTax + 1e19,
         {
           nftStorageToken: process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
         }
       );
-      console.log('mintTransaction', mintTransaction);
 
       await refreshAccount();
-      console.log('refreshAccount');
 
       const { sessionId, error } = await sendTransactions({
         transactions: mintTransaction,
         transactionsDisplayInfo: {
-          processingMessage: 'Minting Standard Data NFT',
-          errorMessage: 'Data NFT minting error',
-          successMessage: 'Data NFT minted successfully'
+          processingMessage,
+          errorMessage,
+          successMessage,
         },
         redirectAfterSign: false
       });
-      console.log('sessionId', sessionId, 'error', error);
 
       return {
         id: sessionId,
