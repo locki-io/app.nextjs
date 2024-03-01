@@ -7,25 +7,27 @@ import { useGetLoginInfo } from "hooks";
 import "prismjs/themes/prism-okaidia.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { ExtendedDataNft } from '@/app/context/store';
 
 type Props = {
-  selectedNonce: number;
-  scriptRef: React.RefObject<HTMLPreElement>;
+  selectedNFTs: ExtendedDataNft[];
+  scriptRefs: React.RefObject<HTMLDivElement>[];
   onScriptLoadingChange: (loading: boolean) => void
 };
 
-const ScriptTextComponent: React.FC<Props> = ({ selectedNonce, scriptRef, onScriptLoadingChange}) => {
+const ScriptTextComponent: React.FC<Props> = ({ selectedNFTs, scriptRefs, onScriptLoadingChange}) => {
   // Access the dataNfts array from the context
+  
   const { tokenLogin } = useGetLoginInfo();
-  const [dataNftScript, setDataNftScript] = useState('');
-  const [dataNftRef, setDataNftRef] = useState('');
+  const [dataNftScripts, setDataNftScripts] = useState<string[]>(Array(selectedNFTs.length).fill(''));
+  const [dataNftRef, setDataNftRef] = useState<string[]>(Array(selectedNFTs.length).fill(''));
   const [scriptLoading, setScriptLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchNftView() {
+    async function fetchNftView(nonce: number, index: number) {
       DataNft.setNetworkConfig('devnet');      
       const decodedNft: DataNft = await DataNft.createFromApi({
-        nonce: Number(selectedNonce)
+        nonce: Number(nonce)
       });
     
       const res = await decodedNft.viewDataViaMVXNativeAuth({
@@ -43,15 +45,32 @@ const ScriptTextComponent: React.FC<Props> = ({ selectedNonce, scriptRef, onScri
 
       if (!res?.error) {
         const resDataNft = await (res.data as Blob).text();
-        setDataNftRef(decodedNft.tokenIdentifier)
-        setDataNftScript(resDataNft);
-      }
+        setDataNftRef(prevNft => {
+          const newNft = [...prevNft];
+          newNft[index] = decodedNft.tokenIdentifier;
+          return newNft
+        });
+        
+        setDataNftScripts(prevScript => {
+          const newScript = [...prevScript];
+          const formattedScript = `\`\`\`python\n${resDataNft}\`\`\``;
+          newScript[index] = formattedScript;
+          return newScript;
+        });
+
+        // if (scriptRefs[index]?.current) {
+        //   scriptRefs[index].current.innerHTML = `<code hidden className="language-python">\`\`\`python\\n${resDataNft}\`\`\`</code>`;
+        // }
+      }      
+
       onScriptLoadingChange(false);
       setScriptLoading(false);
     }
-
-    fetchNftView();
-  }, [selectedNonce, tokenLogin?.nativeAuthToken, onScriptLoadingChange]);
+    // Iterate over selectedNFTs and fetch the scripts for each
+    selectedNFTs.forEach((dataNft, index) => {
+      fetchNftView(dataNft.nonce, index);
+    });
+  }, [selectedNFTs, tokenLogin?.nativeAuthToken, scriptRefs, onScriptLoadingChange]);
   
   // Render the content based on the isLoading flag
   return (
@@ -63,9 +82,16 @@ const ScriptTextComponent: React.FC<Props> = ({ selectedNonce, scriptRef, onScri
         />
       </span>
     ) : (
-      <span> the loaded script of {dataNftRef} 
-        <code hidden className="language-python" ref={scriptRef}>```python {dataNftScript}```</code>
-      </span>
+      <React.Fragment>
+        {selectedNFTs.map((dataNft, index) => (
+          <span key={index}>
+            The loaded script of {dataNftRef[index]}:
+            <code hidden className="language-python" ref={scriptRefs[index]}>
+              {dataNftScripts[index]}
+            </code>
+          </span>
+        ))}
+      </React.Fragment>
     )
   );
 };

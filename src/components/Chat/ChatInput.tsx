@@ -20,7 +20,7 @@ interface ChatOption {
 
 const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const scriptRef = useRef<HTMLPreElement>(null);
+  const scriptRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState<string>('')
   const {
     messages,
@@ -101,7 +101,6 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
 
   const combineOptions: ChatOption[] = [
     { label: 'Combine mesh with texture', value: 'Combine12' },
-    { label: 'Combine texture with mesh', value: 'Combine21' },
     // Add more combine options if needed
   ];
 
@@ -175,13 +174,13 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
           </Button>
 
         ))}
-        {selectedNFTs[0]?.nonce && (
-          <ScriptTextComponent 
-            scriptRef={scriptRef} 
-            selectedNonce={selectedNFTs[0].nonce} 
-            onScriptLoadingChange={handleScriptLoadingChange}
+        {selectedNFTs && (
+            <ScriptTextComponent
+              scriptRefs={[scriptRef]} // Pass an array with single ref
+              selectedNFTs={selectedNFTs}
+              onScriptLoadingChange={handleScriptLoadingChange}
             />
-        )}
+          )}
       </div>
     )}
     {/* <span className='text-ms bold'>{introText}</span> */}

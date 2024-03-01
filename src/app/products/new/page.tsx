@@ -8,7 +8,7 @@ import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
 import { Canvas } from '@react-three/fiber';
 import { useDataNftMint } from '@/hooks';
 import { useGetAccountInfo } from '@multiversx/sdk-dapp/hooks';
-import { Bounds, PerspectiveCamera } from '@react-three/drei';
+import { Bounds, OrbitControls, PerspectiveCamera } from '@react-three/drei';
 
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
@@ -102,7 +102,7 @@ export default function NewProduct() {
   };
   return (
     <div className='flex flex-row w-full p-5 text-white'>
-      <div className='flex flex-col w-1/2 pr-2'>
+      <div className='flex flex-col flex-grow pr-2 '>
         <h1 className='mb-5'>Create New Product</h1>
         <Label htmlFor='filename' className='text-white mb-2'>
           Name
@@ -137,7 +137,8 @@ export default function NewProduct() {
           </Button>
         </div>
       </div>
-      <div ref={mintActionSection} className='w-1/2 pl-2 flex flex-col'>
+      <div ref={mintActionSection} className=' pl-2 flex flex-col flex-grow'>
+      {previewUrl !== null && (
         <div className='mt-10 flex-grow'>
           <Canvas>
             <PerspectiveCamera
@@ -147,8 +148,7 @@ export default function NewProduct() {
                   />
             <ambientLight intensity={2} />
             <pointLight position={[10, 10, 10]} />
-            <Bounds clip fit observe margin={1.2}> 
-            {previewUrl !== null && (
+            <Bounds clip fit observe margin={1.2}>            
               <LoaderCanvas
                 index={1}
                 dataNftRef={'1'}
@@ -156,13 +156,13 @@ export default function NewProduct() {
                 maxBoundSize={0}
                 updateDataNftSelected={() => {
                   console.log('updated preview');
-                }}
-                
-              />
-            )}
+                }}                
+              />            
             </Bounds>
+            <OrbitControls />
           </Canvas>
         </div>
+        )}
         {previewUrl !== null && (
         <div className='flex justify-end mt-5' ref={mintActionSection}>
           <Button
