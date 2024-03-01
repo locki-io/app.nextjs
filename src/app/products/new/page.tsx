@@ -10,6 +10,30 @@ import { useDataNftMint } from '@/hooks';
 import { useGetAccountInfo } from '@multiversx/sdk-dapp/hooks';
 import { Bounds, PerspectiveCamera } from '@react-three/drei';
 import Image from 'next/image';
+import { Progress } from 'flowbite-react';
+
+const STATUS_PROGRESS_MAP: any = {
+  Queue: {
+    progress: 10,
+    color: 'red',
+    msg: 'Preview generation process is in Queue'
+  },
+  Pending: {
+    progress: 30,
+    color: 'yellow',
+    msg: 'Preview generation process is pending'
+  },
+  Processing: {
+    progress: 50,
+    color: 'lime',
+    msg: 'Preview generation process is processing'
+  },
+  Success: {
+    progress: 100,
+    color: 'green',
+    msg: 'Preview generation process is finished'
+  }
+};
 
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
@@ -23,6 +47,8 @@ export default function NewProduct() {
   const currentPreviewUrl = useRef('previewUrl');
   const scriptUrl = useRef(null);
   const mintActionSection = useRef(null);
+  const [previewGenerationStatus, setPreviewGenerationStatus] =
+    useState<string>('Queue');
 
   const accountInfo = useGetAccountInfo();
   const { mint } = useDataNftMint(accountInfo?.address);
@@ -36,6 +62,9 @@ export default function NewProduct() {
     if (message.data) {
       console.log('received socket message', message.data);
       const processMsg = JSON.parse(message.data);
+      if (processMsg.processedId == currentProcessId.current) {
+        setPreviewGenerationStatus(processMsg.processingStatus);
+      }
       if (
         processMsg.processingStatus === 'Success' &&
         processMsg.processedId === currentProcessId.current
@@ -43,11 +72,6 @@ export default function NewProduct() {
         setIsGeneratingPreview(false);
         setPreviewUrl(processMsg?.previewUrl || '');
         currentPreviewUrl.current = processMsg?.previewUrl;
-        // setTimeout(() => {
-        //   if (mintActionSection.current) {
-        //     mintActionSection.current?.scrollIntoView({ behavior: 'smooth' });
-        //   }
-        // }, 1000);
       }
     }
   };
@@ -81,6 +105,7 @@ export default function NewProduct() {
       ) {
         setProcessedId(generatePreviewResponse.processedId);
         scriptUrl.current = generatePreviewResponse?.scriptUrl;
+        setPreviewGenerationStatus('Queue');
       } else {
         setIsGeneratingPreview(false);
       }
@@ -172,6 +197,23 @@ export default function NewProduct() {
               <p className='text-center'>
                 Paste your script and generate preview to preview your 3D Models
               </p>
+              {isGeneratingPreview && (
+                <div className='mt-2.5'>
+                  <div className='font-medium'>
+                    {STATUS_PROGRESS_MAP[String(previewGenerationStatus)].msg}
+                  </div>
+                  <Progress
+                    progress={
+                      STATUS_PROGRESS_MAP[String(previewGenerationStatus)]
+                        .progress
+                    }
+                    color={
+                      STATUS_PROGRESS_MAP[String(previewGenerationStatus)].color
+                    }
+                    size='lg'
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
