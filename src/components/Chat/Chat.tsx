@@ -13,7 +13,7 @@ const Chat: FC = () => {
             <Accordion.Title>
               <ChatHeader />
             </Accordion.Title>
-            <Accordion.Content>
+            <Accordion.Content className='overflow-scroll'>
               <div className='flex flex-col h-full max-h-[80vh]'>
                 <ChatMessages className='px-2 py-3 flex-1' />
                 <ChatInput className='px-4' />

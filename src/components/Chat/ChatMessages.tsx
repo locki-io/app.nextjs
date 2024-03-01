@@ -1,71 +1,16 @@
-import { FC, HTMLAttributes, useContext, useState } from 'react';
+import { FC, HTMLAttributes, useContext } from 'react';
 import MarkdownLite from '../MarkdownLite';
-import { Button } from 'flowbite-react';
-import { DataNftsContext, ExtendedDataNft, MessagesContext } from '@/app/context/store';
+import {  MessagesContext } from '@/app/context/store';
 import { cn } from '@/lib/utils';
 
 type ChatMessagesProps = HTMLAttributes<HTMLDivElement>;
-
-interface ChatOption {
-  label: string;
-  value: string;
-}
 
 const ChatMessages: FC<ChatMessagesProps> = ({ className, ...props}) => {
   const { messages } = useContext(MessagesContext);
   const inverseMessages = [...messages].reverse();
 
-  const selectedNFTs: ExtendedDataNft[] | undefined = useContext(DataNftsContext)?.filter(nft => nft.dataNftSelected);
-  const [clicked, setClicked] = useState(false);
-
-  const toProcess = async () => {
-    console.log('process');
-    setClicked(true);
-  };
-
-  const chatOptions: ChatOption[] = [
-    { label: 'Describe', value: 'describe' },
-    { label: 'Transform', value: 'transform' },
-    { label: 'Edit', value: 'edit' }
-  ];
-
-  const combineOptions: ChatOption[] = [
-    { label: 'Combine mesh with texture', value: 'Combine12' },
-    { label: 'Combine texture with mesh', value: 'Combine21' },
-    // Add more combine options if needed
-  ];
-
-  let chatText = '';
-  let options: ChatOption[] = [];
-
-  if (selectedNFTs && selectedNFTs.length === 0) {
-    chatText = 'Chat with';
-  } else if (selectedNFTs && selectedNFTs.length === 1) {
-    chatText = `Describe ${selectedNFTs[0].tokenIdentifier} using`;
-    options = chatOptions;
-  } else if (selectedNFTs && selectedNFTs.length >= 2) {
-    chatText = `Combine ${selectedNFTs.map(nft => nft.tokenIdentifier).join(' and ')} using`;
-    options = combineOptions;
-  }
-  
   return (
     <div>
-      
-      {options.length > 0 && (
-        <div className='flex gap-1.5 items-center'>
-          {options.map((option, index) => (
-            <Button
-              key={index}
-              gradientDuoTone={clicked ? 'limeToTeal' : 'BlueToLime'}
-              onClick={toProcess}
-              className='mb-4'
-            >
-              {option.label}
-            </Button>
-          ))}
-        </div>
-      )}
-      <span className='text-ms bold'>{chatText}</span>
       <div 
         {...props}
         className={cn(
