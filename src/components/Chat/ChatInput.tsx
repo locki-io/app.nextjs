@@ -1,18 +1,26 @@
 'use client'
 
-import { MessagesContext } from '@/app/context/store'
+import { DataNftsContext, ExtendedDataNft, MessagesContext } from '@/app/context/store'
 import { cn } from '@/lib/utils'
-import { FC, HTMLAttributes, useContext, useRef, useState } from 'react'
+import { FC, HTMLAttributes, useContext, useEffect, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import TextAreaAutosize from 'react-textarea-autosize'
 import { nanoid } from 'nanoid'
 import { Message } from 'lib/validators/message'
 import { toast } from 'react-hot-toast'
+import { Button } from 'flowbite-react'
+import ScriptTextComponent from '../DataNfts/ScriptTextComponent'
 
 type ChatInputProps = HTMLAttributes<HTMLDivElement>
 
+interface ChatOption {
+  label: string;
+  value: string;
+}
+
 const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const scriptRef = useRef<HTMLPreElement>(null);
   const [input, setInput] = useState<string>('')
   const {
     messages,
@@ -21,10 +29,10 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
     updateMessage,
     setIsMessageUpdating,
 } = useContext(MessagesContext) 
-
+  
   const { mutate: sendMessage, isPending } = useMutation({
     mutationKey: ['sendMessage'],
-    mutationFn: async (_message: Message ) => {
+    mutationFn: async (_messages: Message ) => {      
       const response = await fetch('/api/message', {
         method: 'POST',
         headers: {
@@ -32,9 +40,11 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         },
         body: JSON.stringify({ messages }),
       })
+      // console.log(response.body)
       return response.body
     },
     onMutate(message) {
+      console.log(message)
       addMessage(message)
     },
     onSuccess: async (stream)=> {
@@ -48,6 +58,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
       }
 
       addMessage(responseMessage)
+      
       setIsMessageUpdating(true)
 
       const reader = stream.getReader()
@@ -75,8 +86,105 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
       textareaRef.current?.focus()
     },
   })
+  
+  const selectedNFTs: ExtendedDataNft[] | undefined = useContext(DataNftsContext)?.filter(nft => nft.dataNftSelected);
+  const [clicked, setClicked] = useState(false);
+  const [scriptLoading, setScriptLoading] = useState(true); 
 
-  return <div {...props} className={cn('border-t border-zinc-300', className)}>
+  const handleScriptLoadingChange = (loading: boolean) => {
+    setScriptLoading(loading); 
+  };
+
+  const chatOptions: ChatOption[] = [
+    { label: 'Describe', value: 'describe' },
+  ];
+
+  const combineOptions: ChatOption[] = [
+    { label: 'Combine mesh with texture', value: 'Combine12' },
+    { label: 'Combine texture with mesh', value: 'Combine21' },
+    // Add more combine options if needed
+  ];
+
+  let introText = '';
+  let options: ChatOption[] = [];
+
+  if (selectedNFTs && selectedNFTs.length === 0) {
+    introText = 'I am a 3D asset assistant, I use the default knowledge of locki to help me start with making 3D dataNFTs';
+  } else if (selectedNFTs && selectedNFTs.length === 1) {
+    introText = `Describe ${selectedNFTs[0].tokenIdentifier} using`; 
+    options = chatOptions;
+  } else if (selectedNFTs && selectedNFTs.length >= 2) {
+    introText = `Combine ${selectedNFTs.map(nft => nft.tokenIdentifier).join(' and ')} using`;
+    options = combineOptions;
+  }
+
+  const presetMessage = (optionValue: string): Message => {
+    // Define the logic to generate the preset message based on the option value
+    switch (optionValue) {
+      case 'describe':
+        return { 
+          id: nanoid(), 
+          isUserMessage: true,
+          text: scriptRef.current?.innerText || '',
+          };
+      case 'Combine12':
+        return { 
+          id: nanoid(), 
+          isUserMessage: true, 
+          text: 'Preset message for Combine12 option' 
+        };
+      case 'Combine21':
+        return { 
+          id: nanoid(), 
+          isUserMessage: true, 
+          text: 'Preset message for Combine21 option' 
+        };
+      default:
+        return { id: nanoid(), isUserMessage: true, text: '' };
+    }
+  };
+
+  useEffect(() => {
+    const updateFirstMessage = () => {
+        // updating the system message -> JNTODO issue is not revealing on display
+        updateMessage(messages[0].id, () => introText);
+    };
+    updateFirstMessage();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array to execute once on mount
+
+  return (
+    
+  <div {...props} className={cn('border-t border-zinc-300', className)}>
+    {options.length > 0 && (
+      <div className='flex gap-1.5 items-center'>
+        {options.map((option, index) => (
+          <Button
+            key={index}
+            gradientDuoTone={clicked ? 'limeToTeal' : 'BlueToLime'}
+            onClick={() => {
+              const message = presetMessage(option.value); 
+              setClicked(true)
+              sendMessage(message)
+              setScriptLoading(true)
+            }}
+            className='mb-4'
+            disabled={scriptLoading}
+          >
+            {option.label}
+          </Button>
+
+        ))}
+        {selectedNFTs[0]?.nonce && (
+          <ScriptTextComponent 
+            scriptRef={scriptRef} 
+            selectedNonce={selectedNFTs[0].nonce} 
+            onScriptLoadingChange={handleScriptLoadingChange}
+            />
+        )}
+      </div>
+    )}
+    {/* <span className='text-ms bold'>{introText}</span> */}
     <div className='relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none'>
       <TextAreaAutosize 
         ref={textareaRef}
@@ -90,7 +198,8 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
               isUserMessage: true,
               text: input,
             }
-
+            console.log('message being sent:')
+            console.log(message)
             sendMessage(message)
           }
         }}
@@ -103,8 +212,8 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         className='peer disabled:opacity-50 pr-14 resize-none block w-full border-0 bg-zinc-100 py-1.5 text-gray-900 focus:ring-0 text-sm sm:leading-6'
       />
     </div>
-    </div>
-}
+  </div>
+)}
 
 export default ChatInput
 

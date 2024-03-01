@@ -8,6 +8,7 @@ import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
 import { Canvas } from '@react-three/fiber';
 import { useDataNftMint } from '@/hooks';
 import { useGetAccountInfo } from '@multiversx/sdk-dapp/hooks';
+import { Bounds, PerspectiveCamera } from '@react-three/drei';
 
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
@@ -100,83 +101,91 @@ export default function NewProduct() {
     );
   };
   return (
-    <div className='w-full p-5 text-white'>
-      <h1 className='mb-5'>Create New Product</h1>
-      <Label htmlFor='filename' className='text-white mb-2'>
-        Name
-      </Label>
-      <TextInput
-        type='text'
-        id='filename'
-        placeholder='Enter the name of the NFT'
-        className='mb-5'
-        value={name}
-        onChange={(e: any) => setName(e.target.value)}
-      />
-      <div className='mb-2 block'>
-        <Label htmlFor='script' value='Script' className='text-white' />
+    <div className='flex flex-row w-full p-5 text-white'>
+      <div className='flex flex-col w-1/2 pr-2'>
+        <h1 className='mb-5'>Create New Product</h1>
+        <Label htmlFor='filename' className='text-white mb-2'>
+          Name
+        </Label>
+        <TextInput
+          type='text'
+          id='filename'
+          placeholder='Enter the name of the NFT'
+          className='mb-5'
+          value={name}
+          onChange={(e: any) => setName(e.target.value)}
+        />
+        <div className='mb-2'>
+          <Label htmlFor='script' value='Script' className='text-white' />
+        </div>
+        <Textarea
+          id='script'
+          placeholder='paste your script to generate preview and mint as DataNft'
+          required
+          rows={20}
+          value={script}
+          onChange={(e: any) => setScript(e.target.value)}
+        />
+        <div className='justify-end mt-5'>
+          <Button
+            gradientDuoTone='purpleToBlue'
+            onClick={handleGeneratePreview}
+            isProcessing={isGeneratingPreview}
+            disabled={isGeneratingPreview}
+          >
+            Generate Preview
+          </Button>
+        </div>
       </div>
-      <Textarea
-        id='script'
-        placeholder='paste your script to generate preview and mint as DataNft'
-        required
-        rows={20}
-        value={script}
-        onChange={(e: any) => setScript(e.target.value)}
-      />
-      <div className='flex justify-end mt-5'>
-        <Button
-          gradientDuoTone='purpleToBlue'
-          onClick={handleGeneratePreview}
-          isProcessing={isGeneratingPreview}
-          disabled={isGeneratingPreview}
-        >
-          Generate Preview
-        </Button>
-      </div>
-      <div ref={mintActionSection}>
-        <>
-          <div className='w-full mt-10'>
-            <Canvas camera={{ position: [2, 3, 10] }}>
-              <ambientLight intensity={2} />
-              <directionalLight color='white' position={[0, 0, 5]} />
-              {previewUrl !== null && (
-                <LoaderCanvas
-                  index={1}
-                  dataNftRef={'1'}
-                  glbFileLink={previewUrl}
-                  maxBoundSize={0}
-                  updateDataNftSelected={() => {
-                    console.log('updated preview');
-                  }}
-                />
-              )}
-            </Canvas>
-          </div>
-          {previewUrl !== null && (
-            <div className='flex justify-end mt-5' ref={mintActionSection}>
-              <Button
-                gradientDuoTone='pinkToOrange'
-                onClick={() => {
-                  window.scrollTo(0, 0);
+      <div ref={mintActionSection} className='w-1/2 pl-2 flex flex-col'>
+        <div className='mt-10 flex-grow'>
+          <Canvas>
+            <PerspectiveCamera
+                    makeDefault
+                    fov={50}
+                    position={[10, 10, 16]}
+                  />
+            <ambientLight intensity={2} />
+            <pointLight position={[10, 10, 10]} />
+            <Bounds clip fit observe margin={1.2}> 
+            {previewUrl !== null && (
+              <LoaderCanvas
+                index={1}
+                dataNftRef={'1'}
+                glbFileLink={previewUrl}
+                maxBoundSize={0}
+                updateDataNftSelected={() => {
+                  console.log('updated preview');
                 }}
-                isProcessing={false}
-                disabled={false}
-                className='mr-4'
-              >
-                Review your script and Regenerate
-              </Button>
-              <Button
-                gradientDuoTone='greenToBlue'
-                onClick={handleMintProduct}
-                isProcessing={false}
-                disabled={isMinting}
-              >
-                Mint to Locki Cloud
-              </Button>
-            </div>
-          )}
-        </>
+                
+              />
+            )}
+            </Bounds>
+          </Canvas>
+        </div>
+        {previewUrl !== null && (
+        <div className='flex justify-end mt-5' ref={mintActionSection}>
+          <Button
+            gradientDuoTone='pinkToOrange'
+            onClick={() => {
+              window.scrollTo(0, 0);
+            }}
+            isProcessing={false}
+            disabled={false}
+            className='mr-4'
+          >
+            Review your script and Regenerate
+          </Button>
+          <Button
+            gradientDuoTone='greenToBlue'
+            onClick={handleMintProduct}
+            isProcessing={false}
+            disabled={isMinting}
+          >
+            Mint to Locki Cloud
+          </Button>
+        </div>
+        )}
       </div>
     </div>
   );

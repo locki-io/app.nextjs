@@ -37,7 +37,7 @@ export function MessagesProvider({children}: {children: ReactNode}) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: nanoid(),
-      text:'Select a DataNft and paste the code here, please I will describe it',
+      text:'I am a 3D asset assistant, I use the default knowledge of locki to help me start with making 3D dataNFTs',
       isUserMessage: false,
     },
   ])
