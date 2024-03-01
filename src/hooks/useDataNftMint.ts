@@ -23,15 +23,6 @@ export const useDataNftMint = (address: string) => {
         new Address(address)
       );
       const antiSpamTax = requirements?.antiSpamTaxValue;
-      console.log(
-        `dataNftMinter.mint('${new Address(address)}', '${tokenName}', '${
-          DATA_MARSHALL_URL[process.env.NEXT_PUBLIC_CHAIN || 'devnet']
-        }', '${dataStreamUrl}', '${dataPreviewUrl}', ${
-          royalityPercentage * 100
-        }, 1, '${title}', '${description}', 1, ${antiSpamTax}, {nftStorageToken: '${
-          process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
-        }'})`
-      );
 
       const mintTransaction: Transaction = await dataNftMinter.mint(
         new Address(address),
@@ -43,16 +34,14 @@ export const useDataNftMint = (address: string) => {
         1,
         title,
         description,
-        1,
-        antiSpamTax,
+        900,
+        antiSpamTax + 1e19,
         {
           nftStorageToken: process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
         }
       );
-      console.log('mintTransaction', mintTransaction);
 
       await refreshAccount();
-      console.log('refreshAccount');
 
       const { sessionId, error } = await sendTransactions({
         transactions: mintTransaction,
@@ -63,7 +52,6 @@ export const useDataNftMint = (address: string) => {
         },
         redirectAfterSign: false
       });
-      console.log('sessionId', sessionId, 'error', error);
 
       return {
         id: sessionId,
