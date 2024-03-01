@@ -9,6 +9,7 @@ import { Canvas } from '@react-three/fiber';
 import { useDataNftMint } from '@/hooks';
 import { useGetAccountInfo } from '@multiversx/sdk-dapp/hooks';
 import { Bounds, PerspectiveCamera } from '@react-three/drei';
+import Image from 'next/image';
 
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
@@ -138,54 +139,49 @@ export default function NewProduct() {
         </div>
       </div>
       <div ref={mintActionSection} className='w-1/2 pl-2 flex flex-col'>
-        <div className='mt-10 flex-grow'>
-          <Canvas>
-            <PerspectiveCamera
-                    makeDefault
-                    fov={50}
-                    position={[10, 10, 16]}
-                  />
-            <ambientLight intensity={2} />
-            <pointLight position={[10, 10, 10]} />
-            <Bounds clip fit observe margin={1.2}> 
-            {previewUrl !== null && (
-              <LoaderCanvas
-                index={1}
-                dataNftRef={'1'}
-                glbFileLink={previewUrl}
-                maxBoundSize={0}
-                updateDataNftSelected={() => {
-                  console.log('updated preview');
-                }}
-                
+        <div className='mt-10 flex-grow flex items-center'>
+          {previewUrl ? (
+            <Canvas>
+              <PerspectiveCamera makeDefault fov={50} position={[10, 10, 16]} />
+              <ambientLight intensity={2} />
+              <pointLight position={[10, 10, 10]} />
+              <Bounds clip fit observe margin={1.2}>
+                <LoaderCanvas
+                  index={1}
+                  dataNftRef={'1'}
+                  glbFileLink={previewUrl}
+                  maxBoundSize={0}
+                  updateDataNftSelected={() => {
+                    console.log('updated preview');
+                  }}
+                />
+              </Bounds>
+            </Canvas>
+          ) : (
+            <div className='w-full'>
+              <Image
+                alt={'generate preview'}
+                src={'/assets/img/171.-3D-Modelling.png'}
+                className='m-auto'
+                width={200}
+                height={200}
               />
-            )}
-            </Bounds>
-          </Canvas>
+              <p className='text-center'>
+                Paste your script and generate preview to preview your 3D Models
+              </p>
+            </div>
+          )}
         </div>
-        {previewUrl !== null && (
-        <div className='flex justify-end mt-5' ref={mintActionSection}>
-          <Button
-            gradientDuoTone='pinkToOrange'
-            onClick={() => {
-              window.scrollTo(0, 0);
-            }}
-            isProcessing={false}
-            disabled={false}
-            className='mr-4'
-          >
-            Review your script and Regenerate
-          </Button>
+        <div className='flex justify-end mt-5 pr-5' ref={mintActionSection}>
           <Button
             gradientDuoTone='greenToBlue'
             onClick={handleMintProduct}
             isProcessing={false}
-            disabled={isMinting}
+            disabled={isMinting || !previewUrl}
           >
             Mint to Locki Cloud
           </Button>
         </div>
-        )}
       </div>
     </div>
   );
