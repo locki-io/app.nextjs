@@ -488,10 +488,10 @@
     wrap-ansi "^8.1.0"
     wrap-ansi-cjs "npm:wrap-ansi@^7.0.0"
 
-"@itheum/sdk-mx-data-nft@^2.6.2":
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/@itheum/sdk-mx-data-nft/-/sdk-mx-data-nft-2.6.3.tgz#36eb8a447642be8140ece96a7823a7dabba3d927"
-  integrity sha512-iDpACWuNlrBuW41/GDre2sabZ6/7OQQZmXDXVGdw2lqN5JFdFqYDneNbiVZpgjFFYHtykjE75USwEOkGjfp8kw==
+"@itheum/sdk-mx-data-nft@2.7.0-beta.1":
+  version "2.7.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@itheum/sdk-mx-data-nft/-/sdk-mx-data-nft-2.7.0-beta.1.tgz#7b6df00aded2f68350e9cea20143acc902b44b5c"
+  integrity sha512-1O+L45fm+rrUELiZeCPQDSLFjHzkxkocyzJzxVVYiVPLP3GIydvCJRL4zXdEd2vj4WJ9bTx5YFui++ywYxJJCg==
   dependencies:
     "@multiversx/sdk-core" "12.18.0"
     "@multiversx/sdk-network-providers" "2.2.1"
@@ -790,12 +790,12 @@
     buffer "6.0.3"
     json-bigint "1.0.0"
 
-"@multiversx/sdk-network-providers@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@multiversx/sdk-network-providers/-/sdk-network-providers-1.5.0.tgz#29e807d87b52f9d5668e747e042ef33c20065796"
-  integrity sha512-GgmpOfwdeK8QvBCVJ96/L2ATNax7/rdSDvPLlmppKHVuFAj56/EqGnrLuktNPRWBsZse+7DMoS38kGtN77AwJQ==
+"@multiversx/sdk-network-providers@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@multiversx/sdk-network-providers/-/sdk-network-providers-2.3.0.tgz#928d62fc1768596de3c322c498a62016bf67d883"
+  integrity sha512-dY7HI3rMgHHulxY9XR/O6/tCWji6ZvkuetW0NmLUjFnfOtkIdnhUzQ0u5wZaMN0SeuJIWf1QPZEsiGN82ilfTQ==
   dependencies:
-    axios "0.24.0"
+    axios "1.6.5"
     bech32 "1.1.4"
     bignumber.js "9.0.1"
     buffer "6.0.3"
