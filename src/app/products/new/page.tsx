@@ -98,7 +98,10 @@ export default function NewProduct() {
       currentPreviewUrl.current || '',
       10,
       name,
-      name
+      name,
+      `Transaction pending to mint ${name}`,
+      `Error in minting ${name}`,
+      `Successfully minted ${name} in Locki. Please go to Library page and view it.`
     );
   };
   return (

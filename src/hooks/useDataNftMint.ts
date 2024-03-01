@@ -16,7 +16,10 @@ export const useDataNftMint = (address: string) => {
     dataPreviewUrl: string,
     royalityPercentage: number,
     title: string,
-    description: string
+    description: string,
+    processingMessage = 'Minting Standard Data NFT',
+    errorMessage = 'Data NFT minting error',
+    successMessage = 'Data NFT minted successfully'
   ) {
     try {
       const requirements = await dataNftMinter.viewMinterRequirements(
@@ -46,9 +49,9 @@ export const useDataNftMint = (address: string) => {
       const { sessionId, error } = await sendTransactions({
         transactions: mintTransaction,
         transactionsDisplayInfo: {
-          processingMessage: 'Minting Standard Data NFT',
-          errorMessage: 'Data NFT minting error',
-          successMessage: 'Data NFT minted successfully'
+          processingMessage,
+          errorMessage,
+          successMessage,
         },
         redirectAfterSign: false
       });
