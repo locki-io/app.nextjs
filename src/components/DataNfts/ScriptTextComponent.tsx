@@ -57,10 +57,6 @@ const ScriptTextComponent: React.FC<Props> = ({ selectedNFTs, scriptRefs, onScri
           newScript[index] = formattedScript;
           return newScript;
         });
-
-        // if (scriptRefs[index]?.current) {
-        //   scriptRefs[index].current.innerHTML = `<code hidden className="language-python">\`\`\`python\\n${resDataNft}\`\`\`</code>`;
-        // }
       }      
 
       onScriptLoadingChange(false);
@@ -86,7 +82,7 @@ const ScriptTextComponent: React.FC<Props> = ({ selectedNFTs, scriptRefs, onScri
         {selectedNFTs.map((dataNft, index) => (
           <span key={index}>
             The loaded script of {dataNftRef[index]}:
-            <code hidden className="language-python" ref={scriptRefs[index]}>
+            <code hidden className="language-python" id={dataNftRef[index]} ref={scriptRefs[index]}>
               {dataNftScripts[index]}
             </code>
           </span>

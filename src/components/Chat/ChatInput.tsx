@@ -97,6 +97,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
 
   const chatOptions: ChatOption[] = [
     { label: 'Describe', value: 'describe' },
+    { label: 'Transform', value: 'transform' },
   ];
 
   const combineOptions: ChatOption[] = [
@@ -126,6 +127,12 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
           isUserMessage: true,
           text: scriptRef.current?.innerText || '',
           };
+      case 'transform':
+        return {
+          id: nanoid(),
+          isUserMessage: true,
+          text: 'Can you transform '+ `\{${scriptRef.current?.id}\}`+ ' into'
+        };
       case 'Combine12':
         return { 
           id: nanoid(), 
@@ -164,11 +171,15 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
             onClick={() => {
               const message = presetMessage(option.value); 
               setClicked(true)
-              sendMessage(message)
+              if (option.value == 'describe') 
+                sendMessage(message)
+              else
+                setInput(message.text)
+
               setScriptLoading(true)
             }}
             className='mb-4'
-            disabled={scriptLoading}
+            disabled={scriptLoading && clicked}
           >
             {option.label}
           </Button>
@@ -192,10 +203,22 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault()
 
+            let modifiedInput = input;
+            // Define the regex pattern
+            const regexPattern = /\{DATANFTFT-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}\}/g;
+
+            if (input.match(regexPattern)) {
+      
+                modifiedInput = input.replace(regexPattern, () => {
+                const innerText = scriptRef.current?.innerText || '';
+                return innerText ; 
+              });
+            }
+
             const message: Message = {
               id: nanoid(),
               isUserMessage: true,
-              text: input,
+              text: modifiedInput,
             }
             console.log('message being sent:')
             console.log(message)

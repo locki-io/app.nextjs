@@ -1,5 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopy } from '@fortawesome/free-solid-svg-icons'
+
+import "prismjs/themes/prism-okaidia.css";
 
 const MarkdownLite = ({ text }: { text: string }) => {
   const linkRegex = /\[(.+?)\]\((.+?)\)/g
@@ -73,14 +77,22 @@ const MarkdownLite = ({ text }: { text: string }) => {
       parts.push(text.slice(linkIndex, matchStart))
     }
 
-    parts.push( 
+    const copyCodeToClipboard = () => {
+      navigator.clipboard.writeText(codeContent);
+    };
+
+    parts.push(
       <textarea
         key={`code-block-${matchStart}`}
         value={codeContent}
         rows={4}
-        className="border border-gray-300 p-2 mt-2 w-full text-black"
+        className="border border-gray-300 p-2 mt-2 w-full text-gray-600"
         readOnly
-      />
+      >
+        <button onClick={copyCodeToClipboard} className="absolute top-0 right-0 m-2 text-gray-800 hover:text-gray-200">
+          <FontAwesomeIcon icon={faCopy} />
+        </button>
+      </textarea>
     )
 
     linkIndex = matchEnd
