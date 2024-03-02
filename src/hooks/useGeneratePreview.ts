@@ -1,13 +1,20 @@
 import axios from 'axios';
 
 export const useGeneratePreview = () => {
-  async function generatePreview(filename: string, script: string) {
+  async function generatePreview(
+    filename: string,
+    script: string,
+    inputOption: string,
+    exportOption: string
+  ) {
     try {
       const generatePreviewResponse = await axios({
         method: 'POST',
         url: `${process.env.NEXT_PUBLIC_BASE_API_URL || ''}/generatePreview`,
         params: {
-          filename: filename
+          filename,
+          inputOption,
+          exportOption
         },
         data: script
       });
