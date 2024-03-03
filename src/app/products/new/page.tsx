@@ -87,7 +87,7 @@ export default function NewProduct() {
   const currentProcessId = useRef(processedId);
   const [isConnected, setIsConnected] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const currentPreviewUrl = useRef('previewUrl');
+  const currentPreviewUrl = useRef(previewUrl);
   const scriptUrl = useRef(null);
   const mintActionSection = useRef(null);
   const [inputOptionVal, setInputOptionVal] = useState(0);

@@ -12,7 +12,7 @@ export const useGeneratePreview = () => {
         method: 'POST',
         url: `${process.env.NEXT_PUBLIC_BASE_API_URL || ''}/generatePreview`,
         params: {
-          filename,
+          filename: filename.replaceAll(' ', '').trim(),
           inputOption,
           exportOption
         },
