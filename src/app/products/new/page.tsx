@@ -79,7 +79,8 @@ const PREVIEW_OPTIONS: { label: string; value: string }[] = [
 ];
 
 export default function NewProduct() {
-  const { generatePreview } = useGeneratePreview();
+  const { generatePreview, getSignedUrl, uploadFileWithLink } =
+    useGeneratePreview();
   const [name, setName] = useState('');
   const [script, setScript] = useState('');
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
@@ -88,10 +89,11 @@ export default function NewProduct() {
   const [isConnected, setIsConnected] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const currentPreviewUrl = useRef(previewUrl);
-  const scriptUrl = useRef(null);
+  const scriptUrl = useRef<string | null>(null);
   const mintActionSection = useRef(null);
   const [inputOptionVal, setInputOptionVal] = useState(0);
   const [previewOptionVal, setPreviewOptionVal] = useState(0);
+  const [uploadedScriptFile, setUploadedScriptFile] = useState<any>(null);
   const [previewGenerationStatus, setPreviewGenerationStatus] =
     useState<string>('Queue');
 
@@ -125,7 +127,7 @@ export default function NewProduct() {
     process.env.NEXT_PUBLIC_WEBSOCKET_URL || '',
     handleWebsocketMessage,
     (error) => {
-      console.log('error', error);
+      console.error('error', error);
     }
   );
 
@@ -143,17 +145,38 @@ export default function NewProduct() {
   const handleGeneratePreview = async () => {
     try {
       setIsGeneratingPreview(true);
+      let uploadFileUploadResponse;
+      if (INPUT_OPTIONS[inputOptionVal].fileTypes) {
+        const signedUrlResponse: any = await getSignedUrl(
+          uploadedScriptFile.name
+        );
+        const { processedId, preSignedUrl } = signedUrlResponse?.data;
+        uploadFileUploadResponse = await uploadFileWithLink(
+          preSignedUrl,
+          uploadedScriptFile
+        );
+        if (uploadFileUploadResponse.status === 200) {
+          setProcessedId(processedId);
+          currentProcessId.current = processedId;
+          const signedUrlObject = new URL(preSignedUrl);
+          scriptUrl.current = `${signedUrlObject.origin}${signedUrlObject.pathname}`;
+        }
+      }
       const generatePreviewResponse = await generatePreview(
         name,
-        script,
+        INPUT_OPTIONS[inputOptionVal].fileTypes && scriptUrl.current
+          ? scriptUrl.current
+          : script,
         INPUT_OPTIONS[inputOptionVal].value,
-        PREVIEW_OPTIONS[previewOptionVal].value
+        PREVIEW_OPTIONS[previewOptionVal].value,
+        currentProcessId.current
       );
       if (
         generatePreviewResponse.status === 'Queued' &&
         generatePreviewResponse.processedId
       ) {
         setProcessedId(generatePreviewResponse.processedId);
+        currentProcessId.current = generatePreviewResponse.processedId;
         scriptUrl.current = generatePreviewResponse?.scriptUrl;
         setPreviewGenerationStatus('Queue');
       } else {
@@ -180,6 +203,20 @@ export default function NewProduct() {
     );
   };
 
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file?.name) {
+      setUploadedScriptFile(file);
+      setName(
+        file?.name
+          .replaceAll('.py', '')
+          .replaceAll('.blend', '')
+          .replaceAll(' ', '')
+          .trim()
+      );
+    }
+  };
+
   return (
     <div className='flex flex-row w-full p-5 text-white'>
       <form className='flex flex-col w-1/2 pr-2'>
@@ -194,6 +231,7 @@ export default function NewProduct() {
           className='mb-5'
           value={name}
           onChange={(e: any) => setName(e.target.value)}
+          disabled={!!INPUT_OPTIONS[inputOptionVal].fileTypes}
         />
         <div className='max-w-md mb-5'>
           <div className='mb-2'>
@@ -226,6 +264,7 @@ export default function NewProduct() {
             <FileInput
               id='scriptFile'
               helperText={INPUT_OPTIONS[inputOptionVal].placeholder}
+              onChange={handleFileUpload}
             />
           </div>
         ) : (
