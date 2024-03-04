@@ -1,8 +1,15 @@
 'use client';
 
-import { Label, Textarea, TextInput, Button } from 'flowbite-react';
+import {
+  Label,
+  Textarea,
+  TextInput,
+  Button,
+  Select,
+  FileInput
+} from 'flowbite-react';
 import { useGeneratePreview } from '@/hooks/useGeneratePreview';
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useWebsocketConnection } from '@/hooks/useWebsocketConnection';
 import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
 import { Canvas } from '@react-three/fiber';
@@ -35,6 +42,42 @@ const STATUS_PROGRESS_MAP: any = {
   }
 };
 
+const INPUT_OPTIONS: {
+  label: string;
+  value: string;
+  fileTypes?: string;
+  placeholder: string;
+}[] = [
+  {
+    label: 'Blender python script as text input',
+    value: 'blenderPyInput',
+    placeholder: 'Enter or paste your python script here'
+  },
+  {
+    label: 'Blender python script as a python file',
+    value: 'blenderPyFile',
+    fileTypes: 'py',
+    placeholder: 'Upload the python script file'
+  },
+  {
+    label: 'Blend file upload',
+    value: 'blendFile',
+    fileTypes: 'blend',
+    placeholder: 'Upload the blend file'
+  }
+];
+
+const PREVIEW_OPTIONS: { label: string; value: string }[] = [
+  {
+    label: 'Export as glb',
+    value: 'glb'
+  },
+  {
+    label: 'Export as gltf',
+    value: 'gltf'
+  }
+];
+
 export default function NewProduct() {
   const { generatePreview } = useGeneratePreview();
   const [name, setName] = useState('');
@@ -44,9 +87,11 @@ export default function NewProduct() {
   const currentProcessId = useRef(processedId);
   const [isConnected, setIsConnected] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const currentPreviewUrl = useRef('previewUrl');
+  const currentPreviewUrl = useRef(previewUrl);
   const scriptUrl = useRef(null);
   const mintActionSection = useRef(null);
+  const [inputOptionVal, setInputOptionVal] = useState(0);
+  const [previewOptionVal, setPreviewOptionVal] = useState(0);
   const [previewGenerationStatus, setPreviewGenerationStatus] =
     useState<string>('Queue');
 
@@ -98,7 +143,12 @@ export default function NewProduct() {
   const handleGeneratePreview = async () => {
     try {
       setIsGeneratingPreview(true);
-      const generatePreviewResponse = await generatePreview(name, script);
+      const generatePreviewResponse = await generatePreview(
+        name,
+        script,
+        INPUT_OPTIONS[inputOptionVal].value,
+        PREVIEW_OPTIONS[previewOptionVal].value
+      );
       if (
         generatePreviewResponse.status === 'Queued' &&
         generatePreviewResponse.processedId
@@ -129,9 +179,10 @@ export default function NewProduct() {
       `Successfully minted ${name} in Locki. Please go to Library page and view it.`
     );
   };
+
   return (
     <div className='flex flex-row w-full p-5 text-white'>
-      <div className='flex flex-col w-1/2 pr-2'>
+      <form className='flex flex-col w-1/2 pr-2'>
         <h1 className='mb-5'>Create New Product</h1>
         <Label htmlFor='filename' className='text-white mb-2'>
           Name
@@ -144,17 +195,76 @@ export default function NewProduct() {
           value={name}
           onChange={(e: any) => setName(e.target.value)}
         />
-        <div className='mb-2'>
-          <Label htmlFor='script' value='Script' className='text-white' />
+        <div className='max-w-md mb-5'>
+          <div className='mb-2'>
+            <Label htmlFor='input' value='Input' className='text-white' />
+          </div>
+          <Select
+            id='category'
+            required
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              setInputOptionVal(Number(e.target.value));
+            }}
+            value={inputOptionVal}
+          >
+            {INPUT_OPTIONS.map((inputOption, optionIndex) => (
+              <option key={inputOption.value} value={optionIndex}>
+                {inputOption.label}
+              </option>
+            ))}
+          </Select>
         </div>
-        <Textarea
-          id='script'
-          placeholder='paste your script to generate preview and mint as DataNft'
+        {INPUT_OPTIONS[inputOptionVal].fileTypes ? (
+          <div id='fileUpload' className='max-w-md mb-5'>
+            <div className='mb-2 block'>
+              <Label
+                htmlFor='scriptFile'
+                value='Upload input file'
+                className='text-white'
+              />
+            </div>
+            <FileInput
+              id='scriptFile'
+              helperText={INPUT_OPTIONS[inputOptionVal].placeholder}
+            />
+          </div>
+        ) : (
+          <div className='max-w-md mb-5'>
+            <div className='mb-2'>
+              <Label htmlFor='script' value='Script' className='text-white' />
+            </div>
+            <Textarea
+              id='script'
+              placeholder='paste your script to generate preview and mint as DataNft'
+              required
+              rows={20}
+              value={script}
+              onChange={(e: any) => setScript(e.target.value)}
+            />
+          </div>
+        )}
+        <div className='mb-2'>
+          <Label
+            htmlFor='previewOption'
+            value='Export Option'
+            className='text-white'
+          />
+        </div>
+        <Select
+          id='previewOption'
           required
-          rows={20}
-          value={script}
-          onChange={(e: any) => setScript(e.target.value)}
-        />
+          onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+            setPreviewOptionVal(Number(e.target.value))
+          }
+          className='mb-5'
+          value={previewOptionVal}
+        >
+          {PREVIEW_OPTIONS.map((previewOption, optionIndex) => (
+            <option key={previewOption.value} value={optionIndex}>
+              {previewOption.label}
+            </option>
+          ))}
+        </Select>
         <div className='justify-end mt-5'>
           <Button
             gradientDuoTone='purpleToBlue'
@@ -165,7 +275,7 @@ export default function NewProduct() {
             Generate Preview
           </Button>
         </div>
-      </div>
+      </form>
       <div ref={mintActionSection} className='w-1/2 pl-2 flex flex-col'>
         <div className='mt-10 flex-grow flex items-center'>
           {previewUrl ? (
