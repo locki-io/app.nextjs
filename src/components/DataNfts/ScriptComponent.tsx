@@ -4,9 +4,8 @@ import { DataNft } from "@itheum/sdk-mx-data-nft";
 import { useGetLoginInfo } from "hooks";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCopy } from '@fortawesome/free-solid-svg-icons';
-
-import "prismjs/themes/prism-okaidia.css";
-
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { arta } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 type Props = {
   selectedNonces: number[];
@@ -18,7 +17,7 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
   const { tokenLogin } = useGetLoginInfo();
   const [dataNftScript, setDataNftScript] = useState('');
   const [dataNftLoading, setDataNftLoading] = useState(true);
-  const codeRef = useRef<HTMLPreElement>(null);
+  const codeRef = useRef<HTMLDivElement>(null);
  
   useEffect(() => {
     async function fetchNftView() {
@@ -77,11 +76,10 @@ const ScriptComponent: React.FC<Props> = ({ selectedNonces }) => {
                   />
                 </div>
               ) : (
-                <div className="Code" >
-                  <pre >
-                    <code className="language-python" ref={codeRef}>{dataNftScript}</code>
-                  </pre>
-
+                <div ref={codeRef}>
+                  <SyntaxHighlighter language='python' style={arta} >
+                    {dataNftScript}
+                  </SyntaxHighlighter>
                   <button onClick={copyCodeToClipboard} className="absolute top-0 right-0 m-2 text-gray-500 hover:text-gray-200">
                     <FontAwesomeIcon icon={faCopy} />
                   </button>

@@ -15,9 +15,12 @@ import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
 import { Canvas } from '@react-three/fiber';
 import { useDataNftMint } from '@/hooks';
 import { useGetAccountInfo } from '@multiversx/sdk-dapp/hooks';
-import { Bounds, PerspectiveCamera } from '@react-three/drei';
+import { Bounds, PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import Image from 'next/image';
 import { Progress } from 'flowbite-react';
+import Chat from '@/components/Chat/Chat';
+import { DataNftsContext, ExtendedDataNft } from '@/app/context/store';
+import Providers from '@/components/Chat/Provider';
 
 const STATUS_PROGRESS_MAP: any = {
   Queue: {
@@ -96,7 +99,7 @@ export default function NewProduct() {
   const [uploadedScriptFile, setUploadedScriptFile] = useState<any>(null);
   const [previewGenerationStatus, setPreviewGenerationStatus] =
     useState<string>('Queue');
-
+  const [dataNfts, setDataNfts] = useState<ExtendedDataNft[]>([]);
   const accountInfo = useGetAccountInfo();
   const { mint } = useDataNftMint(accountInfo?.address);
   const [isMinting, setIsMinting] = useState(false);
@@ -218,165 +221,204 @@ export default function NewProduct() {
   };
 
   return (
-    <div className='flex flex-row w-full p-5 text-white'>
-      <form className='flex flex-col w-1/2 pr-2'>
-        <h1 className='mb-5'>Create New Product</h1>
-        <Label htmlFor='filename' className='text-white mb-2'>
-          Name
-        </Label>
-        <TextInput
-          type='text'
-          id='filename'
-          placeholder='Enter the name of the NFT'
-          className='mb-5'
-          value={name}
-          onChange={(e: any) => setName(e.target.value)}
-          disabled={!!INPUT_OPTIONS[inputOptionVal].fileTypes}
-        />
-        <div className='max-w-md mb-5'>
-          <div className='mb-2'>
-            <Label htmlFor='input' value='Input' className='text-white' />
-          </div>
-          <Select
-            id='category'
-            required
-            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-              setInputOptionVal(Number(e.target.value));
-            }}
-            value={inputOptionVal}
-          >
-            {INPUT_OPTIONS.map((inputOption, optionIndex) => (
-              <option key={inputOption.value} value={optionIndex}>
-                {inputOption.label}
-              </option>
-            ))}
-          </Select>
-        </div>
-        {INPUT_OPTIONS[inputOptionVal].fileTypes ? (
-          <div id='fileUpload' className='max-w-md mb-5'>
-            <div className='mb-2 block'>
+    <Providers>
+      <DataNftsContext.Provider value={dataNfts}>
+        <div className='flex flex-row w-full p-5 text-white'>
+          <Chat />
+          <form className='flex flex-col w-1/2 pr-2'>
+            <h1 className='mb-5'>Create New Product</h1>
+            <Label htmlFor='filename' className='text-white mb-2'>
+              Name
+            </Label>
+            <TextInput
+              type='text'
+              id='filename'
+              placeholder='Enter the name of the NFT'
+              className='mb-5'
+              value={name}
+              onChange={(e: any) => setName(e.target.value)}
+              disabled={!!INPUT_OPTIONS[inputOptionVal].fileTypes}
+            />
+
+            <div className='max-w-md mb-5'>
+              <div className='mb-2'>
+                <Label htmlFor='input' value='Input' className='text-white' />
+              </div>
+              <Select
+                id='category'
+                required
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                  setInputOptionVal(Number(e.target.value));
+                }}
+                value={inputOptionVal}
+              >
+                {INPUT_OPTIONS.map((inputOption, optionIndex) => (
+                  <option key={inputOption.value} value={optionIndex}>
+                    {inputOption.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            {INPUT_OPTIONS[inputOptionVal].fileTypes ? (
+              <div id='fileUpload' className='max-w-md mb-5'>
+                <div className='mb-2 block'>
+                  <Label
+                    htmlFor='scriptFile'
+                    value='Upload input file'
+                    className='text-white'
+                  />
+                </div>
+                <FileInput
+                  id='scriptFile'
+                  helperText={INPUT_OPTIONS[inputOptionVal].placeholder}
+                  onChange={handleFileUpload}
+                />
+              </div>
+            ) : (
+              <div className='max-w-md mb-5'>
+                <div className='mb-2'>
+                  <Label
+                    htmlFor='script'
+                    value='Script'
+                    className='text-white'
+                  />
+                </div>
+                <div
+                  className='flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400'
+                  role='alert'
+                >
+                  <svg
+                    className='flex-shrink-0 inline w-4 h-4 me-3'
+                    aria-hidden='true'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='currentColor'
+                    viewBox='0 0 20 20'
+                  >
+                    <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z' />
+                  </svg>
+                  <span className='sr-only'>Info</span>
+                  <div>
+                    <span className='font-medium'>Danger alert!</span> We
+                    recommend to test the python code in blender before
+                  </div>
+                </div>
+                <Textarea
+                  id='script'
+                  placeholder='paste your script to generate preview and mint as DataNft'
+                  required
+                  rows={20}
+                  value={script}
+                  onChange={(e: any) => setScript(e.target.value)}
+                />
+              </div>
+            )}
+            <div className='mb-2'>
               <Label
-                htmlFor='scriptFile'
-                value='Upload input file'
+                htmlFor='previewOption'
+                value='Export Option'
                 className='text-white'
               />
             </div>
-            <FileInput
-              id='scriptFile'
-              helperText={INPUT_OPTIONS[inputOptionVal].placeholder}
-              onChange={handleFileUpload}
-            />
-          </div>
-        ) : (
-          <div className='max-w-md mb-5'>
-            <div className='mb-2'>
-              <Label htmlFor='script' value='Script' className='text-white' />
-            </div>
-            <Textarea
-              id='script'
-              placeholder='paste your script to generate preview and mint as DataNft'
+            <Select
+              id='previewOption'
               required
-              rows={20}
-              value={script}
-              onChange={(e: any) => setScript(e.target.value)}
-            />
-          </div>
-        )}
-        <div className='mb-2'>
-          <Label
-            htmlFor='previewOption'
-            value='Export Option'
-            className='text-white'
-          />
-        </div>
-        <Select
-          id='previewOption'
-          required
-          onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-            setPreviewOptionVal(Number(e.target.value))
-          }
-          className='mb-5'
-          value={previewOptionVal}
-        >
-          {PREVIEW_OPTIONS.map((previewOption, optionIndex) => (
-            <option key={previewOption.value} value={optionIndex}>
-              {previewOption.label}
-            </option>
-          ))}
-        </Select>
-        <div className='justify-end mt-5'>
-          <Button
-            gradientDuoTone='purpleToBlue'
-            onClick={handleGeneratePreview}
-            isProcessing={isGeneratingPreview}
-            disabled={isGeneratingPreview}
-          >
-            Generate Preview
-          </Button>
-        </div>
-      </form>
-      <div ref={mintActionSection} className='w-1/2 pl-2 flex flex-col'>
-        <div className='mt-10 flex-grow flex items-center'>
-          {previewUrl ? (
-            <Canvas>
-              <PerspectiveCamera makeDefault fov={50} position={[10, 10, 16]} />
-              <ambientLight intensity={2} />
-              <pointLight position={[10, 10, 10]} />
-              <Bounds clip fit observe margin={1.2}>
-                <LoaderCanvas
-                  index={1}
-                  dataNftRef={'1'}
-                  glbFileLink={previewUrl}
-                  maxBoundSize={0}
-                  updateDataNftSelected={() => {
-                    console.log('updated preview');
-                  }}
-                />
-              </Bounds>
-            </Canvas>
-          ) : (
-            <div className='w-full'>
-              <Image
-                alt={'generate preview'}
-                src={'/assets/img/171.-3D-Modelling.png'}
-                className='m-auto'
-                width={200}
-                height={200}
-              />
-              <p className='text-center'>
-                Paste your script and generate preview to preview your 3D Models
-              </p>
-              {isGeneratingPreview && (
-                <div className='mt-2.5'>
-                  <div className='font-medium'>
-                    {STATUS_PROGRESS_MAP[String(previewGenerationStatus)].msg}
-                  </div>
-                  <Progress
-                    progress={
-                      STATUS_PROGRESS_MAP[String(previewGenerationStatus)]
-                        .progress
-                    }
-                    color={
-                      STATUS_PROGRESS_MAP[String(previewGenerationStatus)].color
-                    }
-                    size='lg'
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setPreviewOptionVal(Number(e.target.value))
+              }
+              className='mb-5'
+              value={previewOptionVal}
+            >
+              {PREVIEW_OPTIONS.map((previewOption, optionIndex) => (
+                <option key={previewOption.value} value={optionIndex}>
+                  {previewOption.label}
+                </option>
+              ))}
+            </Select>
+            <div className='justify-end mt-5'>
+              <Button
+                gradientDuoTone='purpleToBlue'
+                onClick={handleGeneratePreview}
+                isProcessing={isGeneratingPreview}
+                disabled={isGeneratingPreview}
+              >
+                Generate Preview
+              </Button>
+            </div>
+          </form>
+          <div ref={mintActionSection} className='w-1/2 pl-2 flex flex-col'>
+            <div className='mt-10 flex-grow flex items-center'>
+              {previewUrl ? (
+                <Canvas>
+                  <PerspectiveCamera
+                    makeDefault
+                    fov={50}
+                    position={[10, 10, 16]}
                   />
+                  <ambientLight intensity={2} />
+                  <pointLight position={[10, 10, 10]} />
+                  <Bounds clip fit observe margin={1.2}>
+                    <LoaderCanvas
+                      index={1}
+                      dataNftRef={'1'}
+                      glbFileLink={previewUrl}
+                      maxBoundSize={0}
+                      updateDataNftSelected={() => {
+                        console.log('updated preview');
+                      }}
+                    />
+                  </Bounds>
+                  <OrbitControls />
+                </Canvas>
+              ) : (
+                <div className='w-full'>
+                  <Image
+                    alt={'generate preview'}
+                    src={'/assets/img/171.-3D-Modelling.png'}
+                    className='m-auto'
+                    width={200}
+                    height={200}
+                  />
+                  <p className='text-center'>
+                    Paste your script and generate preview to preview your 3D
+                    Models
+                  </p>
+                  {isGeneratingPreview && (
+                    <div className='mt-2.5'>
+                      <div className='font-medium'>
+                        {
+                          STATUS_PROGRESS_MAP[String(previewGenerationStatus)]
+                            .msg
+                        }
+                      </div>
+                      <Progress
+                        progress={
+                          STATUS_PROGRESS_MAP[String(previewGenerationStatus)]
+                            .progress
+                        }
+                        color={
+                          STATUS_PROGRESS_MAP[String(previewGenerationStatus)]
+                            .color
+                        }
+                        size='lg'
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
+            <div className='flex justify-end mt-5 pr-5' ref={mintActionSection}>
+              <Button
+                gradientDuoTone='greenToBlue'
+                onClick={handleMintProduct}
+                isProcessing={false}
+                disabled={isMinting || !previewUrl}
+              >
+                Mint to Locki Cloud
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className='flex justify-end mt-5 pr-5' ref={mintActionSection}>
-          <Button
-            gradientDuoTone='greenToBlue'
-            onClick={handleMintProduct}
-            isProcessing={false}
-            disabled={isMinting || !previewUrl}
-          >
-            Mint to Locki Cloud
-          </Button>
-        </div>
-      </div>
-    </div>
+      </DataNftsContext.Provider>
+    </Providers>
   );
 }
