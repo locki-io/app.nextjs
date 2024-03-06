@@ -122,14 +122,14 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
   if (selectedNFTs && selectedNFTs.length === 0) {
     introText =
       'I am a 3D asset assistant, I use the default knowledge of locki to help me start with making 3D dataNFTs';
-  } else if (selectedNFTs && selectedNFTs.length === 1) {
+  } else if (selectedNFTs && selectedNFTs.length >= 1) {
     introText = `Describe ${selectedNFTs[0].tokenIdentifier} using`;
     options = chatOptions;
-  } else if (selectedNFTs && selectedNFTs.length >= 2) {
-    introText = `Combine ${selectedNFTs
-      .map((nft) => nft.tokenIdentifier)
-      .join(' and ')} using`;
-    options = combineOptions;
+    // } else if (selectedNFTs && selectedNFTs.length >= 2) {
+    //   introText = `Combine ${selectedNFTs
+    //     .map((nft) => nft.tokenIdentifier)
+    //     .join(' and ')} using`;
+    //   options = combineOptions;
   }
 
   const presetMessage = (optionValue: string): Message => {
@@ -175,35 +175,39 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
 
   return (
     <div {...props} className={cn('border-t border-zinc-300', className)}>
-      {options.length > 0 && (
-        <div className='flex gap-1.5 items-center'>
-          {options.map((option, index) => (
-            <Button
-              key={index}
-              gradientDuoTone={clicked ? 'limeToTeal' : 'BlueToLime'}
-              onClick={() => {
-                const message = presetMessage(option.value);
-                setClicked(true);
-                if (option.value == 'describe') sendMessage(message);
-                else setInput(message.text);
+      {selectedNFTs &&
+        selectedNFTs.map((nft, index) => (
+          <div key={index} className='mb-4'>
+            {options.length > 0 && (
+              <div className='flex gap-1.5 items-center'>
+                {options.map((option, index) => (
+                  <Button
+                    key={index}
+                    gradientDuoTone={clicked ? 'limeToTeal' : 'BlueToLime'}
+                    onClick={() => {
+                      const message = presetMessage(option.value);
+                      setClicked(true);
+                      if (option.value === 'describe') sendMessage(message);
+                      else setInput(message.text);
 
-                setScriptLoading(true);
-              }}
-              className='mb-4'
-              disabled={scriptLoading && clicked}
-            >
-              {option.label}
-            </Button>
-          ))}
-          {selectedNFTs && (
-            <ScriptTextComponent
-              scriptRefs={[scriptRef]} // Pass an array with single ref
-              selectedNFTs={selectedNFTs}
-              onScriptLoadingChange={handleScriptLoadingChange}
-            />
-          )}
-        </div>
-      )}
+                      setScriptLoading(true);
+                    }}
+                    className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'
+                    disabled={scriptLoading && clicked}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+                <ScriptTextComponent
+                  key={`script_${index}`}
+                  scriptRefs={[scriptRef]} // Pass an array with single ref
+                  selectedNFTs={[nft]}
+                  onScriptLoadingChange={handleScriptLoadingChange}
+                />
+              </div>
+            )}
+          </div>
+        ))}
       {/* <span className='text-ms bold'>{introText}</span> */}
       <div className='relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none'>
         <TextAreaAutosize
