@@ -56,7 +56,7 @@ const GeneralCanvas: React.FC<GeneralCanvasProps> = ({
       >
         <View.Port />
       </Canvas>
-      <MainScene ref={viewAll}>
+      {/* <MainScene ref={viewAll}>
         <PerspectiveCamera makeDefault fov={50} position={[10, 10, 16]} />
         <ambientLight intensity={2} />
         <pointLight position={[10, 10, 10]} />
@@ -76,7 +76,7 @@ const GeneralCanvas: React.FC<GeneralCanvasProps> = ({
           {children}
         </Bounds>
         <OrbitControls />
-      </MainScene>
+      </MainScene> */}
     </div>
   );
 };
