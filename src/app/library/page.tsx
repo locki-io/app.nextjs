@@ -58,12 +58,10 @@ const DataNfts = () => {
           index: currentIndex++, // Increment and assign the index
           dataNftSelected: false // Set dataNftSelected to false initially
         }))
-    
     );
 
     setDataNftCount(_dataNfts.length);
     setDataNfts(_dataNfts);
-
     setIsLoading(false);
   }
 
