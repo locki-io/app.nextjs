@@ -19,7 +19,7 @@ import { Bounds, PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import Image from 'next/image';
 import { Progress } from 'flowbite-react';
 import Chat from '@/components/Chat/Chat';
-import { DataNftsContext } from '@/app/context/store';
+import { DataNftsContext, ExtendedDataNft } from '@/app/context/store';
 import Providers from '@/components/Chat/Provider';
 
 const STATUS_PROGRESS_MAP: any = {
