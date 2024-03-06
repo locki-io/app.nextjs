@@ -63,8 +63,7 @@ export default function DataNftView() {
         headers: {
           'Content-type': 'application/json'
         },
-        data: JSON.stringify({ dataStream: dataNftView }),
-        responseType: 'stream'
+        data: JSON.stringify({ dataStream: dataNftView })
       });
 
       const responseData = res.data;

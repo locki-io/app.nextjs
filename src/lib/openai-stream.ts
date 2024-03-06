@@ -1,10 +1,10 @@
 import {
   createParser,
   ParsedEvent,
-  ReconnectInterval,
-} from "eventsource-parser";
+  ReconnectInterval
+} from 'eventsource-parser';
 
-export type ChatGPTAgent = "user" | "system";
+export type ChatGPTAgent = 'user' | 'system';
 
 export interface ChatGPTMessage {
   role: ChatGPTAgent;
@@ -29,29 +29,29 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
 
   let counter = 0;
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ''}`
     },
-    method: "POST",
-    body: JSON.stringify(payload),
+    method: 'POST',
+    body: JSON.stringify(payload)
   });
 
   const stream = new ReadableStream({
     async start(controller) {
       // callback
       function onParse(event: ParsedEvent | ReconnectInterval) {
-        if (event.type === "event") {
+        if (event.type === 'event') {
           const data = event.data;
           // https://beta.openai.com/docs/api-reference/completions/create#completions/create-stream
-          if (data === "[DONE]") {
+          if (data === '[DONE]') {
             controller.close();
             return;
           }
           try {
             const json = JSON.parse(data);
-            const text = json.choices[0].delta?.content || "";
+            const text = json.choices[0].delta?.content || '';
             if (counter < 2 && (text.match(/\n/) || []).length) {
               // this is a prefix character (i.e., "\n\n"), do nothing
               return;
@@ -73,8 +73,22 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
       for await (const chunk of res.body as any) {
         parser.feed(decoder.decode(chunk));
       }
-    },
+    }
   });
 
   return stream;
+}
+
+export async function OpenAIResponse(payload: OpenAIStreamPayload) {
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ''}`
+    },
+    method: 'POST',
+    body: JSON.stringify(payload)
+  });
+  const jsonResponse = await res.json();
+
+  return jsonResponse;
 }
