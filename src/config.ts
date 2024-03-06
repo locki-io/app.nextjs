@@ -17,6 +17,6 @@ export const TOOLS_API_URL = 'https://tools.multiversx.com';
 export const sampleAuthenticatedDomains = [TOOLS_API_URL];
 
 export const DATA_MARSHALL_URL: Record<string, string> = {
-  devnet: 'https://api.itheumcloud-stg.com/datamarshalapi/achilles/v1',
+  devnet: 'https://api.itheumcloud-stg.com/datamarshalapi/router/v1',
   mainnet: '',
 };
