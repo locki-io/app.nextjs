@@ -46,9 +46,7 @@ function Scene({ background = 'white', children, ...props }: SceneProps) {
   );
 }
 
-export default Scene;
-
-const MainPanel = forwardRef<HTMLDivElement, MainPanelProps>(
+export const MainPanel = forwardRef<HTMLDivElement, MainPanelProps>(
   ({ children, ...props }, fref) => {
     return (
       <div ref={fref} className='panel' style={{ gridArea: 'main' }}>
@@ -68,3 +66,5 @@ const MainPanel = forwardRef<HTMLDivElement, MainPanelProps>(
     );
   }
 );
+
+export default Scene;
