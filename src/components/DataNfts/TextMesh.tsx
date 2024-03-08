@@ -1,25 +1,28 @@
 'use Client';
 import React, { useRef, useEffect, RefObject } from 'react';
 import { extend, Object3DNode } from '@react-three/fiber';
-import  Roboto from '@/styles/Roboto.json'
+import Roboto from '@/styles/Roboto.json';
 import { Mesh, MeshBasicMaterial, Group } from 'three';
-import { FontLoader, } from 'three/examples/jsm/loaders/FontLoader.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three-stdlib';
 
 extend({ TextGeometry });
 
-declare module "@react-three/fiber" {
+declare module '@react-three/fiber' {
   interface ThreeElements {
     textGeometry: Object3DNode<TextGeometry, typeof TextGeometry>;
   }
 }
 
-const TextMesh: React.FC<{ text: string; objectHeight: number }> = ({ text,  objectHeight }) => {
-  const textRef = useRef<Mesh | Group>(); 
+const TextMesh: React.FC<{ text: string; objectHeight: number }> = ({
+  text,
+  objectHeight
+}) => {
+  const textRef = useRef<Mesh | Group>();
   const textGeometryRef = useRef<TextGeometry>(null);
 
   // parse JSON file with Three
-  const font : any = new FontLoader().parse(Roboto);
+  const font: any = new FontLoader().parse(Roboto);
 
   // configure font geometry
   const textOptions = {
@@ -29,9 +32,9 @@ const TextMesh: React.FC<{ text: string; objectHeight: number }> = ({ text,  obj
   };
 
   // Create a blue material
-  const material = new MeshBasicMaterial({ color: 'blue' });
+  const material = new MeshBasicMaterial({ color: 'white' });
 
-   // Calculate the text geometry width and adjust its position
+  // Calculate the text geometry width and adjust its position
   useEffect(() => {
     if (textGeometryRef.current && textRef.current) {
       textGeometryRef.current.computeBoundingBox();
@@ -44,10 +47,19 @@ const TextMesh: React.FC<{ text: string; objectHeight: number }> = ({ text,  obj
     }
   }, [text]);
   return (
-    <mesh ref={textRef as RefObject<Mesh>} position={[0, -2 - (objectHeight ?? 0) / 2 , 0]} material={material}>
-      <textGeometry ref={textGeometryRef} attach='geometry' args={[text, textOptions]} />
+    <mesh
+      castShadow
+      ref={textRef as RefObject<Mesh>}
+      position={[0, -2 - (objectHeight ?? 0) / 2, 0]}
+      material={material}
+    >
+      <textGeometry
+        ref={textGeometryRef}
+        attach='geometry'
+        args={[text, textOptions]}
+      />
     </mesh>
-  )
-}
+  );
+};
 
 export default TextMesh;

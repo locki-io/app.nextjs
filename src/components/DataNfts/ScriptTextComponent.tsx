@@ -106,7 +106,7 @@ const ScriptTextComponent: React.FC<Props> = ({
       <div>
         {selectedNFTs.map((dataNft, index) => (
           <span key={index}>
-            Script Loaded {dataNftRef[index]}
+            Script of {dataNft.tokenName} loaded {'(' + dataNftRef[index] + ')'}
             <code
               hidden
               className='language-python'

@@ -58,7 +58,6 @@ const DataNfts = () => {
           index: currentIndex++, // Increment and assign the index
           dataNftSelected: false // Set dataNftSelected to false initially
         }))
-    
     );
 
     setDataNftCount(_dataNfts.length);
@@ -82,7 +81,7 @@ const DataNfts = () => {
       <DataNftsContext.Provider value={dataNfts}>
         <div className={inter.className} id='Library'>
           <Chat />
-          <div className='p-5'>
+          <div className='p-0'>
             <SelectedDataPreview />
             {isLoading ? (
               <div className='text-gray-200 text-center w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
