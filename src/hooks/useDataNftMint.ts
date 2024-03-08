@@ -34,7 +34,7 @@ export const useDataNftMint = (address: string) => {
         dataStreamUrl,
         dataPreviewUrl,
         royalityPercentage * 100,
-        1,
+        100,
         title,
         description,
         900,

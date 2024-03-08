@@ -3,10 +3,14 @@
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from 'flowbite-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Products() {
+  const router = useRouter();
+
   const navigateToNewProductPage = async () => {
-    console.log('navigate to new product page');
+    router.push('/products/new');
   };
 
   return (
@@ -26,7 +30,7 @@ export default function Products() {
         />
         <p>
           You do not have any products that are to be minted or minting. Click{' '}
-          <a href='/products/new'>here</a> to mint new product.
+          <Link href='/products/new'>here</Link> to mint new product.
         </p>
       </div>
     </div>
