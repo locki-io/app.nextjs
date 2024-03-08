@@ -6,7 +6,7 @@ import ChatMessages from './ChatMessages';
 
 const Chat: FC = () => {
   return (
-    <div className='fixed right-8 w-1/2 bottom-8 bg-white border border-gray-200 rounded-md overflow:hidden z-10'>
+    <div className='fixed right-8 w-1/2 bottom-2.5 bg-gray-200 border border-gray-200 rounded-md overflow:hidden z-10'>
       <div className='w-full h-100 flex flex-col'>
         <Accordion collapseAll>
           <Accordion.Panel>

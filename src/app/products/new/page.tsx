@@ -223,9 +223,12 @@ export default function NewProduct() {
   return (
     <Providers>
       <DataNftsContext.Provider value={dataNfts}>
-        <div className='flex flex-row w-full p-5 text-white'>
-          <Chat />
-          <form className='flex flex-col w-1/2 pr-2'>
+        <Chat />
+        <div className='flex flex-row w-full p-2.5 text-white'>
+          <form
+            className='flex flex-col w-1/2 pr-2 overflow-scroll'
+            style={{ maxHeight: 'calc(100vh - 170px)' }}
+          >
             <h1 className='mb-5'>Create New Product</h1>
             <Label htmlFor='filename' className='text-white mb-2'>
               Name
@@ -345,7 +348,10 @@ export default function NewProduct() {
               </Button>
             </div>
           </form>
-          <div ref={mintActionSection} className='w-1/2 pl-2 flex flex-col'>
+          <div
+            className='w-1/2 pl-2 flex flex-col  overflow-scroll'
+            style={{ maxHeight: 'calc(100vh - 170px)' }}
+          >
             <div className='mt-10 flex-grow flex items-center'>
               {previewUrl ? (
                 <Canvas>
