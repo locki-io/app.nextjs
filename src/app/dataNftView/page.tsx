@@ -5,8 +5,10 @@ import { useSearchParams } from 'next/navigation';
 import { DataNft } from '@itheum/sdk-mx-data-nft';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { useStoreCreatorsDescription } from '@/components/DataNftView/Actions/helpers/useStoreCreatorsDescription';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { arta } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 export default function DataNftView() {
   const searchParams = useSearchParams();
@@ -85,6 +87,9 @@ export default function DataNftView() {
       setSending(false);
     }
   };
+  const copyCodeToClipboard = () => {
+    navigator.clipboard.writeText(dataNftView);
+  };
   return (
     <div className='flex h-screen'>
       <div className='flex-1 flex flex-col'>
@@ -100,9 +105,18 @@ export default function DataNftView() {
               />
             </div>
           ) : (
-            <div></div>
+            <div style={{ position: 'relative' }}>
+              <SyntaxHighlighter language='python' style={arta}>
+                {dataNftView}
+              </SyntaxHighlighter>
+              <button
+                onClick={copyCodeToClipboard}
+                className='absolute top-0 right-0 m-2 text-gray-500 hover:text-gray-200'
+              >
+                <FontAwesomeIcon icon={faCopy} />
+              </button>
+            </div>
           )}
-          {dataNftView}
         </div>
         <div className='absolute top-0 left-1/2 transform -translate-x-1/2 '>
           <button
