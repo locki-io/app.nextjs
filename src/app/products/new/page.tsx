@@ -23,17 +23,17 @@ import { DataNftsContext, ExtendedDataNft } from '@/app/context/store';
 import Providers from '@/components/Chat/Provider';
 
 const STATUS_PROGRESS_MAP: any = {
-  Queue: {
+  ProcessingQueue: {
     progress: 10,
     color: 'red',
     msg: 'Preview generation process is in Queue'
   },
-  Pending: {
+  ProcessingPending: {
     progress: 30,
     color: 'yellow',
     msg: 'Preview generation process is pending'
   },
-  Processing: {
+  ProcessingProcessing: {
     progress: 50,
     color: 'lime',
     msg: 'Preview generation process is processing'
@@ -98,7 +98,7 @@ export default function NewProduct() {
   const [previewOptionVal, setPreviewOptionVal] = useState(0);
   const [uploadedScriptFile, setUploadedScriptFile] = useState<any>(null);
   const [previewGenerationStatus, setPreviewGenerationStatus] =
-    useState<string>('Queue');
+    useState<string>('ProcessingQueue');
   const [dataNfts, setDataNfts] = useState<ExtendedDataNft[]>([]);
   const accountInfo = useGetAccountInfo();
   const { tokenLogin } = useGetLoginInfo();
@@ -177,13 +177,13 @@ export default function NewProduct() {
         tokenLogin?.nativeAuthToken || ''
       );
       if (
-        generatePreviewResponse.status === 'Queued' &&
+        generatePreviewResponse.status === 'ProcessingQueued' &&
         generatePreviewResponse.processedId
       ) {
         setProcessedId(generatePreviewResponse.processedId);
         currentProcessId.current = generatePreviewResponse.processedId;
         scriptUrl.current = generatePreviewResponse?.scriptUrl;
-        setPreviewGenerationStatus('Queue');
+        setPreviewGenerationStatus('ProcessingQueue');
       } else {
         setIsGeneratingPreview(false);
       }
