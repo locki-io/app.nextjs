@@ -21,85 +21,51 @@ import { Progress } from 'flowbite-react';
 import Chat from '@/components/Chat/Chat';
 import { DataNftsContext, ExtendedDataNft } from '@/app/context/store';
 import Providers from '@/components/Chat/Provider';
+import {
+  INPUT_OPTIONS,
+  PREVIEW_OPTIONS,
+  STATUS_PROGRESS_MAP
+} from '@/constants/products';
+import { useSearchParams } from 'next/navigation';
 
-const STATUS_PROGRESS_MAP: any = {
-  ProcessingQueue: {
-    progress: 10,
-    color: 'red',
-    msg: 'Preview generation process is in Queue'
-  },
-  ProcessingPending: {
-    progress: 30,
-    color: 'yellow',
-    msg: 'Preview generation process is pending'
-  },
-  ProcessingProcessing: {
-    progress: 50,
-    color: 'lime',
-    msg: 'Preview generation process is processing'
-  },
-  ProcessingSuccess: {
-    progress: 100,
-    color: 'green',
-    msg: 'Preview generation process is finished'
-  }
+const getInputOptionValByType = (type: string) => {
+  return INPUT_OPTIONS.findIndex((option) => option.value === type);
 };
 
-const INPUT_OPTIONS: {
-  label: string;
-  value: string;
-  fileTypes?: string;
-  placeholder: string;
-}[] = [
-  {
-    label: 'Blender python script as text input',
-    value: 'blenderPyInput',
-    placeholder: 'Enter or paste your python script here'
-  },
-  {
-    label: 'Blender python script as a python file',
-    value: 'blenderPyFile',
-    fileTypes: 'py',
-    placeholder: 'Upload the python script file'
-  },
-  {
-    label: 'Blend file upload',
-    value: 'blendFile',
-    fileTypes: 'blend',
-    placeholder: 'Upload the blend file'
-  }
-];
-
-const PREVIEW_OPTIONS: { label: string; value: string }[] = [
-  {
-    label: 'Export as glb',
-    value: 'glb'
-  },
-  {
-    label: 'Export as gltf',
-    value: 'gltf'
-  }
-];
+const getPreviewOptionValByVal = (val: string) => {
+  return PREVIEW_OPTIONS.findIndex((option) => option.value === val);
+};
 
 export default function NewProduct() {
-  const {
-    generatePreview,
-    getSignedUrl,
-    uploadFileWithLink,
-    updateProcessingStatus
-  } = useGeneratePreview();
-  const [name, setName] = useState('');
+  const searchParams = useSearchParams();
+  const preProcessedId = searchParams?.get('processedId');
+  const preFilename = searchParams?.get('filename');
+  const preType = searchParams?.get('type');
+  const preInputOptionVal = getInputOptionValByType(preType || '');
+  const preExportOption = searchParams?.get('exportOption');
+  const prePreviewOptionVal = getPreviewOptionValByVal(preExportOption || '');
+  const [name, setName] = useState(
+    preFilename
+      ? preFilename.replaceAll('.py', '').replaceAll('.blend', '')
+      : ''
+  );
   const [script, setScript] = useState('');
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
-  const [processedId, setProcessedId] = useState(null);
+  const [processedId, setProcessedId] = useState(
+    preProcessedId ? Number(preProcessedId) : null
+  );
   const currentProcessId = useRef(processedId);
   const [isConnected, setIsConnected] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const currentPreviewUrl = useRef(previewUrl);
   const scriptUrl = useRef<string | null>(null);
   const mintActionSection = useRef(null);
-  const [inputOptionVal, setInputOptionVal] = useState(0);
-  const [previewOptionVal, setPreviewOptionVal] = useState(0);
+  const [inputOptionVal, setInputOptionVal] = useState(
+    preInputOptionVal !== -1 ? preInputOptionVal : 0
+  );
+  const [previewOptionVal, setPreviewOptionVal] = useState(
+    prePreviewOptionVal !== -1 ? prePreviewOptionVal : 0
+  );
   const [uploadedScriptFile, setUploadedScriptFile] = useState<any>(null);
   const [previewGenerationStatus, setPreviewGenerationStatus] =
     useState<string>('ProcessingQueue');
@@ -108,6 +74,12 @@ export default function NewProduct() {
   const { tokenLogin } = useGetLoginInfo();
   const { mint } = useDataNftMint(accountInfo?.address);
   const [isMinting, setIsMinting] = useState(false);
+  const {
+    generatePreview,
+    getSignedUrl,
+    uploadFileWithLink,
+    updateProcessingStatus
+  } = useGeneratePreview(tokenLogin?.nativeAuthToken || '');
 
   useEffect(() => {
     currentProcessId.current = processedId;
@@ -177,8 +149,7 @@ export default function NewProduct() {
           : script,
         INPUT_OPTIONS[inputOptionVal].value,
         PREVIEW_OPTIONS[previewOptionVal].value,
-        currentProcessId.current,
-        tokenLogin?.nativeAuthToken || ''
+        currentProcessId.current
       );
       if (
         generatePreviewResponse.status === 'ProcessingQueued' &&
@@ -214,8 +185,7 @@ export default function NewProduct() {
     updateProcessingStatus(
       currentProcessId.current || 0,
       INPUT_OPTIONS[inputOptionVal].value,
-      'MintingStarted',
-      tokenLogin?.nativeAuthToken || ''
+      'MintingStarted'
     );
   };
 

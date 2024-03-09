@@ -7,3 +7,10 @@ export enum BlobDataType {
     VIDEO,
     GLTF,
   }
+
+export interface DataGridItemsOptions {
+  header?: string;
+  name?: string;
+  getData?: (input: any) => any;
+  customCell?: (handlers: any, input: any) => JSX.Element;
+}
