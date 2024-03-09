@@ -52,7 +52,7 @@ export default function NewProduct() {
   const [script, setScript] = useState('');
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
   const [processedId, setProcessedId] = useState(
-    preProcessedId ? preProcessedId : null
+    preProcessedId ? Number(preProcessedId) : null
   );
   const currentProcessId = useRef(processedId);
   const [isConnected, setIsConnected] = useState(false);
