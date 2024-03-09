@@ -1,13 +1,12 @@
 import axios from 'axios';
 
-export const useGeneratePreview = () => {
+export const useGeneratePreview = (nativeAuthToken: string) => {
   async function generatePreview(
     filename: string,
     script: string,
     inputOption: string,
     exportOption: string,
     processedId: number | null,
-    nativeAuthToken: string
   ) {
     try {
       const generatePreviewResponse = await axios({
@@ -66,7 +65,6 @@ export const useGeneratePreview = () => {
     processedId: number,
     type: string,
     status: string,
-    nativeAuthToken: string
   ) {
     try {
       await axios({
