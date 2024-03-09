@@ -303,8 +303,7 @@ export default function NewProduct() {
                   </svg>
                   <span className='sr-only'>Info</span>
                   <div>
-                    <span className='font-medium'>Danger alert!</span> We
-                    recommend to test the python code in blender before
+                    We recommend to test the python code in blender before
                   </div>
                 </div>
                 <Textarea
