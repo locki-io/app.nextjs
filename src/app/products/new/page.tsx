@@ -38,7 +38,7 @@ const STATUS_PROGRESS_MAP: any = {
     color: 'lime',
     msg: 'Preview generation process is processing'
   },
-  Success: {
+  ProcessingSuccess: {
     progress: 100,
     color: 'green',
     msg: 'Preview generation process is finished'
@@ -82,8 +82,12 @@ const PREVIEW_OPTIONS: { label: string; value: string }[] = [
 ];
 
 export default function NewProduct() {
-  const { generatePreview, getSignedUrl, uploadFileWithLink } =
-    useGeneratePreview();
+  const {
+    generatePreview,
+    getSignedUrl,
+    uploadFileWithLink,
+    updateProcessingStatus
+  } = useGeneratePreview();
   const [name, setName] = useState('');
   const [script, setScript] = useState('');
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
@@ -117,7 +121,7 @@ export default function NewProduct() {
         setPreviewGenerationStatus(processMsg.processingStatus);
       }
       if (
-        processMsg.processingStatus === 'Success' &&
+        processMsg.processingStatus === 'ProcessingSuccess' &&
         processMsg.processedId === currentProcessId.current
       ) {
         setIsGeneratingPreview(false);
@@ -195,7 +199,7 @@ export default function NewProduct() {
 
   const handleMintProduct = async () => {
     setIsMinting(true);
-    await mint(
+    mint(
       `Locki${currentProcessId.current}`,
       scriptUrl.current || '',
       currentPreviewUrl.current || '',
@@ -205,6 +209,13 @@ export default function NewProduct() {
       `Transaction pending to mint ${name}`,
       `Error in minting ${name}`,
       `Successfully minted ${name} in Locki. Please go to Library page and view it.`
+    );
+
+    updateProcessingStatus(
+      currentProcessId.current || 0,
+      INPUT_OPTIONS[inputOptionVal].value,
+      'MintingStarted',
+      tokenLogin?.nativeAuthToken || ''
     );
   };
 
@@ -354,7 +365,7 @@ export default function NewProduct() {
             style={{ maxHeight: 'calc(100vh - 170px)' }}
           >
             <div className='mt-10 flex-grow flex items-center'>
-              {previewUrl ? (
+              {!isGeneratingPreview && previewUrl ? (
                 <Canvas>
                   <PerspectiveCamera
                     makeDefault
