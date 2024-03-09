@@ -6,7 +6,8 @@ export const useGeneratePreview = () => {
     script: string,
     inputOption: string,
     exportOption: string,
-    processedId: number | null
+    processedId: number | null,
+    nativeAuthToken: string,
   ) {
     try {
       const generatePreviewResponse = await axios({
@@ -17,6 +18,9 @@ export const useGeneratePreview = () => {
           inputOption,
           exportOption,
           processedId
+        },
+        headers: {
+          Authorization: nativeAuthToken,
         },
         data: script
       });

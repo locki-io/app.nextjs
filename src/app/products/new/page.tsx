@@ -14,7 +14,7 @@ import { useWebsocketConnection } from '@/hooks/useWebsocketConnection';
 import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
 import { Canvas } from '@react-three/fiber';
 import { useDataNftMint } from '@/hooks';
-import { useGetAccountInfo } from '@multiversx/sdk-dapp/hooks';
+import { useGetAccountInfo, useGetLoginInfo } from '@multiversx/sdk-dapp/hooks';
 import { Bounds, PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import Image from 'next/image';
 import { Progress } from 'flowbite-react';
@@ -101,6 +101,7 @@ export default function NewProduct() {
     useState<string>('Queue');
   const [dataNfts, setDataNfts] = useState<ExtendedDataNft[]>([]);
   const accountInfo = useGetAccountInfo();
+  const { tokenLogin } = useGetLoginInfo();
   const { mint } = useDataNftMint(accountInfo?.address);
   const [isMinting, setIsMinting] = useState(false);
 
@@ -172,7 +173,8 @@ export default function NewProduct() {
           : script,
         INPUT_OPTIONS[inputOptionVal].value,
         PREVIEW_OPTIONS[previewOptionVal].value,
-        currentProcessId.current
+        currentProcessId.current,
+        tokenLogin?.nativeAuthToken || ''
       );
       if (
         generatePreviewResponse.status === 'Queued' &&
@@ -301,8 +303,7 @@ export default function NewProduct() {
                   </svg>
                   <span className='sr-only'>Info</span>
                   <div>
-                    <span className='font-medium'>Danger alert!</span> We
-                    recommend to test the python code in blender before
+                    We recommend to test the python code in blender before
                   </div>
                 </div>
                 <Textarea
