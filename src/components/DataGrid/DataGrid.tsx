@@ -14,7 +14,7 @@ export default function DataGrid({ items, options, handlers }: DataGridProps) {
     <Table>
       <Table.Head>
         {options.map((option) => (
-          <Table.HeadCell key={option.name}>{option.header}</Table.HeadCell>
+          <Table.HeadCell key={option.header}>{option.header}</Table.HeadCell>
         ))}
       </Table.Head>
       <Table.Body className='divide-y'>
@@ -23,8 +23,8 @@ export default function DataGrid({ items, options, handlers }: DataGridProps) {
             key={item.id}
             className='bg-white dark:border-gray-700 dark:bg-gray-800'
           >
-            {options.map((option) => (
-              <Table.Cell key={item[option.name || '']}>
+            {options.map((option, index) => (
+              <Table.Cell key={option.name ? item[option.name] : index}>
                 {option?.customCell
                   ? option.customCell(handlers, item)
                   : option.getData

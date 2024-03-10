@@ -52,6 +52,7 @@ export default function Products() {
     tokenLogin?.nativeAuthToken || ''
   );
   const [pendingProcesses, setPendingProcess] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigateToNewProductPage = async () => {
     router.push('/products/new');
@@ -59,7 +60,7 @@ export default function Products() {
 
   const fetchPendingProcess = async () => {
     const pendingProcessData = await getPendingProcesses();
-    console.log('pendingProcessData', pendingProcessData);
+    setIsLoading(false);
     if (pendingProcessData.status === 'Success') {
       setPendingProcess(pendingProcessData.data.products);
     }
@@ -71,7 +72,7 @@ export default function Products() {
 
   const handleItemClick = (item: any) => {
     router.push(
-      `/products/new?processedId=${item.id}&filename=${item.filename}&type=${item.type}&exportOption=${item.exportOption}`
+      `/products/new?processedId=${item.id}&filename=${item.filename}&type=${item.type}&exportOption=${item.exportOption}&status=${item.processingStatus}`
     );
   };
 
@@ -95,14 +96,21 @@ export default function Products() {
         </div>
       ) : (
         <div className='card m-4 p-4 text-center text-gray-500'>
-          <FontAwesomeIcon
-            icon={faTriangleExclamation}
-            className='text-4xl text-orange-400'
-          />
-          <p>
-            You do not have any products that are to be minted or minting. Click{' '}
-            <Link href='/products/new'>here</Link> to mint new product.
-          </p>
+          {isLoading ? (
+            <p>Loading Pending Products...</p>
+          ) : (
+            <>
+              <FontAwesomeIcon
+                icon={faTriangleExclamation}
+                className='text-4xl text-orange-400'
+              />
+              <p>
+                You do not have any products that are to be minted or minting.
+                Click <Link href='/products/new'>here</Link> to mint new
+                product.
+              </p>
+            </>
+          )}
         </div>
       )}
     </div>
