@@ -231,7 +231,7 @@ export default function NewProduct() {
         <Chat />
         <div className='flex flex-row w-full p-2.5 text-white'>
           <form
-            className='flex flex-col w-1/2 pr-2 overflow-scroll'
+            className='flex flex-col w-1/2 pr-2 overflow-scroll no-scroll'
             style={{ maxHeight: 'calc(100vh - 170px)' }}
           >
             <h1 className='mb-5'>Create New Product</h1>
@@ -371,7 +371,7 @@ export default function NewProduct() {
             </div>
           </form>
           <div
-            className='w-1/2 pl-2 flex flex-col  overflow-scroll'
+            className='w-1/2 pl-2 flex flex-col  overflow-scroll no-scroll'
             style={{ maxHeight: 'calc(100vh - 170px)' }}
           >
             <div className='mt-10 flex-grow flex items-center'>
