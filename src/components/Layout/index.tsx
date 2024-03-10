@@ -90,7 +90,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               </Sidebar.Items>
             </Sidebar>
             <div
-              className='bg-profile bg-cover d-flex flex-column overflow-y-scroll'
+              className='bg-profile bg-cover d-flex flex-column overflow-y-scroll no-scroll'
               style={{ width: 'calc(100vw - 10rem)' }}
             >
               <>{children}</>
