@@ -27,6 +27,7 @@ import {
   STATUS_PROGRESS_MAP
 } from '@/constants/products';
 import { useSearchParams } from 'next/navigation';
+import { cleanExtensionFromName } from '@/libs/utils';
 
 const getInputOptionValByType = (type: string) => {
   return INPUT_OPTIONS.findIndex((option) => option.value === type);
@@ -36,6 +37,22 @@ const getPreviewOptionValByVal = (val: string) => {
   return PREVIEW_OPTIONS.findIndex((option) => option.value === val);
 };
 
+const getPreviewUrl = (
+  processedId: string,
+  filename: string,
+  extension = 'glb'
+) => {
+  return `https://s3.eu-central-1.amazonaws.com/${
+    process.env.NEXT_PUBLIC_DATASTREAM_BUCKET
+  }/processData/${processedId}/${cleanExtensionFromName(
+    filename
+  )}.${extension}`;
+};
+
+const getScriptUrl = (processedId: string, filename: string) => {
+  return `https://s3.eu-central-1.amazonaws.com/${process.env.NEXT_PUBLIC_DATASTREAM_BUCKET}/processData/${processedId}/${filename}`;
+};
+
 export default function NewProduct() {
   const searchParams = useSearchParams();
   const preProcessedId = searchParams?.get('processedId');
@@ -43,11 +60,10 @@ export default function NewProduct() {
   const preType = searchParams?.get('type');
   const preInputOptionVal = getInputOptionValByType(preType || '');
   const preExportOption = searchParams?.get('exportOption');
+  const preProcessingStatus = searchParams?.get('status');
   const prePreviewOptionVal = getPreviewOptionValByVal(preExportOption || '');
   const [name, setName] = useState(
-    preFilename
-      ? preFilename.replaceAll('.py', '').replaceAll('.blend', '')
-      : ''
+    preFilename ? cleanExtensionFromName(preFilename) : ''
   );
   const [script, setScript] = useState('');
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
@@ -56,9 +72,21 @@ export default function NewProduct() {
   );
   const currentProcessId = useRef(processedId);
   const [isConnected, setIsConnected] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(
+    preProcessingStatus === 'ProcessingSuccess'
+      ? getPreviewUrl(
+          preProcessedId || '',
+          preFilename || '',
+          preExportOption || 'glb'
+        )
+      : null
+  );
   const currentPreviewUrl = useRef(previewUrl);
-  const scriptUrl = useRef<string | null>(null);
+  const scriptUrl = useRef<string | null>(
+    preProcessingStatus === 'ProcessingSuccess'
+      ? getScriptUrl(preProcessedId || '', preFilename || '')
+      : null
+  );
   const mintActionSection = useRef(null);
   const [inputOptionVal, setInputOptionVal] = useState(
     preInputOptionVal !== -1 ? preInputOptionVal : 0
@@ -68,7 +96,7 @@ export default function NewProduct() {
   );
   const [uploadedScriptFile, setUploadedScriptFile] = useState<any>(null);
   const [previewGenerationStatus, setPreviewGenerationStatus] =
-    useState<string>('ProcessingQueue');
+    useState<string>(preProcessingStatus || 'ProcessingQueue');
   const [dataNfts, setDataNfts] = useState<ExtendedDataNft[]>([]);
   const accountInfo = useGetAccountInfo();
   const { tokenLogin } = useGetLoginInfo();
@@ -193,13 +221,7 @@ export default function NewProduct() {
     const file = e.target.files?.[0];
     if (file && file?.name) {
       setUploadedScriptFile(file);
-      setName(
-        file?.name
-          .replaceAll('.py', '')
-          .replaceAll('.blend', '')
-          .replaceAll(' ', '')
-          .trim()
-      );
+      setName(cleanExtensionFromName(file?.name).replaceAll(' ', ''));
     }
   };
 
@@ -244,7 +266,43 @@ export default function NewProduct() {
                   </option>
                 ))}
               </Select>
+              <div
+                className='flex items-center mt-4 p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400'
+                role='alert'
+              >
+                <svg
+                  className='flex-shrink-0 inline w-4 h-4 me-3'
+                  aria-hidden='true'
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='currentColor'
+                  viewBox='0 0 20 20'
+                >
+                  <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z' />
+                </svg>
+                <span className='sr-only'>Info</span>
+                <div>
+                  We recommend to test the python code in blender before
+                </div>
+              </div>
             </div>
+            {preProcessingStatus && (
+              <div className='max-w-md mb-5'>
+                <div className='mb-2 block'>
+                  <Label
+                    htmlFor='scriptLink'
+                    value='Saved Script Link'
+                    className='text-white'
+                  />
+                </div>
+                <a
+                  id='scriptLink'
+                  href={scriptUrl.current || ''}
+                  target='_blank'
+                >
+                  {preFilename}
+                </a>
+              </div>
+            )}
             {INPUT_OPTIONS[inputOptionVal].fileTypes ? (
               <div id='fileUpload' className='max-w-md mb-5'>
                 <div className='mb-2 block'>
@@ -268,24 +326,6 @@ export default function NewProduct() {
                     value='Script'
                     className='text-white'
                   />
-                </div>
-                <div
-                  className='flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400'
-                  role='alert'
-                >
-                  <svg
-                    className='flex-shrink-0 inline w-4 h-4 me-3'
-                    aria-hidden='true'
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='currentColor'
-                    viewBox='0 0 20 20'
-                  >
-                    <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z' />
-                  </svg>
-                  <span className='sr-only'>Info</span>
-                  <div>
-                    We recommend to test the python code in blender before
-                  </div>
                 </div>
                 <Textarea
                   id='script'
