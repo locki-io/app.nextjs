@@ -14,95 +14,100 @@ import { useWebsocketConnection } from '@/hooks/useWebsocketConnection';
 import LoaderCanvas from '@/components/DataNfts/LoaderCanvas';
 import { Canvas } from '@react-three/fiber';
 import { useDataNftMint } from '@/hooks';
-import { useGetAccountInfo } from '@multiversx/sdk-dapp/hooks';
+import { useGetAccountInfo, useGetLoginInfo } from '@multiversx/sdk-dapp/hooks';
 import { Bounds, PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import Image from 'next/image';
 import { Progress } from 'flowbite-react';
 import Chat from '@/components/Chat/Chat';
 import { DataNftsContext, ExtendedDataNft } from '@/app/context/store';
 import Providers from '@/components/Chat/Provider';
+import {
+  INPUT_OPTIONS,
+  PREVIEW_OPTIONS,
+  STATUS_PROGRESS_MAP
+} from '@/constants/products';
+import { useSearchParams } from 'next/navigation';
+import { cleanExtensionFromName } from '@/libs/utils';
 
-const STATUS_PROGRESS_MAP: any = {
-  Queue: {
-    progress: 10,
-    color: 'red',
-    msg: 'Preview generation process is in Queue'
-  },
-  Pending: {
-    progress: 30,
-    color: 'yellow',
-    msg: 'Preview generation process is pending'
-  },
-  Processing: {
-    progress: 50,
-    color: 'lime',
-    msg: 'Preview generation process is processing'
-  },
-  Success: {
-    progress: 100,
-    color: 'green',
-    msg: 'Preview generation process is finished'
-  }
+const getInputOptionValByType = (type: string) => {
+  return INPUT_OPTIONS.findIndex((option) => option.value === type);
 };
 
-const INPUT_OPTIONS: {
-  label: string;
-  value: string;
-  fileTypes?: string;
-  placeholder: string;
-}[] = [
-  {
-    label: 'Blender python script as text input',
-    value: 'blenderPyInput',
-    placeholder: 'Enter or paste your python script here'
-  },
-  {
-    label: 'Blender python script as a python file',
-    value: 'blenderPyFile',
-    fileTypes: 'py',
-    placeholder: 'Upload the python script file'
-  },
-  {
-    label: 'Blend file upload',
-    value: 'blendFile',
-    fileTypes: 'blend',
-    placeholder: 'Upload the blend file'
-  }
-];
+const getPreviewOptionValByVal = (val: string) => {
+  return PREVIEW_OPTIONS.findIndex((option) => option.value === val);
+};
 
-const PREVIEW_OPTIONS: { label: string; value: string }[] = [
-  {
-    label: 'Export as glb',
-    value: 'glb'
-  },
-  {
-    label: 'Export as gltf',
-    value: 'gltf'
-  }
-];
+const getPreviewUrl = (
+  processedId: string,
+  filename: string,
+  extension = 'glb'
+) => {
+  return `https://s3.eu-central-1.amazonaws.com/${
+    process.env.NEXT_PUBLIC_DATASTREAM_BUCKET
+  }/processData/${processedId}/${cleanExtensionFromName(
+    filename
+  )}.${extension}`;
+};
+
+const getScriptUrl = (processedId: string, filename: string) => {
+  return `https://s3.eu-central-1.amazonaws.com/${process.env.NEXT_PUBLIC_DATASTREAM_BUCKET}/processData/${processedId}/${filename}`;
+};
 
 export default function NewProduct() {
-  const { generatePreview, getSignedUrl, uploadFileWithLink } =
-    useGeneratePreview();
-  const [name, setName] = useState('');
+  const searchParams = useSearchParams();
+  const preProcessedId = searchParams?.get('processedId');
+  const preFilename = searchParams?.get('filename');
+  const preType = searchParams?.get('type');
+  const preInputOptionVal = getInputOptionValByType(preType || '');
+  const preExportOption = searchParams?.get('exportOption');
+  const preProcessingStatus = searchParams?.get('status');
+  const prePreviewOptionVal = getPreviewOptionValByVal(preExportOption || '');
+  const [name, setName] = useState(
+    preFilename ? cleanExtensionFromName(preFilename) : ''
+  );
   const [script, setScript] = useState('');
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
-  const [processedId, setProcessedId] = useState(null);
+  const [processedId, setProcessedId] = useState(
+    preProcessedId ? Number(preProcessedId) : null
+  );
   const currentProcessId = useRef(processedId);
   const [isConnected, setIsConnected] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(
+    preProcessingStatus === 'ProcessingSuccess'
+      ? getPreviewUrl(
+          preProcessedId || '',
+          preFilename || '',
+          preExportOption || 'glb'
+        )
+      : null
+  );
   const currentPreviewUrl = useRef(previewUrl);
-  const scriptUrl = useRef<string | null>(null);
+  const scriptUrl = useRef<string | null>(
+    preProcessingStatus === 'ProcessingSuccess'
+      ? getScriptUrl(preProcessedId || '', preFilename || '')
+      : null
+  );
   const mintActionSection = useRef(null);
-  const [inputOptionVal, setInputOptionVal] = useState(0);
-  const [previewOptionVal, setPreviewOptionVal] = useState(0);
+  const [inputOptionVal, setInputOptionVal] = useState(
+    preInputOptionVal !== -1 ? preInputOptionVal : 0
+  );
+  const [previewOptionVal, setPreviewOptionVal] = useState(
+    prePreviewOptionVal !== -1 ? prePreviewOptionVal : 0
+  );
   const [uploadedScriptFile, setUploadedScriptFile] = useState<any>(null);
   const [previewGenerationStatus, setPreviewGenerationStatus] =
-    useState<string>('Queue');
+    useState<string>(preProcessingStatus || 'ProcessingQueue');
   const [dataNfts, setDataNfts] = useState<ExtendedDataNft[]>([]);
   const accountInfo = useGetAccountInfo();
+  const { tokenLogin } = useGetLoginInfo();
   const { mint } = useDataNftMint(accountInfo?.address);
   const [isMinting, setIsMinting] = useState(false);
+  const {
+    generatePreview,
+    getSignedUrl,
+    uploadFileWithLink,
+    updateProcessingStatus
+  } = useGeneratePreview(tokenLogin?.nativeAuthToken || '');
 
   useEffect(() => {
     currentProcessId.current = processedId;
@@ -116,7 +121,7 @@ export default function NewProduct() {
         setPreviewGenerationStatus(processMsg.processingStatus);
       }
       if (
-        processMsg.processingStatus === 'Success' &&
+        processMsg.processingStatus === 'ProcessingSuccess' &&
         processMsg.processedId === currentProcessId.current
       ) {
         setIsGeneratingPreview(false);
@@ -175,13 +180,13 @@ export default function NewProduct() {
         currentProcessId.current
       );
       if (
-        generatePreviewResponse.status === 'Queued' &&
+        generatePreviewResponse.status === 'ProcessingQueued' &&
         generatePreviewResponse.processedId
       ) {
         setProcessedId(generatePreviewResponse.processedId);
         currentProcessId.current = generatePreviewResponse.processedId;
         scriptUrl.current = generatePreviewResponse?.scriptUrl;
-        setPreviewGenerationStatus('Queue');
+        setPreviewGenerationStatus('ProcessingQueue');
       } else {
         setIsGeneratingPreview(false);
       }
@@ -193,7 +198,7 @@ export default function NewProduct() {
 
   const handleMintProduct = async () => {
     setIsMinting(true);
-    await mint(
+    mint(
       `Locki${currentProcessId.current}`,
       scriptUrl.current || '',
       currentPreviewUrl.current || '',
@@ -204,19 +209,19 @@ export default function NewProduct() {
       `Error in minting ${name}`,
       `Successfully minted ${name} in Locki. Please go to Library page and view it.`
     );
+
+    updateProcessingStatus(
+      currentProcessId.current || 0,
+      INPUT_OPTIONS[inputOptionVal].value,
+      'MintingStarted'
+    );
   };
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file?.name) {
       setUploadedScriptFile(file);
-      setName(
-        file?.name
-          .replaceAll('.py', '')
-          .replaceAll('.blend', '')
-          .replaceAll(' ', '')
-          .trim()
-      );
+      setName(cleanExtensionFromName(file?.name).replaceAll(' ', ''));
     }
   };
 
@@ -226,7 +231,7 @@ export default function NewProduct() {
         <Chat />
         <div className='flex flex-row w-full p-2.5 text-white'>
           <form
-            className='flex flex-col w-1/2 pr-2 overflow-scroll'
+            className='flex flex-col w-1/2 pr-2 overflow-scroll no-scroll'
             style={{ maxHeight: 'calc(100vh - 170px)' }}
           >
             <h1 className='mb-5'>Create New Product</h1>
@@ -261,7 +266,43 @@ export default function NewProduct() {
                   </option>
                 ))}
               </Select>
+              <div
+                className='flex items-center mt-4 p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400'
+                role='alert'
+              >
+                <svg
+                  className='flex-shrink-0 inline w-4 h-4 me-3'
+                  aria-hidden='true'
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='currentColor'
+                  viewBox='0 0 20 20'
+                >
+                  <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z' />
+                </svg>
+                <span className='sr-only'>Info</span>
+                <div>
+                  We recommend to test the python code in blender before
+                </div>
+              </div>
             </div>
+            {preProcessingStatus && (
+              <div className='max-w-md mb-5'>
+                <div className='mb-2 block'>
+                  <Label
+                    htmlFor='scriptLink'
+                    value='Saved Script Link'
+                    className='text-white'
+                  />
+                </div>
+                <a
+                  id='scriptLink'
+                  href={scriptUrl.current || ''}
+                  target='_blank'
+                >
+                  {preFilename}
+                </a>
+              </div>
+            )}
             {INPUT_OPTIONS[inputOptionVal].fileTypes ? (
               <div id='fileUpload' className='max-w-md mb-5'>
                 <div className='mb-2 block'>
@@ -285,25 +326,6 @@ export default function NewProduct() {
                     value='Script'
                     className='text-white'
                   />
-                </div>
-                <div
-                  className='flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400'
-                  role='alert'
-                >
-                  <svg
-                    className='flex-shrink-0 inline w-4 h-4 me-3'
-                    aria-hidden='true'
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='currentColor'
-                    viewBox='0 0 20 20'
-                  >
-                    <path d='M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z' />
-                  </svg>
-                  <span className='sr-only'>Info</span>
-                  <div>
-                    <span className='font-medium'>Danger alert!</span> We
-                    recommend to test the python code in blender before
-                  </div>
                 </div>
                 <Textarea
                   id='script'
@@ -349,11 +371,11 @@ export default function NewProduct() {
             </div>
           </form>
           <div
-            className='w-1/2 pl-2 flex flex-col  overflow-scroll'
+            className='w-1/2 pl-2 flex flex-col  overflow-scroll no-scroll'
             style={{ maxHeight: 'calc(100vh - 170px)' }}
           >
             <div className='mt-10 flex-grow flex items-center'>
-              {previewUrl ? (
+              {!isGeneratingPreview && previewUrl ? (
                 <Canvas>
                   <PerspectiveCamera
                     makeDefault

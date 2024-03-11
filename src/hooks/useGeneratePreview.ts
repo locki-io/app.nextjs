@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-export const useGeneratePreview = () => {
+export const useGeneratePreview = (nativeAuthToken: string) => {
   async function generatePreview(
     filename: string,
     script: string,
     inputOption: string,
     exportOption: string,
-    processedId: number | null
+    processedId: number | null,
   ) {
     try {
       const generatePreviewResponse = await axios({
@@ -17,6 +17,9 @@ export const useGeneratePreview = () => {
           inputOption,
           exportOption,
           processedId
+        },
+        headers: {
+          Authorization: nativeAuthToken
         },
         data: script
       });
@@ -58,5 +61,25 @@ export const useGeneratePreview = () => {
     }
   }
 
-  return { generatePreview, getSignedUrl, uploadFileWithLink };
+  async function updateProcessingStatus(
+    processedId: number,
+    type: string,
+    status: string,
+  ) {
+    try {
+      await axios({
+        method: 'PUT',
+        url: `${process.env.NEXT_PUBLIC_BASE_API_URL || ''}/process/status`,
+        data: { processedId, type, status },
+        headers: {
+          Authorization: nativeAuthToken
+        }
+      });
+    } catch (error: any) {
+      console.error('error', error);
+      return { status: 'error', msg: error.message };
+    }
+  }
+
+  return { generatePreview, getSignedUrl, uploadFileWithLink, updateProcessingStatus };
 };
