@@ -34,7 +34,8 @@ const customTheme: CustomFlowbiteTheme = {
       base: 'py-2 px-2 last:rounded-b-lg dark:bg-gray-900 first:rounded-t-lg'
     },
     title: {
-      base: 'flex w-full items-center justify-between first:rounded-t-lg last:rounded-b-lg py-2.5 px-2.5 text-left font-medium text-gray-500'
+      base: 'flex w-full items-center justify-between first:rounded-t-lg last:rounded-b-lg py-2.5 px-2.5 text-left font-medium text-gray-500',
+      heading: 'w-full'
     }
   }
 };
