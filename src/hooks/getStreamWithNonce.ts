@@ -1,13 +1,13 @@
 import { DataNft } from '@itheum/sdk-mx-data-nft';
 
-export async function getStreamWithNonces(
-  selectedNonces: number[],
+export async function getStreamWithNonce(
+  nonce: number,
   tokenLoginNativeAuthToken: string | undefined
 ) {
-  if (selectedNonces.length > 0) {
+  if (nonce) {
     DataNft.setNetworkConfig('devnet');
     const decodedNft: DataNft = await DataNft.createFromApi({
-      nonce: Number(selectedNonces)
+      nonce: Number(nonce)
     });
 
     const res = await decodedNft.viewDataViaMVXNativeAuth({

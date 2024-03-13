@@ -38,7 +38,7 @@ export function DataNftCard({
   isWallet: boolean;
   updateDataNftSelected: (index: number, selected: boolean) => void;
 }) {
-  const [selectedNonces, setSelectedNonces] = useState<number[]>([]);
+  const [selectedNonce, setSelectedNonce] = useState<number>();
 
   const handleCardClick = () => {
     if (dataNft.dataNftSelected) {
@@ -48,12 +48,8 @@ export function DataNftCard({
     }
   };
 
-  const handleButtonClick = () => {
-    if (selectedNonces.includes(nonce)) {
-      setSelectedNonces((prevNonces) => prevNonces.filter((n) => n !== nonce));
-    } else {
-      setSelectedNonces((prevNonces) => [...prevNonces, nonce]);
-    }
+  const showScriptButtonClick = () => {
+    setSelectedNonce((prevNonce) => (prevNonce === nonce ? -1 : nonce));
   };
 
   return (
@@ -138,12 +134,15 @@ export function DataNftCard({
               </span>
             </CardDescription>
 
-            <div className='grid grid-cols-12 mb-1'>
-              <a href='https://test.datadex.itheum.io/datanfts/wallet/'>
-                <span className='col-span-4 opacity-6 base:text-sm md:text-base'>
+            <div className=' mb-1 text-center'>
+              <a
+                className='link text-blue-200 hover:text-cyan-500'
+                href='https://test.datadex.itheum.io/datanfts/wallet/'
+              >
+                <span className='col-span-4 opacity-6 base:text-base md:text-xl'>
                   Balance:
                 </span>
-                <span className='col-span-8 text-left base:text-sm md:text-base'>
+                <span className='col-span-8 bold text-left base:text-sm md:text-base'>
                   {dataNft.balance.toString()}
                 </span>
               </a>
@@ -151,7 +150,7 @@ export function DataNftCard({
 
             <div className=''>
               {isWallet ? (
-                <div className='pt-5 pb-3 text-center'>
+                <div className='pt-3 pb-3 text-center'>
                   <h6
                     className='base:!text-sm md:!text-base'
                     style={{ visibility: owned ? 'visible' : 'hidden' }}
@@ -171,14 +170,18 @@ export function DataNftCard({
               )}
 
               <CardFooter className='flex w-full justify-center py-2 text-center'>
-                <Button onClick={handleButtonClick}>
-                  {selectedNonces.includes(nonce)
+                <Button onClick={showScriptButtonClick}>
+                  {selectedNonce === dataNft.nonce
                     ? 'Hide script'
                     : 'Show script'}
                 </Button>
               </CardFooter>
             </div>
-            <ScriptComponent selectedNonces={selectedNonces} />
+            {selectedNonce === dataNft.nonce ? (
+              <ScriptComponent nonce={selectedNonce} />
+            ) : (
+              <></>
+            )}
           </CardContent>
         </Card>
       </div>
