@@ -52,6 +52,7 @@ const ScriptTextComponent: React.FC<Props> = ({
 
       if (!res?.error) {
         const resDataNft = await (res.data as Blob).text();
+        console.log(res.contentType);
         setDataNftRef((prevNft) => {
           const newNft = [...prevNft];
           newNft[index] = decodedNft.tokenIdentifier;
@@ -65,7 +66,6 @@ const ScriptTextComponent: React.FC<Props> = ({
           return newScript;
         });
       }
-
       onScriptLoadingChange(false);
       setScriptLoading(false);
     }
