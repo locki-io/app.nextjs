@@ -4,11 +4,15 @@ import { DataNft } from '@itheum/sdk-mx-data-nft/out';
 import { Message } from '@/lib/validators/message';
 import { nanoid } from 'nanoid';
 import { Vector3 } from 'three';
+import { create } from 'zustand';
 
 export interface ExtendedDataNft extends DataNft {
   index: number;
   dataNftSelected: boolean;
   position: Vector3;
+  datastreamLoading: boolean;
+  datastreamContent?: string;
+  contentType?: string;
 }
 
 // Define the initial value for dataNfts
@@ -17,6 +21,33 @@ export const DataNfts: ExtendedDataNft[] = [];
 export const DataNftsContext = createContext<ExtendedDataNft[]>(DataNfts);
 
 export const useDataNfts = () => useContext(DataNftsContext);
+
+interface DatastreamStore {
+  dataNfts: ExtendedDataNft[];
+  setDatastream: (
+    nonce: number,
+    loading: boolean,
+    content?: string,
+    contentType?: string
+  ) => void;
+}
+
+export const useDatastreamStore = create<DatastreamStore>((set) => ({
+  dataNfts: DataNfts,
+  setDatastream: (nonce, loading, content, contentType) =>
+    set((state) => ({
+      dataNfts: state.dataNfts.map((dataNft) =>
+        dataNft.nonce === nonce
+          ? {
+              ...dataNft,
+              datastreamLoading: loading,
+              datastreamContent: content,
+              contentType: contentType
+            }
+          : dataNft
+      )
+    }))
+}));
 
 export const MessagesContext = createContext<{
   messages: Message[];

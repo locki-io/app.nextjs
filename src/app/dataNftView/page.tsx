@@ -9,51 +9,18 @@ import { faSpinner, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { useStoreCreatorsDescription } from '@/components/DataNftView/Actions/helpers/useStoreCreatorsDescription';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { arta } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import ScriptComponent from '@/components/DataNfts/ScriptComponent';
 
 export default function DataNftView() {
   const searchParams = useSearchParams();
-  const [dataNftView, setDataNftView] = useState('');
-  const [dataNftLoading, setDataNftLoading] = useState(true);
+
   const [response, setResponse] = useState('');
   const [generating, setGenerating] = useState(false);
   const [readyToSend, setReadyToSend] = useState(false);
   const [sending, setSending] = useState(false);
   const { callContractToStoreDescription } = useStoreCreatorsDescription();
 
-  const nonce: string = searchParams?.get('nonce') || '0';
-  const nativeAuthToken = searchParams?.get('nativeAuthToken');
-
-  useEffect(() => {
-    async function fetchNftView() {
-      DataNft.setNetworkConfig('devnet');
-      const decodedNft: DataNft = await DataNft.createFromApi({
-        nonce: Number(nonce)
-      });
-
-      const res = await decodedNft.viewDataViaMVXNativeAuth({
-        mvxNativeAuthOrigins: [
-          'localhost',
-          'http://localhost:3000',
-          'https://app.locki.io',
-          'https://2rkm8gkhk7.execute-api.eu-central-1.amazonaws.com'
-        ],
-        mvxNativeAuthMaxExpirySeconds: 86400,
-        fwdHeaderMapLookup: {
-          authorization: `Bearer ${nativeAuthToken}`
-        }
-      });
-
-      if (!res?.error) {
-        const resDataNft = await (res.data as Blob).text();
-
-        // const blobUrl = URL.createObjectURL(message.data);
-        setDataNftView(resDataNft);
-      }
-      setDataNftLoading(false);
-    }
-
-    fetchNftView();
-  }, [nonce, nativeAuthToken]);
+  const nonce: string = searchParams?.get('nonce') || '';
 
   const generateDescription = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -87,9 +54,7 @@ export default function DataNftView() {
       setSending(false);
     }
   };
-  const copyCodeToClipboard = () => {
-    navigator.clipboard.writeText(dataNftView);
-  };
+
   return (
     <div className='flex h-screen'>
       <div className='flex-1 flex flex-col'>
@@ -97,26 +62,7 @@ export default function DataNftView() {
           className='flex-1 bg-code bg-cover text-gray-200 max-h-full p-10 border-b border-gray-600 relative overflow-y-auto'
           style={{ whiteSpace: 'pre-line' }}
         >
-          {dataNftLoading ? (
-            <div className='text-gray-200 text-center w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-              <FontAwesomeIcon
-                icon={faSpinner}
-                className='text-muted fa-spin-pulse text-4xl'
-              />
-            </div>
-          ) : (
-            <div style={{ position: 'relative' }}>
-              <SyntaxHighlighter language='python' style={arta}>
-                {dataNftView}
-              </SyntaxHighlighter>
-              <button
-                onClick={copyCodeToClipboard}
-                className='absolute top-0 right-0 m-2 text-gray-500 hover:text-gray-200'
-              >
-                <FontAwesomeIcon icon={faCopy} />
-              </button>
-            </div>
-          )}
+          <ScriptComponent className='flex-col w-1/2' nonce={nonce} />
         </div>
         <div className='absolute top-0 left-1/2 transform -translate-x-1/2 '>
           <button

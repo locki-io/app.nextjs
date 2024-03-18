@@ -58,7 +58,8 @@
     "three-stdlib": "^2.29.4",
     "tunnel-rat": "^0.1.2",
     "typescript": "5.1.3",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/node": "20.2.5",
