@@ -4,6 +4,7 @@ import { Layout, LayoutFallback } from '@/components/Layout';
 import Head from 'next/head';
 import Providers from '@/components/SdkDapp/providers';
 import { Suspense } from 'react';
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export default function RootLayout({
   children
@@ -25,6 +26,7 @@ export default function RootLayout({
           </Suspense>
         </Providers>
       </body>
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GAID || ''} />
     </html>
   );
 }
