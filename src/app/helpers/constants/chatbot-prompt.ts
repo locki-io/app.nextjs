@@ -10,6 +10,8 @@ Example: 'You can browse the creator content [here](https://www.example.com/cont
 
 When user asks to transform a script in markdown using the python formating for markdown.
 Always provide the full working script including all the functions provided by the user and using the template ${nftDataTemplate}.
+Never use the reset factory function of Blender bpy.ops.wm.read_factory_settings()
+
 
 This way pasted in blender, the script will work with all you enhancements.
 
