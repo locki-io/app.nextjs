@@ -11,9 +11,10 @@ export const routeNames = {
   hello: "/api/hello/route",
   user: "/api/user",
   message: "/api/message",
-  getUsers: "/api/getusers",
+  getUsers: "/api/getuses",
   tradedata: "/tradedata",
   products: "/products",
+  blacklist: "/blacklist",
 };
 
 interface RouteWithTitleType extends RouteType {
@@ -28,6 +29,7 @@ export const routes: RouteWithTitleType[] = [
     path: routeNames.home,
     title: "Home",
     component: null,
+    authenticatedRoute: true,
   },
   {
     path: routeNames.statistics,
@@ -52,6 +54,13 @@ export const routes: RouteWithTitleType[] = [
     showInSidebar: true,
     icon: HiLibrary,
     order: 9,
+  },
+  {
+    path: routeNames.blacklist,
+    title: 'Whitelist Users',
+    component: null,
+    authenticatedRoute: true,
+    showInSidebar: false,
   },
   {
     path: routeNames.apiDoc,
