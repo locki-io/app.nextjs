@@ -1,10 +1,10 @@
-import { AbiRegistry, SmartContract, Address } from '@multiversx/sdk-core/out';
 import { whitelistSmartContractAddress } from '@/config';
 import json from '@/abi/whitelist.abi.json';
+import { AccountInfoSliceNetworkType } from '@multiversx/sdk-dapp/types';
+import { BaseSmartContract } from './baseSmartContract';
 
-const abi = AbiRegistry.create(json);
-
-export const whitelistSmartContract = new SmartContract({
-  address: new Address(whitelistSmartContractAddress),
-  abi
-});
+export class WhitelistSmartContract extends BaseSmartContract {
+  constructor(network: AccountInfoSliceNetworkType) {
+    super(json, whitelistSmartContractAddress, network);
+  }
+}

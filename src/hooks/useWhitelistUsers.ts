@@ -1,20 +1,12 @@
-import { AbiRegistry, Address, AddressValue, ContractFunction } from '@multiversx/sdk-core/out';
+import { Address, AddressValue } from '@multiversx/sdk-core/out';
 import { useGetAccount, useGetNetworkConfig } from '@multiversx/sdk-dapp/hooks';
-import {
-  QueryRunnerAdapter,
-  SmartContractQueriesController
-} from '@multiversx/sdk-core';
-import { ApiNetworkProvider } from '@multiversx/sdk-network-providers';
-import json from '@/abi/whitelist.abi.json';
-import { whitelistSmartContractAddress } from '@/config';
 import { useCallback, useState } from 'react';
 import {
   deleteTransactionToast,
   removeAllSignedTransactions,
   removeAllTransactionsToSign
 } from '@multiversx/sdk-dapp/services/transactions/clearTransactions';
-import { whitelistSmartContract } from '@/libs/smartContracts/whitelistSmartContract';
-import { signAndSendTransactions } from '@/libs/utils/signAndSendTransactions';
+import { WhitelistSmartContract } from '@/libs/smartContracts/whitelistSmartContract';
 
 const ADD_WHITELIST_TRANSACTION_INFO = {
   processingMessage: 'Processing add whitelist transaction',
@@ -33,32 +25,14 @@ export const useWhitelistUsers = () => {
   const [removeWhitelistSessionId, setRemoveWhitelistSessionId] = useState(sessionStorage.getItem('removeWhitelistTransaction'));
   const { address } = useGetAccount();
   const { network } = useGetNetworkConfig();
-  const abi = AbiRegistry.create(json);
+  const whitelistSmartContract = new WhitelistSmartContract(network);
 
   const getUserWhitelisted = useCallback(async (addressGiven?: string) => {
-    const apiNetworkProvider = new ApiNetworkProvider(network.apiAddress);
+    const isAddressWhitelistedValues = await whitelistSmartContract.query('isAddressWhitelisted', [
+      new AddressValue(new Address(addressGiven ? addressGiven : address))
+    ]);
 
-    const queryRunner = new QueryRunnerAdapter({
-      networkProvider: apiNetworkProvider
-    });
-
-    const controller = new SmartContractQueriesController({
-      queryRunner: queryRunner,
-      abi: abi
-    });
-
-    const query = controller.createQuery({
-      contract: whitelistSmartContractAddress,
-      function: 'isAddressWhitelisted',
-      arguments: [
-        new AddressValue(new Address(addressGiven ? addressGiven : address))
-      ]
-    });
-    const response = await controller.runQuery(query);
-
-    const [isAddressWhitelisted] = controller.parseQueryResponse(response);
-
-    return isAddressWhitelisted;
+    return isAddressWhitelistedValues?.[0] ? isAddressWhitelistedValues?.[0].valueOf() : false;
   }, []);
 
   const clearAllTransactions = () => {
@@ -70,44 +44,34 @@ export const useWhitelistUsers = () => {
 
   const addUserWhitelist = useCallback(async (addressGiven: string, callbackRoute: string) => {
     clearAllTransactions();
-    
-    const addWhitelistTransaction = whitelistSmartContract.call({
-      func: new ContractFunction('addNewAddressToWhitelist'),
-      args: [new AddressValue(new Address(addressGiven))],
-      caller: new Address(address),
-      gasLimit: 5000000,
-      chainID: "D",
-    });
 
-    const sessionId = await signAndSendTransactions({
-      transactions: [addWhitelistTransaction],
+    const addWhitelistSessionId = await whitelistSmartContract.callTransaction({
+      endpointName: 'addNewAddressToWhitelist',
+      endpointArgs: [new AddressValue(new Address(addressGiven))],
+      callerAddress: address,
+      chainID: 'D',
+      transactionsDisplayInfo: ADD_WHITELIST_TRANSACTION_INFO,
       callbackRoute,
-      transactionsDisplayInfo: ADD_WHITELIST_TRANSACTION_INFO
     });
 
-    sessionStorage.setItem('addWhitelistTransaction', sessionId);
-    setAddWhitelistSessionId(sessionId);
+    sessionStorage.setItem('addWhitelistTransaction', addWhitelistSessionId);
+    setAddWhitelistSessionId(addWhitelistSessionId);
   }, []);
 
   const removeUserWhitelist = useCallback(async (addressGiven: string, callbackRoute: string) => {
     clearAllTransactions();
-    
-    const removeWhitelistTransaction = whitelistSmartContract.call({
-      func: new ContractFunction('removeAddressToWhitelist'),
-      args: [new AddressValue(new Address(addressGiven))],
-      caller: new Address(address),
-      gasLimit: 5000000,
-      chainID: "D",
-    });
 
-    const sessionId = await signAndSendTransactions({
-      transactions: [removeWhitelistTransaction],
+    const removeWhitelistSessionId = await whitelistSmartContract.callTransaction({
+      endpointName: 'removeAddressToWhitelist',
+      endpointArgs: [new AddressValue(new Address(addressGiven))],
+      callerAddress: address,
+      chainID: 'D',
+      transactionsDisplayInfo: REMOVE_WHITELIST_TRANSACTION_INFO,
       callbackRoute,
-      transactionsDisplayInfo: REMOVE_WHITELIST_TRANSACTION_INFO
     });
 
-    sessionStorage.setItem('removeWhitelistTransaction', sessionId);
-    setRemoveWhitelistSessionId(sessionId);
+    sessionStorage.setItem('removeWhitelistTransaction', removeWhitelistSessionId);
+    setRemoveWhitelistSessionId(removeWhitelistSessionId);
   }, []);
 
   return { getUserWhitelisted, addUserWhitelist, removeUserWhitelist };

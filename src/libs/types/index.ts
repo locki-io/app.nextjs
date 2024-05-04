@@ -6,3 +6,4 @@ export type {
   TransactionsDisplayInfoType,
   RawTransactionType
 } from '@multiversx/sdk-dapp/types/transactions.types';
+export * from './smartContractTypes';
