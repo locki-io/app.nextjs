@@ -69,8 +69,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     (async () => {
-      const isUserWhitelisted = await getUserWhitelisted();
-      console.log('isUserWhitelisted', isUserWhitelisted);
+      const isUserWhitelisted = isLoggedIn ? await getUserWhitelisted() : false;
       if (
         isLoggedIn &&
         pathname !== routeNames.blacklist &&
