@@ -6,7 +6,9 @@ import {
   ExtensionLoginButton,
   LedgerLoginButton,
   WalletConnectLoginButton,
-  WebWalletLoginButton
+  WebWalletLoginButton,
+  OperaWalletLoginButton,
+  XaliasLoginButton,
 } from '@/components';
 
 export const UnlockContent = () => {
@@ -41,6 +43,16 @@ export const UnlockContent = () => {
               <LedgerLoginButton
                 loginButtonText='Ledger'
                 className='test-class_name'
+                {...commonProps}
+              />
+              <OperaWalletLoginButton
+                loginButtonText='Opera Crypto Wallet'
+                {...commonProps}
+              />
+
+              <XaliasLoginButton
+                loginButtonText='xAlias'
+                data-testid='xAliasLoginBtn'
                 {...commonProps}
               />
               <WalletConnectLoginButton

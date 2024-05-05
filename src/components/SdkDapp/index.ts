@@ -2,6 +2,9 @@ import dynamic from 'next/dynamic';
 
 export * from './providers';
 
+export { XaliasLoginButton } from '@multiversx/sdk-dapp/UI/webWallet/XaliasLoginButton/XaliasLoginButton';
+export { OperaWalletLoginButton } from '@multiversx/sdk-dapp/UI/operaWallet/OperaWalletLoginButton/OperaWalletLoginButton';
+
 export const TransactionsTable = dynamic(
   async () => {
     return (await import('@multiversx/sdk-dapp/UI/TransactionsTable'))
