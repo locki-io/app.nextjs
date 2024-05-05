@@ -2,7 +2,7 @@
 
 import { AuthenticatedRoutesWrapper } from '@multiversx/sdk-dapp/wrappers';
 import { routeNames, routes } from '@/routes';
-import { useSearchParams, usePathname, redirect } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { Navbar } from '../Navbar';
 import Footer from '../Footer';
 import { Sidebar } from 'flowbite-react';
@@ -10,6 +10,7 @@ import type { CustomFlowbiteTheme } from 'flowbite-react';
 import { Flowbite } from 'flowbite-react';
 import { useGetLoginInfo } from '@multiversx/sdk-dapp/hooks/account';
 import { useEffect } from 'react';
+import { useWhitelistUsers } from '@/hooks/useWhitelistUsers';
 
 const getIsAuthRoute = (pathname: string) => {
   const routeFound = routes.find((route) => route.path === pathname);
@@ -63,15 +64,22 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   const query = useSearchParams();
   const { isLoggedIn } = useGetLoginInfo();
   const pathname = usePathname();
+  const { getUserWhitelisted } = useWhitelistUsers();
+  const router = useRouter();
 
   useEffect(() => {
-    if (
-      isLoggedIn &&
-      pathname !== routeNames.blacklist &&
-      getIsAuthRoute(pathname || '')
-    ) {
-      redirect('/blacklist');
-    }
+    (async () => {
+      const isUserWhitelisted = await getUserWhitelisted();
+      console.log('isUserWhitelisted', isUserWhitelisted);
+      if (
+        isLoggedIn &&
+        pathname !== routeNames.blacklist &&
+        getIsAuthRoute(pathname || '') &&
+        !isUserWhitelisted
+      ) {
+        router.push(routeNames.blacklist);
+      }
+    })();
   }, []);
 
   return (

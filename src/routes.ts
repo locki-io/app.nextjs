@@ -15,6 +15,7 @@ export const routeNames = {
   tradedata: "/tradedata",
   products: "/products",
   blacklist: "/blacklist",
+  admin: '/admin'
 };
 
 interface RouteWithTitleType extends RouteType {
@@ -87,6 +88,12 @@ export const routes: RouteWithTitleType[] = [
     component: null,
     authenticatedRoute: true,
     order: 1,
+  },
+  {
+    path: routeNames.admin,
+    title: "Admin",
+    component: null,
+    authenticatedRoute: true,
   },
 ];
 
