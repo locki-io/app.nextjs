@@ -1,7 +1,7 @@
 'use client';
 
 import { useGetAccount, useGetLoginInfo } from '@multiversx/sdk-dapp/hooks';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function Profile() {
   const { address } = useGetAccount();

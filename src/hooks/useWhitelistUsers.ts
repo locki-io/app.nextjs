@@ -1,6 +1,6 @@
 import { Address, AddressValue } from '@multiversx/sdk-core/out';
 import { useGetAccount, useGetNetworkConfig } from '@multiversx/sdk-dapp/hooks';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   deleteTransactionToast,
   removeAllSignedTransactions,
@@ -21,11 +21,24 @@ const REMOVE_WHITELIST_TRANSACTION_INFO = {
 };
 
 export const useWhitelistUsers = () => {
-  const [addWhitelistSessionId, setAddWhitelistSessionId] = useState(sessionStorage.getItem('addWhitelistTransaction'));
-  const [removeWhitelistSessionId, setRemoveWhitelistSessionId] = useState(sessionStorage.getItem('removeWhitelistTransaction'));
+  const [addWhitelistSessionId, setAddWhitelistSessionId] = useState('');
+  const [removeWhitelistSessionId, setRemoveWhitelistSessionId] = useState('');
   const { address } = useGetAccount();
   const { network } = useGetNetworkConfig();
   const whitelistSmartContract = new WhitelistSmartContract(network);
+
+  useEffect(() => {
+    const preAddWhitelistTransactionId = sessionStorage.getItem('addWhitelistTransaction');
+    const preRemoveWhitelistTransactionId = sessionStorage.getItem('removeWhitelistTransaction');
+
+    if (preAddWhitelistTransactionId) {
+      setAddWhitelistSessionId(preAddWhitelistTransactionId);
+    }
+
+    if (preRemoveWhitelistTransactionId) {
+      setRemoveWhitelistSessionId(preRemoveWhitelistTransactionId);
+    }
+  }, []);
 
   const getUserWhitelisted = useCallback(async (addressGiven?: string) => {
     const isAddressWhitelistedValues = await whitelistSmartContract.query('isAddressWhitelisted', [
