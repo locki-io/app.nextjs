@@ -11,6 +11,7 @@ import { Flowbite } from 'flowbite-react';
 import { useGetLoginInfo } from '@multiversx/sdk-dapp/hooks/account';
 import { useEffect } from 'react';
 import { useWhitelistUsers } from '@/hooks/useWhitelistUsers';
+import { Toaster } from 'react-hot-toast';
 
 const getIsAuthRoute = (pathname: string) => {
   const routeFound = routes.find((route) => route.path === pathname);
@@ -122,6 +123,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               <>{children}</>
             </div>
           </div>
+          <Toaster />
           {/* <Footer /> */}
         </main>
       </AuthenticatedRoutesWrapper>
