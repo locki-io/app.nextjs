@@ -1,9 +1,3 @@
-export const contractAddress =
-  'erd1qqqqqqqqqqqqqpgq72l6vl07fkn3alyfq753mcy4nakm0l72396qkcud5x';
-export const lockiSmartContractAddress =
-  'erd1qqqqqqqqqqqqqpgqucqjjyd6h0p0tg209307nymmkrcjzhn50lsqv274wp';
-export const whitelistSmartContractAddress = 'erd1qqqqqqqqqqqqqpgqht36qtaqq7tyj5j9h8tvfj8nq5hsftrrt2dsrt3xlh';
-
 export const dAppName = 'Locki Dapp';
 
 // Generate your own WalletConnect 2 ProjectId here: https://cloud.walletconnect.com/app
